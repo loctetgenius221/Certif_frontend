@@ -4,7 +4,8 @@
       <div class="form-section">
         <div class="container">
           <div class="left-panel col-md-5">
-            <h2>Rejoignez la santé de demain, aujourd'hui !</h2>
+            <router-link class="btn-retour d-flex align-items-center gap-2" :to="{ name: 'Portail' }"><img src="../../../public/image/retour.svg" alt="retour">Retour</router-link>
+            <h2 class="mt-3">Rejoignez la santé de demain, aujourd'hui !</h2>
             <p>
               Inscrivez-vous dès maintenant pour accéder à des consultations
               médicales en ligne, suivre votre dossier médical, et bénéficier de
@@ -83,7 +84,7 @@
                 <button type="submit" class="btn btn-custom">S'inscrire</button>
               </div>
               <div class="already-account">
-                <p>Déjà un compte ? <a href="#">Se connecter ici</a></p>
+                <p>Déjà un compte ? <router-link :to="{ name: 'Connexion' }">Se connecter ici</router-link></p>
               </div>
             </form>
           </div>
@@ -95,4 +96,6 @@
 
 <script setup>
 import "@/assets/css/auth/InscriptionView.css";
+import { RouterLink } from 'vue-router';
+
 </script>
