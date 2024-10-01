@@ -73,3 +73,8 @@
 .form-control {
   border-radius: 5px;
 }
+
+.text-danger {
+  color: red;
+  font-size: 0.875rem;
+}
