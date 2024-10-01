@@ -1,0 +1,19 @@
+footer {
+  background: #2980B9;
+  padding: 50px 0;
+  color: white;
+}
+
+footer .footer-content a {
+  display: block;
+  text-decoration: underline;
+  color: white;
+  margin-bottom: 3px;
+}
+
+footer .footer-content button {
+  padding: 13px 30px;
+  border: 1px solid white;
+  border-radius: 10px;
+  color: white;
+}

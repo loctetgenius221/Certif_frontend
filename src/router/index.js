@@ -1,42 +1,61 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-import AdminView from '../views/admin/AdminView.vue';
-import MedecinView from '../views/medecin/MedecinView.vue';
-import PatientView from '../views/patient/PatientView.vue';
-import AssistantView from '../views/assistant/AssistantView.vue';
-import PortailView from '../views/portal/PortailView.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import ConnexionView from '@/views/portail/ConnexionView.vue';
+import InscriptionView from '@/views/portail/InscriptionView.vue';
+import ArticleView from '@/views/portail/ArticleView.vue';
+import BlogView from '@/views/portail/BlogView.vue';
+import AcceuilView from '@/views/portail/AcceuilView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Portail',
-    component: PortailView,
+    component: AcceuilView,
   },
   {
-    path: '/admin',
-    name: 'Admin',
-    component: AdminView
+    path: '/blog',
+    name: 'Blog',
+    component: BlogView,
   },
   {
-    path: '/medecin',
-    name: 'Medecin',
-    component: MedecinView,
+    path: '/article',
+    name: 'Article',
+    component: ArticleView,
+    props: true, // Permet de passer l'ID de l'article comme un prop
   },
   {
-    path: '/patient',
-    name: 'Patient',
-    component: PatientView,
+    path: '/inscription',
+    name: 'Inscription',
+    component: InscriptionView,
   },
   {
-    path: '/assistant',
-    name: 'Assistant',
-    component: AssistantView,
+    path: '/connexion',
+    name: 'Connexion',
+    component: ConnexionView,
   },
-  
-  
+  // {
+  //   path: '/admin',
+  //   name: 'Admin',
+  //   component: AdminView
+  // },
+  // {
+  //   path: '/medecin',
+  //   name: 'Medecin',
+  //   component: MedecinView,
+  // },
+  // {
+  //   path: '/patient',
+  //   name: 'Patient',
+  //   component: PatientView,
+  // },
+  // {
+  //   path: '/assistant',
+  //   name: 'Assistant',
+  //   component: AssistantView,
+  // },
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
