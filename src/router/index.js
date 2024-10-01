@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import ConnexionView from '@/views/portail/ConnexionView.vue';
-import InscriptionView from '@/views/portail/InscriptionView.vue';
+import ConnexionView from '@/views/Auth/ConnexionView.vue';
+import InscriptionView from '@/views/Auth/InscriptionView.vue';
 import ArticleView from '@/views/portail/ArticleView.vue';
 import BlogView from '@/views/portail/BlogView.vue';
 import AcceuilView from '@/views/portail/AcceuilView.vue';
