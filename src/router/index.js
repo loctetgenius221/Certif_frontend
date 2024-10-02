@@ -40,7 +40,7 @@ const routes = [
     path: "/admin",
     name: "AdminDashboard",
     component: AdminDashboardView,
-    meta: { requiresAuth: true, role: 'administrateur' },
+    // meta: { requiresAuth: true, role: 'administrateur' },
   },
   // {
   //   path: '/admin',

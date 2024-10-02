@@ -1,50 +1,72 @@
 <template>
-  <div class="admin-dashboard">
-    <h1>Tableau de bord administrateur</h1>
-    <p>Bienvenue, {{ authStore.user?.name }} !</p>
-
-    <!-- Exemple de section pour l'administrateur -->
-    <div class="admin-actions">
-      <h2>Actions d'administration</h2>
-      <ul>
-        <li><router-link to="/users">Gérer les utilisateurs</router-link></li>
-        <li><router-link to="/settings">Paramètres</router-link></li>
-        <li><router-link to="/reports">Voir les rapports</router-link></li>
+  <div class="admin-dashboard d-flex">
+    <div class="sidebar">
+      <div class="logo"></div>
+      <ul class="menu">
+        <li class="active">
+          <a class="active" href="#">
+            <i class="far fa-calendar-check"></i>
+            <!-- <img src="../../../public/image/CategoryBlanc.svg" alt=""> -->
+            <span>Rendez-vous</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers Médicales</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-stethoscope"></i>
+            <span>Consultations</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+        <li class="logout">
+          <a href="#">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Deconnexion</span>
+          </a>
+        </li>
       </ul>
+    </div>
+    <div class="main--content">
+      <div class="header--wrapper">
+        <div class="header--title">
+          <div class="search--box">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" placeholder="Search" />
+          </div>
+        </div>
+        <div class="user--info">
+          <i class="fas fa-bell"></i>
+          <div class="d-flex align-items-center gap-2">
+            <img src="../../../public/image/photo-profil.png" alt="photo de profil" />
+            <div>
+              <h4 class="m-0 p-0">Marème Thiaw</h4>
+              <p class="m-0 p-0">Medecin</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenu ici -->
+      <div>
+
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useAuthStore } from "@/store/auth";
+import "@/assets/css/Dashboard/SidebarView.css";
+// import { useAuthStore } from "@/store/auth";
 
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 </script>
-
-<style scoped>
-.admin-dashboard {
-  padding: 20px;
-}
-
-.admin-actions {
-  margin-top: 20px;
-}
-
-.admin-actions ul {
-  list-style: none;
-  padding: 0;
-}
-
-.admin-actions li {
-  margin-bottom: 10px;
-}
-
-.admin-actions a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-.admin-actions a:hover {
-  text-decoration: underline;
-}
-</style>
