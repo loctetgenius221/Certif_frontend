@@ -5,8 +5,11 @@ export const useAuthStore = defineStore('authStore', {
   state: () => {
     return {
       user: null,
-      token: null, // Ajoutez un état pour le token
+      token: null, // Ajout d'un état pour le token
     };
+  },
+  getters: {
+    isAuthenticated: (state) => !!state.token,
   },
   actions: {
     async authenticate(apiRoute, formData) {
@@ -16,14 +19,16 @@ export const useAuthStore = defineStore('authStore', {
             'Content-Type': 'application/json',
           },
         });
-        
+
         // Stocker le token et les informations de l'utilisateur
         this.token = res.data.access_token;
-        this.user = res.data.user;
+        this.user = res.data.user; // Assure-toi que `user` est bien accessible ici
         
         console.log(res.data);
       } catch (error) {
-        console.error(error.response.data);
+        console.error("Erreur lors de l'authentification:", error.response.data);
+        this.user = null; // Réinitialiser l'utilisateur en cas d'erreur
+        this.token = null; // Réinitialiser le token en cas d'erreur
       }
     },
 
@@ -35,9 +40,9 @@ export const useAuthStore = defineStore('authStore', {
           },
         });
         this.user = null;
-        this.token = null; // Réinitialiser le token
+        this.token = null; // Réinitialiser le token après déconnexion
       } catch (error) {
-        console.error(error.response.data);
+        console.error('Erreur lors de la déconnexion:', error.response.data);
       }
     }
   }

@@ -26,7 +26,7 @@
           </div>
           <div class="form-panel col-md-7">
             <h3>Se connecter à son compte</h3>
-            <form>
+            <form @submit.prevent="handleSubmit">
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input
@@ -34,6 +34,7 @@
                   class="form-control"
                   id="email"
                   placeholder="exemple@exemple.com"
+                  v-model="formData.email"
                 />
               </div>
               <div class="mb-3">
@@ -43,6 +44,7 @@
                   class="form-control"
                   id="password"
                   placeholder="Mot de passe"
+                  v-model="formData.password"
                 />
               </div>
 
@@ -69,5 +71,50 @@
 
 <script setup>
 import "@/assets/css/auth/ConnexionView.css";
-import { RouterLink } from "vue-router";
+import { reactive } from "vue";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "@/store/auth";
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const formData = reactive({
+  email: "",
+  password: ""
+});
+
+const handleSubmit = async () => {
+  try {
+    // Authentification via le store
+    await authStore.authenticate('login', formData);
+
+    // Vérifier le rôle de l'utilisateur et rediriger en fonction
+    const userRole = authStore.user?.role[0]; // Assure-toi que `role` est un tableau
+
+    if (!userRole) {
+      console.error("Rôle non défini pour l'utilisateur.");
+      return;
+    }
+
+    // Rediriger selon le rôle
+    switch (userRole) {
+      case 'administrateur':
+        router.push({ name: 'AdminDashboard' });
+        break;
+      case 'medecin':
+        router.push({ name: 'MedecinDashboard' });
+        break;
+      case 'patient':
+        router.push({ name: 'PatientDashboard' });
+        break;
+      case 'assistant':
+        router.push({ name: 'AssistantDashboard' });
+        break;
+      default:
+        console.error("Rôle non reconnu.");
+    }
+  } catch (error) {
+    console.error("Erreur lors de la connexion", error);
+  }
+};
 </script>
