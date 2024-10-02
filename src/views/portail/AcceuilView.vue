@@ -1,4 +1,5 @@
 <template>
+  <EnTete />
   <div>
     <section class="hero-header d-flex align-items-center">
       <div class="container ">
@@ -301,14 +302,16 @@
       </div>
     </section>
   </div>
+  <PiedDePage />
+
 </template>
 
-<script>
+<script setup>
 import '@/assets/css/AcceuilView.css';
+import EnTete from '../../components/EnTete.vue';
+import PiedDePage from '../../components/PiedDePage.vue';
 
-export default {
-  name: 'AcceuilView',
-};
+
 </script>
 
 <style>
