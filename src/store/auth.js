@@ -1,11 +1,12 @@
 import { defineStore } from "pinia";
+import router from "@/router";
 import axios from "axios";
 
 export const useAuthStore = defineStore('authStore', {
   state: () => {
     return {
       user: null,
-      token: null, // Ajout d'un état pour le token
+      token: localStorage.getItem('token') || null, // Ajout d'un état pour le token
     };
   },
   getters: {
@@ -19,16 +20,38 @@ export const useAuthStore = defineStore('authStore', {
             'Content-Type': 'application/json',
           },
         });
-
+    
         // Stocker le token et les informations de l'utilisateur
         this.token = res.data.access_token;
-        this.user = res.data.user; // Assure-toi que `user` est bien accessible ici
-        
-        console.log(res.data);
+        this.user = res.data.user;
+    
+        localStorage.setItem('token', this.token);
+    
+        let userRole = this.user.role[0];
+        // Vérification du rôle et redirection
+        switch (userRole) {
+          case 'administrateur':
+            router.push({ name: 'AdminDashboard' });
+            break;
+          case 'médecin':
+            router.push({ name: 'Medecin' });
+            break;
+          case 'patient':
+            router.push({ name: 'Patient' });
+            break;
+          case 'assistant':
+            router.push({ name: 'Assistant' });
+            break;
+          default:
+            console.error("Rôle non reconnu:", userRole);
+            router.push({ name: 'Portail' });
+            break;
+        }
+    
       } catch (error) {
-        console.error("Erreur lors de l'authentification:", error.response.data);
-        this.user = null; // Réinitialiser l'utilisateur en cas d'erreur
-        this.token = null; // Réinitialiser le token en cas d'erreur
+        console.error("Erreur lors de l'authentification:", error.response?.data || error);
+        this.user = null;
+        this.token = null;
       }
     },
 
@@ -39,11 +62,15 @@ export const useAuthStore = defineStore('authStore', {
             'Authorization': `Bearer ${this.token}`,
           },
         });
+        // Réinitialiser l'utilisateur et le token
         this.user = null;
-        this.token = null; // Réinitialiser le token après déconnexion
+        this.token = null;
+
+        localStorage.removeItem('token');
+        router.push({ name: 'Connexion' });
       } catch (error) {
-        console.error('Erreur lors de la déconnexion:', error.response.data);
+        console.error('Erreur lors de la déconnexion:',  error.response?.data || error);
       }
-    }
+    },
   }
 });

@@ -1,0 +1,23 @@
+.dme-section {
+  padding: 10px 32px;
+}
+
+.dme-section .dme-heading h1 {
+  font-family: "Montserrat";
+  font-size: 18px;
+}
+
+.dme-section .table thead {
+  background: #2980b9;
+  color: white;
+}
+
+.dme-section .table tbody tr {
+  vertical-align: middle;
+}
+
+.dme-section .table .btn-detail  {
+  color: #F1948A;
+  text-decoration: none;
+  font-weight: bold;
+}
