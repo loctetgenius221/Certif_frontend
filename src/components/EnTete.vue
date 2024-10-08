@@ -33,10 +33,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <router-link class="nav-link active" aria-current="page" :to="{ name: 'Portail' }">Acceuil</router-link>
+                  <router-link class="nav-link " aria-current="page" :to="{ name: 'Portail' }">Acceuil</router-link>
                 </li>
                 <li class="nav-item">
-                  <router-link class="nav-link active" aria-current="page" :to="{ name: 'Blog' }">Blog</router-link>
+                  <router-link class="nav-link " aria-current="page" :to="{ name: 'Blog' }">Blog</router-link>
                 </li>
               </ul>
               <div>

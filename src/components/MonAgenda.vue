@@ -1,52 +1,77 @@
 <template>
   <div class="demo-app">
-    <div class="demo-app-sidebar">
-      <div class="demo-app-sidebar-section">
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div>
-      <div class="demo-app-sidebar-section">
-        <label>
-          <input
-            type="checkbox"
-            :checked="calendarOptions.weekends"
-            @change="handleWeekendsToggle"
-          />
-          Toggle weekends
-        </label>
-      </div>
-      <div class="demo-app-sidebar-section">
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for="event in currentEvents" :key="event.id">
-            <b>{{ event.startStr }}</b> <i>{{ event.title }}</i>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div class="demo-app-main">
       <FullCalendar :options="calendarOptions">
         <template v-slot:eventContent="arg">
           <b>{{ arg.timeText }}</b> <i>{{ arg.event.title }}</i>
         </template>
       </FullCalendar>
+
+      <!-- Modal pour afficher les détails du rendez-vous -->
+      <div
+        class="modal fade"
+        id="rendezVousModal"
+        tabindex="-1"
+        aria-labelledby="rendezVousModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="rendezVousModalLabel">
+                Détails du Rendez-vous
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p>
+                <strong>Type :</strong>
+                {{ selectedRendezVous?.type_rendez_vous }}
+              </p>
+              <p><strong>Motif :</strong> {{ selectedRendezVous?.motif }}</p>
+              <p><strong>Date :</strong> {{ selectedRendezVous?.date }}</p>
+              <p>
+                <strong>Heure de début :</strong>
+                {{ selectedRendezVous?.heure_debut }}
+              </p>
+              <p>
+                <strong>Heure de fin :</strong>
+                {{ selectedRendezVous?.heure_fin }}
+              </p>
+              <p><strong>Statut :</strong> {{ selectedRendezVous?.status }}</p>
+              <p><strong>Lieu :</strong> {{ selectedRendezVous?.lieu }}</p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { createEventId } from '@/even.utils'
+import FullCalendar from "@fullcalendar/vue3";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import { createEventId } from "@/even.utils";
+import { getRendezVousList, getRendezVous } from "@/services/rendezvousService";
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
-export default defineComponent({
+export default {
   components: {
     FullCalendar,
   },
@@ -55,32 +80,83 @@ export default defineComponent({
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
         },
-        initialView: 'dayGridMonth',
+        initialView: "dayGridMonth",
         editable: true,
         selectable: true,
         selectMirror: true,
         dayMaxEvents: true,
         weekends: true,
-        select: this.handleDateSelect,
-        eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents,
-        initialEvents: [], // Empty or add default events
+        events: [],
       },
       currentEvents: [],
+      showModal: false,
+      selectedRendezVous: null,
+    };
+  },
+  async mounted() {
+    try {
+      const userRole = localStorage.getItem("user_role");
+      const userId = localStorage.getItem(`${userRole}_id`); // Dynamique pour récupérer l'ID en fonction du rôle
+
+      if (!userId) {
+        console.error(`ID pour le rôle ${userRole} non trouvé.`);
+        return;
+      }
+
+      // Récupérer la liste des rendez-vous
+      const rendezvous = await getRendezVousList();
+      console.log("Rendez-vous récupérés:", rendezvous);
+
+      if (Array.isArray(rendezvous.data)) {
+        // Filtrer les rendez-vous en fonction du rôle
+        const filteredRendezVous = rendezvous.data.filter((rdv) => {
+          switch (userRole) {
+            case "medecin":
+              return rdv.medecin_id == userId;
+            case "patient":
+              return rdv.patient_id == userId;
+            case "assistant":
+              return rdv.assistant_id == userId; // Adapté selon votre structure
+            default:
+              return false; // Aucun match pour d'autres rôles
+          }
+        });
+
+        // Adapter les événements au format FullCalendar
+        const events = filteredRendezVous.map((rdv) => ({
+          id: rdv.id,
+          title: `${rdv.type_rendez_vous} - ${rdv.motif}`,
+          start: `${rdv.date}T${rdv.heure_debut}`,
+          end: `${rdv.date}T${rdv.heure_fin}`,
+          extendedProps: {
+            status: rdv.status,
+            lieu: rdv.lieu,
+          },
+        }));
+
+        this.calendarOptions.events = events;
+      } else {
+        console.error(
+          "Les rendez-vous ne sont pas sous forme de tableau:",
+          rendezvous
+        );
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des rendez-vous:", error);
     }
   },
   methods: {
     handleWeekendsToggle() {
-      this.calendarOptions.weekends = !this.calendarOptions.weekends
+      this.calendarOptions.weekends = !this.calendarOptions.weekends;
     },
     handleDateSelect(selectInfo) {
-      const title = prompt('Please enter a new title for your event')
-      const calendarApi = selectInfo.view.calendar
-      calendarApi.unselect() // clear date selection
+      const title = prompt("Veuillez entrer un titre pour votre événement");
+      const calendarApi = selectInfo.view.calendar;
+      calendarApi.unselect(); // Clear date selection
 
       if (title) {
         calendarApi.addEvent({
@@ -89,23 +165,29 @@ export default defineComponent({
           start: selectInfo.startStr,
           end: selectInfo.endStr,
           allDay: selectInfo.allDay,
-        })
+        });
       }
     },
-    handleEventClick(clickInfo) {
-      if (
-        confirm(
-          `Are you sure you want to delete the event '${clickInfo.event.title}'?`
-        )
-      ) {
-        clickInfo.event.remove()
-      }
+    async handleEventClick(clickInfo) {
+      // Récupérer l'ID de l'événement
+      const rendezVousId = clickInfo.event.id;
+
+      // Récupérer les détails du rendez-vous
+      const details = await getRendezVous(rendezVousId);
+      this.selectedRendezVous = details; // Stocker les détails dans une variable
+
+      // Afficher le modal Bootstrap
+      // eslint-disable-next-line no-undef
+      const modal = new bootstrap.Modal(
+        document.getElementById("rendezVousModal")
+      );
+      modal.show();
     },
     handleEvents(events) {
-      this.currentEvents = events
+      this.currentEvents = events;
     },
   },
-})
+};
 </script>
 
 <style scoped>

@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import '../src/assets/css/GlobalView.css' 
 
+
 const app = createApp(App);
 const pinia = createPinia();
 

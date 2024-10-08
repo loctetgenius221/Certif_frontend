@@ -56,37 +56,37 @@ const routes = [
     path: '/medecin',
     name: 'Medecin',
     component: MedecinDashboardView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   {
     path: '/medecin/dossier-medical',
     name: 'DossierMédicalMedecin',
     component: DossiermedicalView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   {
     path: '/dossiers-medicaux/:id',
     name: 'Détail-DME',
     component: DetaildmeView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   {
     path: '/medecin/consultation',
     name: 'ConsultationMedecin',
     component: ConsultationView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   {
     path: '/consultation/:id',
     name: 'Detail-consultation',
     component: DetailConsultationView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   {
     path: '/medecin/profil',
     name: 'ProfilMedecin',
     component: ProfilView,
-    meta: { requiresAuth: true, role: 'médecin' },
+    meta: { requiresAuth: true, role: 'medecin' },
   },
   
 
