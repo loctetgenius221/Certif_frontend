@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-// Récupérer la liste des rendez-vous du medecin
+// Récupérer la liste des rendez-vous
 export const getRendezVousList = async () => {
   try {
     const token = localStorage.getItem("token");

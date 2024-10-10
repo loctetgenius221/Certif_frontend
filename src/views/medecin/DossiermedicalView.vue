@@ -142,3 +142,6 @@ onMounted(() => {
   fetchDossiers();
 });
 </script>
+
+<style scoped>
+</style>

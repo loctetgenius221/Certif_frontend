@@ -110,3 +110,6 @@ import EnTete from "../../components/EnTete.vue";
 import PiedDePage from '../../components/PiedDePage.vue';
 
 </script>
+
+<style scoped>
+</style>

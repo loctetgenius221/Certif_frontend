@@ -1,5 +1,8 @@
-import { defineConfig } from '@vue/cli-service'
-export default defineConfig({
+// import { defineConfig } from '@vue/cli-service'
+// export default defineConfig({
+  const { defineConfig } = require('@vue/cli-service');
+
+  module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     proxy: {

@@ -5,13 +5,13 @@
   height: 100vh;
   overflow: hidden;
 }
-.connexion-container .form-section {
+.connexion-container .form-login-section {
   background-color: #f1948a;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
-.form-section .container {
+.form-login-section .container {
   display: flex;
   flex-direction: row;
 }

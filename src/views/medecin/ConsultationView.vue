@@ -125,3 +125,6 @@ onMounted(() => {
   fetchConsultations();
 })
 </script>
+
+<style scoped>
+</style>

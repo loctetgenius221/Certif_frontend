@@ -314,6 +314,5 @@ import PiedDePage from '../../components/PiedDePage.vue';
 
 </script>
 
-<style>
-
+<style scoped>
 </style>

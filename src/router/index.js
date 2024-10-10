@@ -14,8 +14,17 @@ import ConsultationView from '@/views/medecin/ConsultationView.vue';
 import ProfilView from '@/views/medecin/ProfilView.vue';
 import DetaildmeView from '@/views/medecin/DetaildmeView.vue';
 import DetailConsultationView from '@/views/medecin/DetailConsultationView.vue';
+import DossierPatientView from '@/views/patient/DossierPatientView.vue';
+import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
+import ListMedecinView from '@/views/patient/ListMedecinView.vue';
+import RdvFormView from '@/views/patient/RdvFormView.vue';
 
 const routes = [
+
+  //==========================================//
+  //           Routes pour le portail         //
+  //==========================================//
+
   {
     path: '/',
     name: 'Portail',
@@ -43,7 +52,10 @@ const routes = [
     component: ConnexionView,
   },
 
-  // Routes pour Administrateur
+  //==========================================//
+  //         Routes pour Administrateur       //
+  //==========================================//
+
   {
     path: "/admin",
     name: "AdminDashboard",
@@ -51,7 +63,10 @@ const routes = [
     meta: { requiresAuth: true, role: 'administrateur' },
   },
 
-  // Routes pour Médecin
+  //==========================================//
+  //            Routes pour Médecin           //
+  //==========================================//
+
   {
     path: '/medecin',
     name: 'Medecin',
@@ -88,15 +103,47 @@ const routes = [
     component: ProfilView,
     meta: { requiresAuth: true, role: 'medecin' },
   },
-  
 
-  // Routes pour Patien
+  //==========================================//
+  //            Routes pour Patient           //
+  //==========================================//
+
   {
     path: '/patient',
     name: 'Patient',
     component: PatientDashboardView,
     meta: { requiresAuth: true, role: 'patient' },
   },
+  {
+    path: '/dossier',
+    name: 'DossierPatient',
+    component: DossierPatientView,
+    meta: { requiresAuth: true, role: 'patient' },
+  },
+  {
+    path: '/profilpatient',
+    name: 'ProfilPatient',
+    component: ProfilPatientView,
+    meta: { requiresAuth: true, role: 'patient' },
+  },
+  {
+    path: '/listemedecin',
+    name: 'ListeMedecin',
+    component: ListMedecinView,
+    meta: { requiresAuth: true, role: 'patient'}
+  },
+  {
+    path: '/rdv-form',
+    name: 'RdvForm',
+    component: RdvFormView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  
+
+  //==========================================//
+  //            Routes pour Assistant         //
+  //==========================================//
+
   {
     path: '/assistant',
     name: 'Assistant',

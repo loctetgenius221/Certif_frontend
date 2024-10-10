@@ -169,7 +169,5 @@ const logout = () => {
 };
 </script>
 
-<style>
-
-
+<style scoped>
 </style>

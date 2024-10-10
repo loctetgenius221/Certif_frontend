@@ -85,3 +85,6 @@ const logout = async () => {
   }
 };
 </script>
+
+<style scoped>
+</style>

@@ -189,3 +189,6 @@ const handleSubmit = () => {
   authStore.authenticate('register/patient', formData);
 };
 </script>
+
+<style scoped>
+</style>

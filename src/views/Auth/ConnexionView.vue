@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="connexion-container">
-      <div class="form-section">
+      <div class="form-login-section">
         <div class="container">
           <div class="left-panel col-md-5">
             <router-link
@@ -118,3 +118,6 @@ const handleSubmit = async () => {
   }
 };
 </script>
+
+<style scoped>
+</style>

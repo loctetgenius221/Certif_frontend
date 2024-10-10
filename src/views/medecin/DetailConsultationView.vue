@@ -161,3 +161,6 @@ const logout = () => {
   router.push({ name: "connexion" });
 }
 </script>
+
+<style scoped>
+</style>

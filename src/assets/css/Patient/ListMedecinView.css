@@ -1,0 +1,56 @@
+.card {
+  border: 1px solid #2980B9;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.img-fluid {
+  width: 100px;
+  height: 100px;
+}
+.img-fluid {
+  width: 100px;
+  height: 100px;
+}
+
+.section-container h2 {
+  font-size: 18px;
+  color: #717171;
+}
+
+.section-container .btn-danger {
+  background: #F1948A;
+  border: none;
+  padding: 45px 77px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.section-content {
+  overflow-x: hidden;
+}
+
+/* Scroll */
+.service-content {
+  width: 100%; /* Prend la largeur disponible */
+  overflow: hidden; /* Évite que le contenu dépasse la largeur de la page */
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto; /* Seul cette section défile horizontalement */
+  white-space: nowrap; /* Garde les éléments sur une seule ligne */
+  padding-bottom: 10px; /* Ajoute un peu d'espace en bas */
+}
+
+.scroll-container::-webkit-scrollbar {
+  height: 6px; /* Hauteur de la barre de défilement */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #ccc; /* Couleur de la barre de défilement */
+  border-radius: 10px; /* Coins arrondis */
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: transparent; /* Couleur du fond de la barre */
+}
