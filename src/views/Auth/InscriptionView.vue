@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import "@/assets/css/auth/InscriptionView.css";
+// import "@/assets/css/auth/InscriptionView.css";
 import { reactive, ref } from "vue";
 import { useAuthStore } from "@/store/auth";
 
@@ -191,4 +191,84 @@ const handleSubmit = () => {
 </script>
 
 <style scoped>
+.registration-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+}
+.form-section {
+  background-color: #2980B9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.form-section .container {
+  display: flex;
+  flex-direction: row;
+}
+.left-panel {
+  color: white;
+  padding: 20px 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.left-panel .btn-retour {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+}
+.left-panel h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+.left-panel p {
+  font-size: 16px;
+  margin-top: 10px;
+}
+.left-panel .img-fluid {
+  transform: scaleX(-1);
+}
+.form-panel {
+  margin: auto;
+  padding: 40px;
+  width: auto;
+  background-color: #fff;
+}
+.form-panel h3 {
+  color: #2980B9;
+  margin-bottom: 20px;
+}
+.form-panel input {
+  padding: 10px 15px;
+}
+.btn-custom {
+  background-color: #2980B9;
+  color: white;
+  border-radius: 5px;
+}
+.btn-custom:hover {
+  background-color: #135a85;
+}
+.already-account {
+  text-align: center;
+  margin-top: 15px;
+}
+.already-account a {
+  color: #2980B9;
+}
+.already-account a:hover {
+  text-decoration: underline;
+}
+.form-control {
+  border-radius: 5px;
+}
+
+.text-danger {
+  color: red;
+  font-size: 0.875rem;
+}
 </style>

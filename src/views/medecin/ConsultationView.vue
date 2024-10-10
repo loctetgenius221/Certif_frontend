@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import "@/assets/css/Medecin/ConsultationView.css";
+// import "@/assets/css/Medecin/ConsultationView.css";
 import {ref, onMounted} from "vue"
 import { getConsultationList } from "@/services/consultationService";
 
@@ -127,4 +127,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.consultation-section {
+  padding: 10px 32px;
+}
+
+.consultation-section h1 {
+  font-family: 'Montserrat';
+  font-size: 18px;
+}
 </style>

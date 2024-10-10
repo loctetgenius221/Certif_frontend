@@ -307,7 +307,7 @@
 </template>
 
 <script setup>
-import '@/assets/css/AcceuilView.css';
+// import '@/assets/css/AcceuilView.css';
 import EnTete from '../../components/EnTete.vue';
 import PiedDePage from '../../components/PiedDePage.vue';
 
@@ -315,4 +315,262 @@ import PiedDePage from '../../components/PiedDePage.vue';
 </script>
 
 <style scoped>
+  /* hero-header */
+  .hero-header {
+    padding: 0;
+    width: 100%;
+    height: 80vh;
+    background: linear-gradient(to right, #2980B9, rgba(0,0,0,0)), url(../../../public/image/hero-banner.jpg) no-repeat center center/cover;
+  }
+
+  .hero-header .card {
+    padding: 30px;
+  }
+
+  .hero-header .card h5 {
+    font-size: 22px;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-header .card hr {
+    width: 166px;
+    color: #F1948A;
+    border: 8px solid #F1948A;
+    opacity: .6;
+    margin-top: -18px;
+  }
+
+  .hero-header .card p {
+    line-height: 35px;
+  }
+
+  /*  */
+
+  .offres .card {
+    padding: 30px;
+    flex: 1;
+    border: none;
+    box-shadow: 0 4px 12px #bdbdbd5c;
+  }
+
+  .offres .card h5 {
+    margin-bottom: 15px;  
+  }
+
+  .offres .card p {
+    text-align: justify;
+  }
+
+  .offres .card img {
+    width: 62px;
+    height: 62px;
+  }
+
+  .offres .card-content {
+    margin-top: -60px;
+  }
+
+  .offres .card-content .btn {
+    border: none;
+  }
+
+  /* a propos */
+
+  .apropos {
+    margin: 100px 0;
+  }
+
+  .apropos .apropos-content {
+    padding: 0 100px;
+  }
+
+  .apropos .apropos-txt h3 {
+    font-size: 20px;
+    color: #F1948A;
+  }
+
+  .apropos .apropos-txt h2 {
+    font-size: 26px;
+  }
+
+  .apropos .apropos-txt p {
+    font-size: 18px;
+    line-height: 30px;
+  }
+
+  .apropos .apropos-txt .check-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .apropos .apropos-txt .chech{
+    width: 20px;
+    height: 18px;
+  }
+
+  /* Nos Services */
+
+  .nos-services {
+    padding: 65px 0;
+    width: 100%;
+    height: auto;
+    background: #f1948a30;
+  }
+
+  .nos-services h3 {
+    color: #F1948A;
+    font-size: 18px;
+  }
+
+  .nos-services .card {
+    width: 30%;
+    border: none;
+    box-shadow: 0 0 6px #f1948a5a;
+  }
+
+  .nos-services .card h5{
+    color: #F1948A;
+  }
+
+  /* FAQ */
+  .faq {
+    padding: 30px 0;
+  }
+
+  /* banner */
+
+  .banner {
+    height: 350px;
+    background: #F1948A;
+    padding-top: 46px;
+    color: #fff;
+  }
+
+  .banner .container {
+    height: 100%;
+    position: relative;
+  }
+
+  .banner-img img{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* statistique */
+
+  .statistique {
+    padding: 80px 0;
+    color: #fff;
+    background: #2980B9;
+  }
+
+  /* Blog */
+
+  .blog {
+    padding: 50px 0;
+  }
+
+  .blog h2 {
+    font-size: 20px;
+  }
+
+  .blog .blog-pattern {
+    height: 21px;
+  }
+
+  /* contact */
+
+  .contact {
+    padding: 80px 0;
+    width: 100%;
+    min-height: 80vh;
+    background: linear-gradient( to right, rgba(0, 0, 0, 0.40), rgba(0,0,0,0.40)), url(../../../public/image/bg-contact.jpg) no-repeat center center/cover;
+    /* filter: blur(3px); */
+  }
+
+  .contact .contact-txt {
+    color: #fff;
+  }
+
+  .contact .titres h3 {
+    color: #F1948A;
+  }
+
+  .contact .titres h2 {
+    font-size: 50px;
+    line-height: 60px;
+  }
+
+  .contact .contact-txt p {
+    font-size: 20px;
+  }
+
+
+
+  .contact .infos h3{
+    font-size: 20px;
+  }
+
+  .contact .contact-txt .btn {
+    font-weight: bold;
+    padding: 14px 30px;
+  }
+
+  .contact .contact-form form {
+    width: 500px;
+    border-radius: 10px;
+    padding: 30px 35px;
+    background-color: #ffffff21;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 4px rgba(0,0,0,0.25);
+  }
+
+  .contact .contact-form form input{
+    border-radius: 10px;
+    padding: 14px 19px;
+    background-color: #ffffff21;
+    backdrop-filter: blur(5px);
+    color: white;
+    font-weight: bold;
+    outline: none;
+  }
+
+  .contact .contact-form form input:focus {
+    box-shadow: 0px 0px 4px #F1948A;
+    border: 1px solid #F1948A;
+  }
+
+  .contact-form form input::placeholder {
+    color: white;
+    opacity: 1;
+  }
+
+  .contact .contact-form form textarea{
+    width: 100%;
+    border-radius: 10px;
+    padding: 14px 19px;
+    background-color: #ffffff21;
+    backdrop-filter: blur(5px);
+    color: white;
+    height: 150px;
+    resize: none;
+    border-color: white;
+    font-weight: bold;
+    outline: none;
+  }
+
+  .contact .contact-form form textarea:focus {
+    box-shadow: 0px 0px 4px #F1948A;
+    border: 1px solid #F1948A;
+  }
+
+  .contact .contact-form form .btn {
+    width: 100%;
+    font-weight: bold;
+    padding: 13px 0;
+  }
 </style>

@@ -125,7 +125,7 @@
 </template>
 
 <script setup>
-import "@/assets/css/Medecin/DossiermedicalView.css";
+// import "@/assets/css/Medecin/DossiermedicalView.css";
 import { ref, onMounted } from "vue"; // Importer ref et onMounted
 import { getDossierMedicalList } from "@/services/dossiermedicalService"; // Importer votre fonction API
 
@@ -144,4 +144,28 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.dme-section {
+  padding: 10px 32px;
+}
+
+.dme-section .dme-heading h1 {
+  font-family: "Montserrat";
+  font-size: 18px;
+}
+
+.dme-section .table thead {
+  background: #2980b9;
+  color: white;
+}
+
+.dme-section .table tbody tr {
+  vertical-align: middle;
+}
+
+.dme-section .table .btn-detail  {
+  color: #F1948A;
+  text-decoration: none;
+  font-weight: bold;
+}
+
 </style>

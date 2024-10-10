@@ -68,7 +68,7 @@
 
 <script setup>
 import "@/assets/css/Dashboard/SidebarView.css";
-import "@/assets/css/Medecin/DashboardView.css";
+// import "@/assets/css/Medecin/DashboardView.css";
 import { useAuthStore } from '@/store/auth';
 import { useRouter } from 'vue-router'; 
 import MonAgenda from "@/components/MonAgenda.vue";
@@ -87,4 +87,12 @@ const logout = async () => {
 </script>
 
 <style scoped>
+.rendezvous-section {
+  padding: 10px 32px;
+}
+
+.rendezvous-section h1 {
+  font-family: 'Montserrat';
+  font-size: 18px;
+}
 </style>

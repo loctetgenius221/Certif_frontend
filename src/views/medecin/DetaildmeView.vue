@@ -133,7 +133,7 @@
 </template>
 
 <script setup>
-import "@/assets/css/Medecin/DetaildmeView.css";
+// import "@/assets/css/Medecin/DetaildmeView.css";
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { getDossierMedical } from "@/services/dossiermedicalService"; // Assure-toi que cette fonction est bien définie dans ce fichier
@@ -170,4 +170,45 @@ const logout = () => {
 </script>
 
 <style scoped>
+.detail-section {
+  padding: 10px 32px;
+}
+
+.detail-section h1 {
+  font-family: 'Montserrat';
+  font-size: 18px;
+}
+
+.detail-section .detail-content {
+  width: 100%;
+  display: flex;
+  gap: 2%;
+}
+
+.detail-section .detail-content .info-patient {
+  flex-basis: 65%;
+  box-shadow: 0 5px 13px #297fb918;
+  padding: 24px;
+}
+
+.detail-section .detail-content .info-general {
+  flex-basis: 35%;
+  box-shadow: 0 5px 13px #297fb918;
+  padding: 24px;
+}
+
+.detail-section .info-general img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover; 
+}
+
+.detail-section .info-general h3 {
+  font-size: 22px;
+  font-family: 'Montserrat';
+}
+
+.detail-section .info-general p {
+  font-size: 18px;
+}
 </style>

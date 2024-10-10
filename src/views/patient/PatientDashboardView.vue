@@ -166,7 +166,7 @@ import { ref, onMounted, computed } from "vue"; // Ajout de computed
 import { getRendezVousList } from "@/services/rendezvousService";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
-import "@/assets/css/Patient/PatientDashboardView.css";
+// import "@/assets/css/Patient/PatientDashboardView.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import bootstrapBundleMin from "bootstrap/dist/js/bootstrap.bundle.min.js";
 
@@ -230,4 +230,127 @@ onMounted(fetchRendezVous); // Appel de la fonction pour charger les rendez-vous
 </script>
 
 <style scoped>
+.section-content {
+  width: 100%;
+}
+
+.section-container {
+  padding: 0 48px;
+}
+
+.section-container .heading h1{
+  font-family: 'Montserrat';
+  font-size: 18px;
+  color: #717171;
+}
+
+.section-container .heading .btn-rdv {
+  color: white;
+  text-decoration: none;
+  background: #2980B9;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.section-container .rdv-heading {
+  border-bottom: 1px solid #717171;
+  margin-bottom: 30px;
+}
+
+.section-container .rdv-heading .active{
+  background: #2980B9;
+  border-radius: 8px;
+}
+
+.section-container .rdv-heading h2 {
+  font-size: 16px;
+  font-family: 'Montserrat';
+  cursor: pointer;
+}
+
+.rdv-section .rendezvous .rdv-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0 0 6px #297fb938;
+  border-radius: 8px;
+  padding: 18px 30px;
+}
+
+.rdv-section .rdv-item img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.rdv-section .rdv-item h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.rdv-section .rdv-item  .btn-detail{
+  color: #2980B9;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Modal personnalisé pour qu'il glisse de droite à gauche */
+.modal.right .modal-dialog {
+  position: fixed;
+  right: 0;
+  top: 0;
+  margin: 0;
+  width: 35%; /* Largeur de 1/4 de l'écran */
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.modal.right .modal-content {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+}
+
+.modal.right.fade .modal-dialog {
+  transform: translateX(100%);
+}
+
+.modal.right.fade.show .modal-dialog {
+  transform: translateX(0);
+}
+
+.modal-1-4 {
+  max-width: 35vw; /* Largeur du modal à 1/4 de l'écran */
+}
+
+.modal-header {
+  border-radius: 0;
+  background-color: #2980B9; /* Couleur de fond du header */
+  color: white; /* Couleur du texte dans le header */
+}
+
+.modal-header .btn-close
+
+.btn-primary {
+  background-color: #007bff; /* Couleur de fond du bouton primaire */
+}
+
+.btn-secondary {
+  background-color: #6c757d; /* Couleur de fond du bouton secondaire */
+}
+
+.modal-body .header-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.modal-body .head-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
