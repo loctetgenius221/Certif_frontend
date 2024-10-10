@@ -83,6 +83,7 @@ const goBack = () => {
 </script>
 
 <style scoped>
+
 .section-container h1 {
   font-size: 18px;
   font-family: "Montserrat";
