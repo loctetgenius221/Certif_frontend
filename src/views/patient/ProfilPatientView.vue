@@ -70,7 +70,7 @@
                 <button type="submit" class="btn btn-primary">
                   Enregistrer
                 </button>
-                <router-link to="">Annuler</router-link>
+                <router-link class="btn btn-retour" to="">Annuler</router-link>
               </div>
             </form>
           </div>
@@ -85,4 +85,50 @@ import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.section-content {
+  width:100%;
+}
+.profil-section {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.profil-section h1 {
+  font-family: 'Montserrat';
+  font-size: 18px;
+}
+
+.profil-section .form-content {
+  box-shadow: 0 10px 13px #297fb915;
+  padding: 30px;
+  border-radius: 5px;
+}
+
+.profil-section .profil-heading {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.20);
+  border-radius: 8px;
+  box-shadow: 0 6px 8px #297fb915;
+  padding: 36px 50px;
+}
+
+.profil-section .profil-heading img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: -70px;
+}
+
+form .btn-primary {
+  background: #2980B9;
+}
+
+form .btn-retour {
+  border: 1px solid #717171;
+  text-decoration: none;
+  color: black;
+}
+</style>

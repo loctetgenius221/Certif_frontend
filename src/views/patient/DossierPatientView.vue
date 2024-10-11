@@ -148,6 +148,11 @@ import HeaderPatient from "@/components/HeaderPatient.vue";
   margin-bottom: 15px;
 }
 
+.section-container h2 {
+  color: #000;
+  font-size: 18px;
+}
+
 .dossier-content {
   display: flex;
   gap: 25px;

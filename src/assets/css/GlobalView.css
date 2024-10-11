@@ -43,6 +43,10 @@ h3 {
   padding: 0;
 }
 
+.section-container {
+  padding: 0 48px;
+}
+
 /* Boutons */
 
 .btn-bleue {

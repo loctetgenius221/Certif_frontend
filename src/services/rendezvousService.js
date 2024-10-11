@@ -23,6 +23,30 @@ export const getRendezVousList = async () => {
     });
 
     console.log("Response data:", response.data);
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      console.error("Unauthorized. Redirecting to login...");
+      router.push({ name: "Connexion" });
+    } else {
+      console.error("Erreur lors de la récupération de la liste des rendez-vous", error);
+    }
+  }
+};
+export const getRendezVousPatient = async (patientId) => {
+  try {
+    const token = localStorage.getItem("token");
+    // console.log("Token:", token);
+
+    const response = await api.get(`/rendezvous/patient/${patientId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response data:", response.data);
+
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 401) {
