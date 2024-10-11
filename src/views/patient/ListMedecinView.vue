@@ -10,22 +10,25 @@
         <h2>Services</h2>
         <div class="service-content mb-5">
           <div class="scroll-container">
-            <button class="btn btn-danger me-2">Neurologie</button>
-            <button class="btn btn-danger me-2">Psychiatrie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Pneumologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
-            <button class="btn btn-danger me-2">Cardiologie</button>
+            <button v-for="service in services" 
+            :key="service.id" class="btn btn-danger me-2">
+            {{  service.nom  }}
+          </button>
+            
           </div>
         </div>
 
-        <h2>Médecins</h2>
+        <div class="search-medecin d-flex justify-content-between align-items-center mb-3">
+          <h2>Médecins</h2>
+          <form class="d-flex" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Service, medecin..."
+              aria-label="Search"
+            />
+          </form>
+        </div>
         <div class="row">
           <div
             class="col-md-3 mb-4"
@@ -41,7 +44,9 @@
                 />
                 <h5 class="card-title">{{ medecin.nom }}</h5>
                 <p class="card-text">{{ medecin.specialite }}</p>
-                <router-link :to="{ name: 'RdvForm' }">prendre rendez-vous</router-link>
+                <router-link :to="{ name: 'RdvForm' }"
+                  >prendre rendez-vous</router-link
+                >
               </div>
             </div>
           </div>
@@ -52,10 +57,24 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { getServices } from "@/services/serviceService";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
-// import "@/assets/css/Patient/ListMedecinView.css";
+
+const services = ref([]);
+
+// Méthode pour recupérer les services
+const recupServices = async () => {
+  try {
+    const response = await getServices();
+    services.value = response.data;
+    console.log("Services:",services.value)
+  } catch (error) {
+    console.log("Erreur lors de la recupération des services", error)
+  }
+}
 
 // Exemple de données des médecins
 const medecins = [
@@ -91,11 +110,15 @@ const router = useRouter();
 const goBack = () => {
   router.go(-1);
 };
+
+onMounted(() => {
+  recupServices();
+});
 </script>
 
 <style scoped>
 .card {
-  border: 1px solid #2980B9;
+  border: 1px solid #2980b9;
   border-radius: 10px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
 }
@@ -115,7 +138,7 @@ const goBack = () => {
 }
 
 .section-container .btn-danger {
-  background: #F1948A;
+  background: #f1948a;
   border: none;
   padding: 45px 77px;
   font-size: 18px;
@@ -156,4 +179,5 @@ const goBack = () => {
   text-decoration: underline;
   text-decoration-color: #2980b9;
 }
+
 </style>
