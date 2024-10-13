@@ -10,15 +10,18 @@
         <h2>Services</h2>
         <div class="service-content mb-5">
           <div class="scroll-container">
-            <button v-for="service in services" 
-            :key="service.id" class="btn btn-danger me-2">
-            {{  service.nom  }}
-          </button>
-            
+            <button 
+              v-for="service in services" 
+              :key="service.id" 
+              @click="filtrerMedecinsParService(service.id)"
+              :class="['btn', 'btn-danger', {'active': service.id === serviceSelectionne}]"
+            >
+              {{  service.nom  }}
+            </button>
           </div>
         </div>
 
-        <div class="search-medecin d-flex justify-content-between align-items-center mb-3">
+        <div class="search-medecin d-flex justify-content-between align-items-center mb-4">
           <h2>Médecins</h2>
           <form class="d-flex" role="search">
             <input
@@ -32,18 +35,18 @@
         <div class="row">
           <div
             class="col-md-3 mb-4"
-            v-for="(medecin, index) in medecins"
+            v-for="(medecin, index) in medecinsFiltres"
             :key="index"
           >
             <div class="card text-center">
               <div class="card-body">
                 <img
-                  :src="medecin.image"
-                  class="img-fluid rounded-circle mb-2"
+                  src="../../../public/image/portrait-3d-male-doctor.jpg"
+                  class="img-fluid  mb-2"
                   alt="Médecin"
                 />
-                <h5 class="card-title">{{ medecin.nom }}</h5>
-                <p class="card-text">{{ medecin.specialite }}</p>
+                <h5 class="card-title">{{ "Dr" + ' ' + medecin.user.prenom + ' ' + medecin.user.nom }}</h5>
+                <p class="card-text">{{ medecin.service.nom }}</p>
                 <router-link :to="{ name: 'RdvForm' }"
                   >prendre rendez-vous</router-link
                 >
@@ -62,8 +65,13 @@ import { useRouter } from "vue-router";
 import { getServices } from "@/services/serviceService";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
+import { getMedecinList } from "@/services/medecinService";
 
 const services = ref([]);
+const medecins = ref([]);
+const serviceSelectionne = ref(null);
+const medecinsFiltres = ref([]);
+
 
 // Méthode pour recupérer les services
 const recupServices = async () => {
@@ -76,35 +84,53 @@ const recupServices = async () => {
   }
 }
 
+// Méthode pour récupérer la liste complète des médecins
+const listMedecins = async () => {
+  try {
+    const response = await getMedecinList();
+    medecins.value = response.data;
+    // Par défaut, afficher tous les médecins
+    medecinsFiltres.value = medecins.value;
+  } catch (error) {
+    console.log("Erreur", error);
+  }
+};
+
+// Filtrer les médecins par service
+const filtrerMedecinsParService = (serviceId) => {
+  serviceSelectionne.value = serviceId;
+  medecinsFiltres.value = medecins.value.filter(medecin => medecin.service_id === serviceId);
+};
+
 // Exemple de données des médecins
-const medecins = [
-  {
-    nom: "Dr Marème Thiaw",
-    specialite: "Spécialité 1",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    nom: "Dr Marème Thiaw",
-    specialite: "Spécialité 2",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    nom: "Dr Marème Thiaw",
-    specialite: "Spécialité 3",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    nom: "Dr Marème Thiaw",
-    specialite: "Spécialité 4",
-    image: "https://via.placeholder.com/150",
-  },
-  {
-    nom: "Dr Marème Thiaw",
-    specialite: "Spécialité 4",
-    image: "https://via.placeholder.com/150",
-  },
-  // Ajouter d'autres médecins ici...
-];
+// const medecins = [
+//   {
+//     nom: "Dr Marème Thiaw",
+//     specialite: "Spécialité 1",
+//     image: "https://via.placeholder.com/150",
+//   },
+//   {
+//     nom: "Dr Marème Thiaw",
+//     specialite: "Spécialité 2",
+//     image: "https://via.placeholder.com/150",
+//   },
+//   {
+//     nom: "Dr Marème Thiaw",
+//     specialite: "Spécialité 3",
+//     image: "https://via.placeholder.com/150",
+//   },
+//   {
+//     nom: "Dr Marème Thiaw",
+//     specialite: "Spécialité 4",
+//     image: "https://via.placeholder.com/150",
+//   },
+//   {
+//     nom: "Dr Marème Thiaw",
+//     specialite: "Spécialité 4",
+//     image: "https://via.placeholder.com/150",
+//   },
+//   // Ajouter d'autres médecins ici...
+// ];
 const router = useRouter();
 
 const goBack = () => {
@@ -113,23 +139,30 @@ const goBack = () => {
 
 onMounted(() => {
   recupServices();
+  listMedecins();
 });
 </script>
 
 <style scoped>
 .card {
-  border: 1px solid #2980b9;
+  /* border: 1px solid #2980b9; */
   border-radius: 10px;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0px 8px #297fb925;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.card:hover {
+  margin-top: -25px;
+  background: #297fb9;
+  color: white;
 }
 
 .img-fluid {
-  width: 100px;
-  height: 100px;
-}
-.img-fluid {
-  width: 100px;
-  height: 100px;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 5%;
 }
 
 .section-container h2 {
@@ -138,20 +171,26 @@ onMounted(() => {
 }
 
 .section-container .btn-danger {
-  background: #f1948a;
-  border: none;
-  padding: 45px 77px;
+  background: #297fb9;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding: 55px 77px;
   font-size: 18px;
   font-weight: bold;
+  color: white; /* Texte en blanc pour contraster */
+  box-shadow: 0 0px 8px rgba(0, 0, 0, 0.1); /* Ombre extérieure pour donner de la profondeur */
+  transition: transform 0.3s ease, background 0.3s ease; 
 }
 .section-content {
+  padding: 25px;
   overflow-x: hidden;
+  /* background: #000; */
 }
 
 /* Scroll */
 .service-content {
   width: 100%; /* Prend la largeur disponible */
-  overflow: hidden; /* Évite que le contenu dépasse la largeur de la page */
+  overflow: hidden;
 }
 
 .scroll-container {
@@ -166,7 +205,7 @@ onMounted(() => {
 }
 
 .scroll-container::-webkit-scrollbar-thumb {
-  background-color: #ccc; /* Couleur de la barre de défilement */
+  background-color: #2980b9; /* Couleur de la barre de défilement */
   border-radius: 10px; /* Coins arrondis */
 }
 
