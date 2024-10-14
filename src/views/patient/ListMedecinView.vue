@@ -35,8 +35,8 @@
         <div class="row">
           <div
             class="col-md-3 mb-4"
-            v-for="(medecin, index) in medecinsFiltres"
-            :key="index"
+            v-for="(medecin) in medecinsFiltres"
+            :key="medecin.id"
           >
             <div class="card text-center">
               <div class="card-body">
@@ -45,11 +45,14 @@
                   class="img-fluid  mb-2"
                   alt="Médecin"
                 />
-                <h5 class="card-title">{{ "Dr" + ' ' + medecin.user.prenom + ' ' + medecin.user.nom }}</h5>
+                <h5 class="card-title">{{ "Dr " + medecin.user.prenom + " " + medecin.user.nom }}</h5>
                 <p class="card-text">{{ medecin.service.nom }}</p>
-                <router-link :to="{ name: 'RdvForm' }"
-                  >prendre rendez-vous</router-link
+                <button
+                  @click="allerVersRdvForm(medecin)"
+                  class="btn btn-primary"
                 >
+                  Prendre rendez-vous
+                </button>
               </div>
             </div>
           </div>
@@ -71,14 +74,13 @@ const services = ref([]);
 const medecins = ref([]);
 const serviceSelectionne = ref(null);
 const medecinsFiltres = ref([]);
-
+const router = useRouter();
 
 // Méthode pour recupérer les services
 const recupServices = async () => {
   try {
     const response = await getServices();
     services.value = response.data;
-    console.log("Services:",services.value)
   } catch (error) {
     console.log("Erreur lors de la recupération des services", error)
   }
@@ -102,36 +104,17 @@ const filtrerMedecinsParService = (serviceId) => {
   medecinsFiltres.value = medecins.value.filter(medecin => medecin.service_id === serviceId);
 };
 
-// Exemple de données des médecins
-// const medecins = [
-//   {
-//     nom: "Dr Marème Thiaw",
-//     specialite: "Spécialité 1",
-//     image: "https://via.placeholder.com/150",
-//   },
-//   {
-//     nom: "Dr Marème Thiaw",
-//     specialite: "Spécialité 2",
-//     image: "https://via.placeholder.com/150",
-//   },
-//   {
-//     nom: "Dr Marème Thiaw",
-//     specialite: "Spécialité 3",
-//     image: "https://via.placeholder.com/150",
-//   },
-//   {
-//     nom: "Dr Marème Thiaw",
-//     specialite: "Spécialité 4",
-//     image: "https://via.placeholder.com/150",
-//   },
-//   {
-//     nom: "Dr Marème Thiaw",
-//     specialite: "Spécialité 4",
-//     image: "https://via.placeholder.com/150",
-//   },
-//   // Ajouter d'autres médecins ici...
-// ];
-const router = useRouter();
+// Redirection vers la page de prise de rendez-vous en passant les informations du médecin
+const allerVersRdvForm = (medecin) => {
+  router.push({
+    path: '/rdv-form',
+    query: {
+      nom: medecin.user.nom,
+      prenom: medecin.user.prenom,
+      specialite: medecin.service.nom,
+    },
+  });
+};
 
 const goBack = () => {
   router.go(-1);
@@ -195,6 +178,7 @@ onMounted(() => {
 
 .scroll-container {
   display: flex;
+  gap: 15px;
   overflow-x: auto; /* Seul cette section défile horizontalement */
   white-space: nowrap; /* Garde les éléments sur une seule ligne */
   padding-bottom: 10px; /* Ajoute un peu d'espace en bas */

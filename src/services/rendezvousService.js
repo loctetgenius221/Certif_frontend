@@ -117,3 +117,25 @@ export const restoreRendezVous = async (id) => {
     console.error("Erreur lors de la restauration du rendez-vous", error);
   }
 };
+
+// Récupérer les plages horaires d'un médecin pour une date spécifique
+export const getPlagesHorairesMedecin = async (id, date) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/plagesbymedecin/${id}?date=${date}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Vérifiez si la réponse contient un médecin et ses plages horaires
+    if (response.data) {
+      return response.data; // Retourne directement l'objet contenant le médecin et les plages horaires
+    } else {
+      return null; // Retourne null si aucune donnée n'est trouvée
+    }
+  } catch (error) {
+    console.error("Erreur lors de la récupération des plages horaires", error);
+    return null; // Retourne null en cas d'erreur
+  }
+};

@@ -7,13 +7,10 @@
         <button @click="goBack" class="btn btn-retour"><i class="bi bi-arrow-left-short"></i>Retour</button>
         <h1>Prendre un rendez-vous</h1>
         <div class="info-medecin">
-          <img
-            src="../../../public/image/portrait-3d-female-doctor.jpg"
-            alt="Photo du medecin"
-          />
+          <img :src="photoProfil ? photoProfil : '/image/icone-profil-defaut.png'" alt="Photo du médecin" />
           <div class="info-txt">
-            <h2>Dr Marème Thiaw</h2>
-            <h4>Spécialité</h4>
+            <h2>Dr {{ prenom }} {{ nom }}</h2>
+            <h4>{{ specialite }}</h4>
           </div>
         </div>
 
@@ -71,11 +68,19 @@
 </template>
 
 <script setup>
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import CalendrierDisponibilite from "@/components/CalendrierDisponibilite.vue";
 const router = useRouter();
+const route = useRoute();
+
+// Récupérer les informations du médecin depuis les paramètres de la route
+const nom = route.query.nom || 'Nom Inconnu';
+const prenom = route.query.prenom || 'Prénom Inconnu';
+const specialite = route.query.specialite || 'Spécialité Inconnue';
+const photoProfil = route.query.photo_profil || '../../../public/image/portrait-3d-female-doctor.jpg';
+
 
 const goBack = () => {
   router.go(-1);

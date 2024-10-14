@@ -1,6 +1,14 @@
 <template>
   <div class="calendar-container">
     <FullCalendar :options="calendarOptions" />
+    <div v-if="plagesHoraires.length > 0" class="plages-disponibles">
+      <h3>Plages horaires disponibles pour {{ selectedDate }} :</h3>
+      <ul>
+        <li v-for="plage in plagesHoraires" :key="plage.id">
+          {{ plage.heure_debut }} - {{ plage.heure_fin }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -10,13 +18,16 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import frLocale from "@fullcalendar/core/locales/fr"; // Importer la localisation française
+import { getPlagesHorairesMedecin } from "@/services/rendezvousService";
 
 export default {
   components: {
     FullCalendar,
   },
   setup() {
-    const selectedDate = ref(null); // Variable réactive pour la date sélectionnée
+    const selectedDate = ref(null);
+    const plagesHoraires = ref([]);
+    const medecin_id = ref(1);
 
     const calendarOptions = ref({
       plugins: [dayGridPlugin, interactionPlugin],
@@ -34,20 +45,42 @@ export default {
       dateClick: (info) => handleDateClick(info), // Gestionnaire de clic sur la date
     });
 
-    const handleDateClick = (info) => {
+    // Fonction asynchrone pour gérer le clic sur une date
+    const handleDateClick = async (info) => {
       selectedDate.value = info.dateStr;
       console.log("Date sélectionnée :", selectedDate.value);
-      // Logique future pour afficher les heures de disponibilité du médecin
+
+      try {
+        // Récupérer les plages horaires du médecin
+        const response = await getPlagesHorairesMedecin(medecin_id.value, selectedDate.value);
+        console.log("Id du medecin: ", medecin_id.value);
+        console.log("Réponse brute de l'API :", response);
+
+        // Vérifiez si la réponse contient les plages horaires
+        if (response && response.length > 0) {
+          plagesHoraires.value = response.map((plage) => ({
+            id: plage.id,
+            heure_debut: plage.heure_debut,
+            heure_fin: plage.heure_fin,
+          }));
+        } else {
+          plagesHoraires.value = [];
+        }
+
+        console.log("Les plages horaires du médecin :", plagesHoraires.value);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des plages horaires :", error);
+      }
     };
 
     onMounted(() => {
-      // Logique qui s'exécute une fois le composant monté, si besoin
       console.log("Le composant est monté !");
     });
 
     return {
       calendarOptions,
       selectedDate,
+      plagesHoraires,
     };
   },
 };
