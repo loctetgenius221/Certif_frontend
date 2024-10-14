@@ -1,19 +1,11 @@
 <template>
   <div class="calendar-container">
     <FullCalendar :options="calendarOptions" />
-    <div v-if="plagesHoraires.length > 0" class="plages-disponibles">
-      <h3>Plages horaires disponibles pour {{ selectedDate }} :</h3>
-      <ul>
-        <li v-for="plage in plagesHoraires" :key="plage.id">
-          {{ plage.heure_debut }} - {{ plage.heure_fin }}
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -21,13 +13,20 @@ import frLocale from "@fullcalendar/core/locales/fr"; // Importer la localisatio
 import { getPlagesHorairesMedecin } from "@/services/rendezvousService";
 
 export default {
+  props: {
+    medecin_id: {
+      type: Number,
+      required: true,
+    },
+  },
+  emits: ['plagesHoraires'],
   components: {
     FullCalendar,
   },
-  setup() {
+  setup(props, { emit }) {
     const selectedDate = ref(null);
-    const plagesHoraires = ref([]);
-    const medecin_id = ref(1);
+    // const plagesHoraires = ref([]);
+    // const medecin_id = ref(1);
 
     const calendarOptions = ref({
       plugins: [dayGridPlugin, interactionPlugin],
@@ -37,50 +36,81 @@ export default {
         right: "dayGridMonth",
       },
       initialView: "dayGridMonth",
-      locale: frLocale, // Utiliser la langue française
-      timeZone: "Africa/Dakar", // Définir le fuseau horaire sur Dakar
-      selectable: true, // Permettre la sélection de la date
-      hiddenDays: [0],
-      events: [], // Pour l'instant, aucun événement ajouté
-      dateClick: (info) => handleDateClick(info), // Gestionnaire de clic sur la date
-    });
+      locale: frLocale,
+      timeZone: "Africa/Dakar",
+      selectable: true,
+      dateClick: async (info) => {
+        selectedDate.value = info.dateStr;
 
-    // Fonction asynchrone pour gérer le clic sur une date
-    const handleDateClick = async (info) => {
-      selectedDate.value = info.dateStr;
-      console.log("Date sélectionnée :", selectedDate.value);
-
-      try {
-        // Récupérer les plages horaires du médecin
-        const response = await getPlagesHorairesMedecin(medecin_id.value, selectedDate.value);
-        console.log("Id du medecin: ", medecin_id.value);
-        console.log("Réponse brute de l'API :", response);
-
-        // Vérifiez si la réponse contient les plages horaires
-        if (response && response.length > 0) {
-          plagesHoraires.value = response.map((plage) => ({
+        try {
+          // Récupérer les plages horaires pour le médecin
+          const response = await getPlagesHorairesMedecin(props.medecin_id, selectedDate.value);
+          const plages = response.map(plage => ({
             id: plage.id,
             heure_debut: plage.heure_debut,
             heure_fin: plage.heure_fin,
           }));
-        } else {
-          plagesHoraires.value = [];
+          
+          emit('plagesHoraires', plages); // Émettre les plages horaires vers le parent
+        } catch (error) {
+          console.error("Erreur lors de la récupération des plages horaires :", error);
         }
-
-        console.log("Les plages horaires du médecin :", plagesHoraires.value);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des plages horaires :", error);
-      }
-    };
-
-    onMounted(() => {
-      console.log("Le composant est monté !");
+      },
     });
+
+
+    // const calendarOptions = ref({
+    //   plugins: [dayGridPlugin, interactionPlugin],
+    //   headerToolbar: {
+    //     left: "prev,next today",
+    //     center: "title",
+    //     right: "dayGridMonth",
+    //   },
+    //   initialView: "dayGridMonth",
+    //   locale: frLocale, // Utiliser la langue française
+    //   timeZone: "Africa/Dakar", // Définir le fuseau horaire sur Dakar
+    //   selectable: true, // Permettre la sélection de la date
+    //   hiddenDays: [0],
+    //   events: [], // Pour l'instant, aucun événement ajouté
+    //   dateClick: (info) => handleDateClick(info), // Gestionnaire de clic sur la date
+    // });
+
+    // Fonction asynchrone pour gérer le clic sur une date
+    // const handleDateClick = async (info) => {
+    //   selectedDate.value = info.dateStr;
+    //   console.log("Date sélectionnée :", selectedDate.value);
+
+    //   try {
+    //     // Récupérer les plages horaires du médecin
+    //     const response = await getPlagesHorairesMedecin(medecin_id.value, selectedDate.value);
+    //     console.log("Id du medecin: ", medecin_id.value);
+    //     console.log("Réponse brute de l'API :", response);
+
+    //     // Vérifiez si la réponse contient les plages horaires
+    //     if (response && response.length > 0) {
+    //       plagesHoraires.value = response.map((plage) => ({
+    //         id: plage.id,
+    //         heure_debut: plage.heure_debut,
+    //         heure_fin: plage.heure_fin,
+    //       }));
+    //     } else {
+    //       plagesHoraires.value = []; // Réinitialiser si aucune plage horaire n'est disponible
+    //     }
+
+    //     console.log("Les plages horaires du médecin :", plagesHoraires.value);
+    //   } catch (error) {
+    //     console.error("Erreur lors de la récupération des plages horaires :", error);
+    //   }
+    // };
+
+    // onMounted(() => {
+    //   console.log("Le composant est monté !");
+    // });
 
     return {
       calendarOptions,
-      selectedDate,
-      plagesHoraires,
+      // selectedDate,
+      // plagesHoraires,
     };
   },
 };

@@ -36,27 +36,7 @@
       </ul>
     </div>
     <div class="main--content">
-      <div class="header--wrapper">
-        <div class="header--title">
-          <div class="search--box">
-            <i class="fa-solid fa-search"></i>
-            <input type="text" placeholder="Search" />
-          </div>
-        </div>
-        <div class="user--info">
-          <i class="fas fa-bell"></i>
-          <div class="d-flex align-items-center gap-2">
-            <img
-              src="../../../public/image/photo-profil.png"
-              alt="photo de profil"
-            />
-            <div>
-              <h4 class="m-0 p-0">Marème Thiaw</h4>
-              <p class="m-0 p-0">Medecin</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HeaderPatient/>
 
       <!-- Contenu ici -->
       <div class="rendezvous-section">
@@ -68,10 +48,10 @@
 
 <script setup>
 import "@/assets/css/Dashboard/SidebarView.css";
-// import "@/assets/css/Medecin/DashboardView.css";
 import { useAuthStore } from '@/store/auth';
 import { useRouter } from 'vue-router'; 
 import MonAgenda from "@/components/MonAgenda.vue";
+import HeaderPatient from "@/components/HeaderPatient.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -87,7 +67,13 @@ const logout = async () => {
 </script>
 
 <style scoped>
+
+.main--content {
+  position: relative;
+  width: 100%;
+}
 .rendezvous-section {
+  width: 100%;
   padding: 10px 32px;
 }
 

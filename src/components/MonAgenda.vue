@@ -216,7 +216,7 @@ b {
   font-size: 14px;
 }
 
-.demo-app-sidebar {
+/* .demo-app-sidebar {
   width: 300px;
   line-height: 1.5;
   background: #eaf9ff;
@@ -225,15 +225,15 @@ b {
 
 .demo-app-sidebar-section {
   padding: 2em;
-}
+} */
 
 .demo-app-main {
   flex-grow: 1;
-  padding: 3em;
+  padding: 1em;
 }
 
 .fc {
-  max-width: 1100px;
+  max-width: 100%;
   margin: 0 auto;
 }
 </style>

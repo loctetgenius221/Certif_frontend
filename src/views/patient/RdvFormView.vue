@@ -15,30 +15,12 @@
         </div>
 
         <div class="form_section mb-5">
-          <form action="">
+          <form @submit.prevent="planifierRendezVous">
             <div class="plage-horraire mb-4">
-              <h2 class="mb-3">Sélectionner une plage horraire:</h2>
+              <h2 class="mb-3">Sélectionner une plage horaire :</h2>
               <div class="plage-items">
-                <div class="plage">
-                  <h3>08:00 - 08:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>10:00 - 10:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>11:00 - 11:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>12:00 - 12:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>13:00 - 13:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>15:00 - 15:30</h3>
-                </div>
-                <div class="plage">
-                  <h3>16:00 - 16:30</h3>
+                <div v-for="plage in plagesHoraires" :key="plage.id" class="plage" @click="selectPlage(plage)">
+                  <h3>{{ plage.heure_debut }} - {{ plage.heure_fin }}</h3>
                 </div>
               </div>
             </div>
@@ -58,8 +40,8 @@
             <button class="btn">Planifier mon rendez-vous</button>
           </form>
           <div class="calendrier">
-            <h2>Choisir une date:</h2>
-            <CalendrierDisponibilite />
+            <h2>Choisir une date :</h2>
+            <CalendrierDisponibilite :medecin_id="medecinId" @plagesHoraires="updatePlagesHoraires" />
           </div>
         </div>
       </div>
@@ -68,6 +50,7 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
@@ -80,7 +63,30 @@ const nom = route.query.nom || 'Nom Inconnu';
 const prenom = route.query.prenom || 'Prénom Inconnu';
 const specialite = route.query.specialite || 'Spécialité Inconnue';
 const photoProfil = route.query.photo_profil || '../../../public/image/portrait-3d-female-doctor.jpg';
+const medecinId = ref(route.query.medecin_id || 1);  // ID du médecin
 
+// Champs du formulaire
+const motif = ref('');
+const typeRendezVous = ref('');
+const plagesHoraires = ref([]);
+
+
+// Sélection d'une plage horaire
+const selectPlage = (plage) => {
+  console.log("Plage horaire sélectionnée :", plage);
+};
+
+// Mettre à jour les plages horaires en fonction de la date choisie
+const updatePlagesHoraires = (plages) => {
+  plagesHoraires.value = plages;
+};
+
+// Planifier le rendez-vous
+const planifierRendezVous = () => {
+  // Logique pour planifier le rendez-vous ici
+  console.log("Motif :", motif.value);
+  console.log("Type de rendez-vous :", typeRendezVous.value);
+};
 
 const goBack = () => {
   router.go(-1);
