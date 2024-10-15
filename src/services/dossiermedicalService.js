@@ -31,6 +31,28 @@ export const getDossierMedicalList = async () => {
   }
 }
 
+// Recupération du dossier médical d'un patient spécifique
+export const getDossierByPatient = async (patientId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/dossier/patient/${patientId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Response data:", response.data);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      console.error("Unauthorized. Redirecting to login...");
+      router.push({ name: "Connexion" });
+    } else {
+      console.error("Erreur lors de la récupération de la liste des dossiers médicaux", error);
+    }
+  }
+}
+
 // Création d'un nouveau dossier médical
 export const createDossierMedical = async (data) => {
   try {

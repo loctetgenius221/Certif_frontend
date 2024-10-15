@@ -236,15 +236,6 @@ const planifierRendezVous = async () => {
   margin: 0;
 }
 
-.section-content {
-  position: sticky;
-  top: 80px;
-  left: 0;
-  background: #fff;
-  width: 100%;
-  padding: 0.5rem 1rem;
-}
-
 .section-container h1 {
   font-size: 18px;
   font-family: "Montserrat";

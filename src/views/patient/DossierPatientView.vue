@@ -4,63 +4,28 @@
     <div class="section-content">
       <HeaderPatient />
       <div class="section-container mb-5">
-        <h1>Dossier Médicales</h1>
-        <div class="dossier-content">
+        <h1>Dossier Médical</h1>
+        <div class="dossier-content" v-if="dossier">
           <div class="info-medeicale">
-            <div class="mb-4">
+            <div class="mb-4" v-if="dossier.antecedents_medicaux">
               <h2>Antécédents médicaux</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-                risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-                nec, ultricies sed, dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                tortor, dignissim sit amet, adipiscing nec, ultricies sed,
-                dolor.
-              </p>
+              <p>{{ dossier.antecedents_medicaux }}</p>
             </div>
             <div class="mb-4">
               <h2>Traitements médicaux</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-                risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-                nec, ultricies sed, dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                tortor, dignissim sit amet, adipiscing nec, ultricies sed,
-                dolor.
-              </p>
+              <p>{{ dossier.traitements }}</p>
             </div>
             <div class="mb-4">
               <h2>Note d'observations</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-                risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-                nec, ultricies sed, dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                tortor, dignissim sit amet, adipiscing nec, ultricies sed,
-                dolor.
-              </p>
+              <p>{{ dossier.notes_observations }}</p>
             </div>
             <div class="mb-4">
               <h2>Interventions chirurgicales</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-                risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-                nec, ultricies sed, dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                tortor, dignissim sit amet, adipiscing nec, ultricies sed,
-                dolor.
-              </p>
+              <p>{{ dossier.intervention_chirurgicale }}</p>
             </div>
             <div class="mb-4">
               <h2>Informations supplémentaires</h2>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-                risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-                nec, ultricies sed, dolor.Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Sed non risus. Suspendisse lectus
-                tortor, dignissim sit amet, adipiscing nec, ultricies sed,
-                dolor.
-              </p>
+              <p>{{ dossier.info_sup }}</p>
             </div>
           </div>
           <div class="info-generale">
@@ -72,62 +37,42 @@
               <h3>Informations générales</h3>
             </div>
             <div>
-              <p>Prénom: <strong>Aminata</strong></p>
-              <p>Nom: <strong>Sall</strong></p>
-              <p>Numéro de dossier: <strong>DME-20240917-001</strong></p>
-              <p>Date de naissance: <strong>18/03/1998</strong></p>
-              <p>Contact: <strong>77 240 52 03</strong></p>
-              <p>Email: <strong>ndiayeassane@gmail.com</strong></p>
-              <p>Adresse: <strong>Dieupeul 3</strong></p>
-              <p>Numéro patient: <strong>PAT_2031</strong></p>
-              <p>Contact d'urgence: <strong>76 987 6543</strong></p>
+              <p>Prénom: <strong>{{ patient.user.prenom }}</strong></p>
+              <p>Nom: <strong>{{ patient.user.nom }}</strong></p>
+              <p>Numéro de dossier: <strong>{{ dossier.numero_dme }}</strong></p>
+              <p>Date de naissance: <strong>{{ patient.user.dateNaissance }}</strong></p>
+              <p>Contact: <strong>{{ patient.user.telephone }}</strong></p>
+              <p>Email: <strong>{{ patient.user.email }}</strong></p>
+              <p>Adresse: <strong>{{ patient.user.adresse }}</strong></p>
+              <p>Numéro patient: <strong>{{ patient.numero_patient }}</strong></p>
+              <p>Contact d'urgence: <strong>{{ patient.numero_urgence }}</strong></p>
             </div>
           </div>
         </div>
+
+        <!-- Documents Section -->
         <div class="document-content d-flex">
-          <div class="televerser-document">
-            <h4 class="">Téléverser un document</h4>
-            <div class="upload-container p-3">
-              <form action="" method="" enctype="multipart/form-data">
-                <div class="form-group">
-                  <div class="drag-drop-area" id="drop-zone">
-                    <div class="icon">
-                      <i class="bi bi-file-earmark"></i>
-                    </div>
-                    <p>Drag n Drop here</p>
-                    <p>Or <span class="browse-link">Browse</span></p>
-                    <input
-                      type="file"
-                      name="file"
-                      id="file-upload"
-                      class="file-input"
-                    />
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-secondary mt-3">
-                  Téléverser maintenant
-                </button>
-              </form>
-            </div>
-          </div>
           <div class="document-contenu">
             <div class="d-flex align-items-center gap-2 mb-3">
               <i class="bi bi-file-earmark-text"></i>
               <h3 class="mb-0">Mes documents</h3>
             </div>
-            <div>
-              <div class="d-flex gap-2">
+            <div v-if="documents.length">
+              <div
+                v-for="document in documents"
+                :key="document.id"
+                class="d-flex gap-2"
+              >
                 <i class="bi bi-file-earmark-text"></i>
-                <p>Résultat d'examen</p>
+                <p>
+                  <a :href="document.file_path" target="_blank">
+                    {{ document.type_document }} - {{ document.upload_date }}
+                  </a>
+                </p>
               </div>
-              <div class="d-flex gap-2">
-                <i class="bi bi-file-earmark-text"></i>
-                <p>Résultat d'examen</p>
-              </div>
-              <div class="d-flex gap-2">
-                <i class="bi bi-file-earmark-text"></i>
-                <p>Résultat d'examen</p>
-              </div>
+            </div>
+            <div v-else>
+              <p>Aucun document disponible</p>
             </div>
           </div>
         </div>
@@ -135,9 +80,33 @@
     </div>
   </div>
 </template>
+
 <script setup>
+import { ref, onMounted } from "vue";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
+import { getDossierByPatient } from "@/services/dossiermedicalService";
+
+const dossier = ref(null);
+const documents = ref([]);
+const patient = ref({});
+
+const fetchDossierMedical = async () => {
+  try {
+    const patientId = localStorage.getItem("patient_id");
+    const response = await getDossierByPatient(patientId);
+    dossier.value = response.data;
+    console.log(dossier.value)
+    documents.value = dossier.value.documents; // Charger les documents associés
+    patient.value = dossier.value.patient; // Informations générales du patient
+    console.log("documents:",documents.value)
+    console.log("patint:", patient.value)
+  } catch (error) {
+    console.error("Erreur lors de la récupération du dossier médical:", error);
+  }
+};
+
+onMounted(fetchDossierMedical);
 </script>
 
 <style scoped>
