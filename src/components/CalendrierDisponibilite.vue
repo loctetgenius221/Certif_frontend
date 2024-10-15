@@ -49,6 +49,7 @@ export default {
             date: plage.date,
             heure_debut: plage.heure_debut,
             heure_fin: plage.heure_fin,
+            status: plage.status,
             formattedTime: formatTime(plage.heure_debut, plage.heure_fin),
             disabled: isTimePast, // Désactiver les plages si l'heure est passée
           };

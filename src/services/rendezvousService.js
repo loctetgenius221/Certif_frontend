@@ -75,6 +75,22 @@ export const createRendezVous = async (data) => {
   }
 };
 
+// Fonction pour mettre à jour le statut d'une plage horaire
+export const updatePlageHoraireStatus = async (plageId, status) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    await api.patch(`/plages-horaires/${plageId}/status`, { status }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du statut de la plage horaire :", error);
+    throw error;
+  }
+};
+
 // Récupérer un rendez-vous par son ID
 export const getRendezVous = async (id) => {
   try {

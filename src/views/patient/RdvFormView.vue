@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex">
+  <div class="wrapper d-flex">
     <SidebaPatient />
     <div class="section-content">
       <HeaderPatient />
@@ -87,7 +87,7 @@ import { useRoute, useRouter } from "vue-router";
 import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import CalendrierDisponibilite from "@/components/CalendrierDisponibilite.vue";
-import { createRendezVous } from "@/services/rendezvousService";
+import { createRendezVous, updatePlageHoraireStatus } from "@/services/rendezvousService"; // Ajoutez ici l'importation de la nouvelle méthode
 import Swal from 'sweetalert2'; // Importation de SweetAlert
 
 const router = useRouter();
@@ -119,6 +119,13 @@ const selectPlage = (plage) => {
 // Mettre à jour les plages horaires en fonction de la date choisie
 const updatePlagesHoraires = (plages) => {
   plagesHoraires.value = plages;
+  const currentDate = new Date();
+  plagesHoraires.value = plages.map(plage => {
+    // Désactiver les plages horaires qui sont occupées ou dont la date est antérieure
+    const plageDate = new Date(plage.date);
+    plage.disabled = plage.status === "occupé" || plageDate < currentDate;
+    return plage;
+  });
 };
 
 // Fonction pour planifier un rendez-vous
@@ -128,7 +135,7 @@ const planifierRendezVous = async () => {
 
   if (!selectedPlage.value) {
     errorMessage.value = "Veuillez sélectionner une plage horaire.";
-    return; // Vérifier si une plage est sélectionnée
+    return;
   }
 
   // Préparer les données à envoyer au backend
@@ -178,6 +185,9 @@ const planifierRendezVous = async () => {
       console.log("Rendez-vous créé avec succès :", response);
       successMessage.value = "Rendez-vous créé avec succès !";
 
+      // Mise à jour du statut de la plage horaire après la création du rendez-vous
+      await updatePlageHoraireStatus(selectedPlage.value.id, "occupé"); // Mettre à jour le statut
+
       // Affiche un message de succès
       await Swal.fire({
         title: 'Rendez-vous confirmé !',
@@ -220,10 +230,21 @@ const planifierRendezVous = async () => {
   color: green;
 }
 .wrapper {
+  border: 1px solid red;
   width: 100%;
   padding: 0;
   margin: 0;
 }
+
+.section-content {
+  position: sticky;
+  top: 80px;
+  left: 0;
+  background: #fff;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
 .section-container h1 {
   font-size: 18px;
   font-family: "Montserrat";
@@ -263,16 +284,16 @@ const planifierRendezVous = async () => {
 }
 
 .form_section {
-  width: 100%;
+  width: auto;
   display: flex;
-  flex: 1;
   gap: 25px;
 }
 
 .form_section form,
 .form_section .calendrier {
+  flex: 1;
   width: 50%;
-  /* flex: 1; */
+  box-sizing: border-box;
 }
 
 .form_section .calendrier,
@@ -281,6 +302,13 @@ const planifierRendezVous = async () => {
   box-shadow: 0 0 8px #297fb939;
   padding: 25px;
   border-radius: 8px;
+}
+.calendrier h2,
+.form_section form .plage-horraire h2 {
+  font-size: 18px;
+  font-family: "Montserrat";
+  color: #717171;
+  margin-top: 10px;
 }
 
 .form_section form .plage-items {
