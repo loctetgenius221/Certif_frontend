@@ -129,7 +129,7 @@ export default {
         // Adapter les événements au format FullCalendar
         const events = filteredRendezVous.map((rdv) => ({
           id: rdv.id,
-          title: `${rdv.type_rendez_vous} - ${rdv.motif}`,
+          title: `${rdv.type_rendez_vous} - ${rdv.motif} - ${rdv.heure_debut} - ${rdv.heure_fin}`,
           start: `${rdv.date}T${rdv.heure_debut}`,
           end: `${rdv.date}T${rdv.heure_fin}`,
           extendedProps: {
