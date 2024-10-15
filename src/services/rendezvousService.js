@@ -62,12 +62,16 @@ export const getRendezVousPatient = async (patientId) => {
 // Créer un rendez-vous
 export const createRendezVous = async (data) => {
   try {
-    const response = await api.post("/rendezvous", data);
+    const token = localStorage.getItem("token");
+
+    const response = await api.post("/rendezvous", data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data; // Renvoie les données de la réponse
   } catch (error) {
     console.error("Erreur lors de la création du rendez-vous", error);
-    // Vous pouvez gérer les erreurs ici, par exemple en redirigeant l'utilisateur ou en affichant un message d'erreur
-    // return Promise.reject(error); // Pour propager l'erreur
   }
 };
 

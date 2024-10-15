@@ -88,6 +88,7 @@ import SidebaPatient from "@/components/SidebaPatient.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import CalendrierDisponibilite from "@/components/CalendrierDisponibilite.vue";
 import { createRendezVous } from "@/services/rendezvousService";
+import Swal from 'sweetalert2'; // Importation de SweetAlert
 
 const router = useRouter();
 const route = useRoute();
@@ -98,8 +99,7 @@ const successMessage = ref("");
 const nom = route.query.nom || "Nom Inconnu";
 const prenom = route.query.prenom || "Prénom Inconnu";
 const specialite = route.query.specialite || "Spécialité Inconnue";
-const photoProfil =
-  route.query.photo_profil || "/image/portrait-3d-female-doctor.jpg";
+const photoProfil = route.query.photo_profil || "/image/portrait-3d-female-doctor.jpg";
 const medecinId = ref(route.query.id || 1); // ID du médecin
 
 // Champs du formulaire
@@ -162,29 +162,63 @@ const planifierRendezVous = async () => {
     return;
   }
 
-  try {
-    const response = await createRendezVous(rendezVousData);
-    console.log("Rendez-vous créé avec succès :", response);
-    successMessage.value = "Rendez-vous créé avec succès !";
-    router.push("/confirmation"); // Redirige vers une page de confirmation ou une autre page
-  } catch (error) {
-    console.error("Erreur lors de la création du rendez-vous :", error);
+  // Afficher une boîte de confirmation
+  const result = await Swal.fire({
+    title: 'Confirmer le Rendez-vous',
+    text: 'Êtes-vous sûr de vouloir confirmer ce rendez-vous ?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Oui, confirmer',
+    cancelButtonText: 'Annuler',
+  });
 
-    // Affichage des erreurs détaillées à l'utilisateur
-    if (error.response && error.response.data && error.response.data.errors) {
-      errorMessage.value =
-        "Erreur lors de la création du rendez-vous :\n" +
-        Object.values(error.response.data.errors).flat().join("\n");
-    } else {
-      errorMessage.value =
-        "Erreur lors de la création du rendez-vous. Veuillez réessayer.";
+  if (result.isConfirmed) {
+    try {
+      const response = await createRendezVous(rendezVousData);
+      console.log("Rendez-vous créé avec succès :", response);
+      successMessage.value = "Rendez-vous créé avec succès !";
+
+      // Affiche un message de succès
+      await Swal.fire({
+        title: 'Rendez-vous confirmé !',
+        text: 'Votre rendez-vous a été confirmé avec succès.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+      });
+
+      router.push("/Patient"); // Redirige vers la page des patients
+    } catch (error) {
+      console.error("Erreur lors de la création du rendez-vous :", error);
+
+      // Affichage des erreurs détaillées à l'utilisateur
+      if (error.response && error.response.data && error.response.data.errors) {
+        errorMessage.value =
+          "Erreur lors de la création du rendez-vous :\n" +
+          Object.values(error.response.data.errors).flat().join("\n");
+      } else {
+        errorMessage.value =
+          "Erreur lors de la création du rendez-vous. Veuillez réessayer.";
+      }
+
+      // Affiche un message d'erreur
+      await Swal.fire({
+        title: 'Erreur',
+        text: errorMessage.value,
+        icon: 'error',
+        confirmButtonText: 'Ok',
+      });
     }
   }
 };
-
 </script>
 
 <style scoped>
+.error {
+  color: red;
+}
+.success {
+  color: green;
+}
 .wrapper {
   width: 100%;
   padding: 0;
