@@ -96,11 +96,8 @@ const fetchDossierMedical = async () => {
     const patientId = localStorage.getItem("patient_id");
     const response = await getDossierByPatient(patientId);
     dossier.value = response.data;
-    console.log(dossier.value)
     documents.value = dossier.value.documents; // Charger les documents associés
     patient.value = dossier.value.patient; // Informations générales du patient
-    console.log("documents:",documents.value)
-    console.log("patint:", patient.value)
   } catch (error) {
     console.error("Erreur lors de la récupération du dossier médical:", error);
   }
