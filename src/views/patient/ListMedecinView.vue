@@ -109,6 +109,7 @@ const allerVersRdvForm = (medecin) => {
   router.push({
     path: '/rdv-form',
     query: {
+      id: medecin.id,
       nom: medecin.user.nom,
       prenom: medecin.user.prenom,
       specialite: medecin.service.nom,

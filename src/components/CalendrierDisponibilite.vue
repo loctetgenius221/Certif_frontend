@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import frLocale from "@fullcalendar/core/locales/fr"; // Importer la localisation française
-import { getPlagesHorairesMedecin } from "@/services/rendezvousService";
+import frLocale from "@fullcalendar/core/locales/fr"; // Localisation française
+import { getPlagesHorairesMedecin } from "@/services/rendezvousService"; // Appel API
 
 export default {
   props: {
@@ -19,15 +19,48 @@ export default {
       required: true,
     },
   },
-  emits: ['plagesHoraires'],
+  emits: ["plagesHoraires"],
   components: {
     FullCalendar,
   },
   setup(props, { emit }) {
-    const selectedDate = ref(null);
-    // const plagesHoraires = ref([]);
-    // const medecin_id = ref(1);
+    const selectedDate = ref(new Date().toISOString().split("T")[0]);
+    const currentTime = ref(new Date().toTimeString().slice(0, 5)); // Heure actuelle au format HH:mm
 
+    // Fonction pour formater les heures au format HH:mm - HH:mm
+    const formatTime = (heureDebut, heureFin) => {
+      const debut = new Date(`1970-01-01T${heureDebut}`);
+      const fin = new Date(`1970-01-01T${heureFin}`);
+      const options = { hour: "2-digit", minute: "2-digit" };
+      return `${debut.toLocaleTimeString("fr-FR", options)} - ${fin.toLocaleTimeString("fr-FR", options)}`;
+    };
+
+    // Fonction pour récupérer les plages horaires
+    const fetchPlagesHoraires = async (date) => {
+      try {
+        const response = await getPlagesHorairesMedecin(props.medecin_id, date);
+
+        const plages = response.map((plage) => {
+          const isSameDay = date === new Date().toISOString().split("T")[0];
+          const isTimePast = isSameDay && plage.heure_debut < currentTime.value;
+
+          return {
+            id: plage.id,
+            date: plage.date,
+            heure_debut: plage.heure_debut,
+            heure_fin: plage.heure_fin,
+            formattedTime: formatTime(plage.heure_debut, plage.heure_fin),
+            disabled: isTimePast, // Désactiver les plages si l'heure est passée
+          };
+        });
+
+        emit("plagesHoraires", plages); // Émettre les plages horaires vers le parent
+      } catch (error) {
+        console.error("Erreur lors de la récupération des plages horaires :", error);
+      }
+    };
+
+    // Options du calendrier
     const calendarOptions = ref({
       plugins: [dayGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -39,85 +72,35 @@ export default {
       locale: frLocale,
       timeZone: "Africa/Dakar",
       selectable: true,
+      validRange: {
+        start: new Date().toISOString().split("T")[0], // Désactiver les dates avant aujourd'hui
+      },
       dateClick: async (info) => {
         selectedDate.value = info.dateStr;
-
-        try {
-          // Récupérer les plages horaires pour le médecin
-          const response = await getPlagesHorairesMedecin(props.medecin_id, selectedDate.value);
-          const plages = response.map(plage => ({
-            id: plage.id,
-            heure_debut: plage.heure_debut,
-            heure_fin: plage.heure_fin,
-          }));
-          
-          emit('plagesHoraires', plages); // Émettre les plages horaires vers le parent
-        } catch (error) {
-          console.error("Erreur lors de la récupération des plages horaires :", error);
-        }
+        await fetchPlagesHoraires(selectedDate.value); // Appel de la fonction lorsque la date est cliquée
       },
     });
 
-
-    // const calendarOptions = ref({
-    //   plugins: [dayGridPlugin, interactionPlugin],
-    //   headerToolbar: {
-    //     left: "prev,next today",
-    //     center: "title",
-    //     right: "dayGridMonth",
-    //   },
-    //   initialView: "dayGridMonth",
-    //   locale: frLocale, // Utiliser la langue française
-    //   timeZone: "Africa/Dakar", // Définir le fuseau horaire sur Dakar
-    //   selectable: true, // Permettre la sélection de la date
-    //   hiddenDays: [0],
-    //   events: [], // Pour l'instant, aucun événement ajouté
-    //   dateClick: (info) => handleDateClick(info), // Gestionnaire de clic sur la date
-    // });
-
-    // Fonction asynchrone pour gérer le clic sur une date
-    // const handleDateClick = async (info) => {
-    //   selectedDate.value = info.dateStr;
-    //   console.log("Date sélectionnée :", selectedDate.value);
-
-    //   try {
-    //     // Récupérer les plages horaires du médecin
-    //     const response = await getPlagesHorairesMedecin(medecin_id.value, selectedDate.value);
-    //     console.log("Id du medecin: ", medecin_id.value);
-    //     console.log("Réponse brute de l'API :", response);
-
-    //     // Vérifiez si la réponse contient les plages horaires
-    //     if (response && response.length > 0) {
-    //       plagesHoraires.value = response.map((plage) => ({
-    //         id: plage.id,
-    //         heure_debut: plage.heure_debut,
-    //         heure_fin: plage.heure_fin,
-    //       }));
-    //     } else {
-    //       plagesHoraires.value = []; // Réinitialiser si aucune plage horaire n'est disponible
-    //     }
-
-    //     console.log("Les plages horaires du médecin :", plagesHoraires.value);
-    //   } catch (error) {
-    //     console.error("Erreur lors de la récupération des plages horaires :", error);
-    //   }
-    // };
-
-    // onMounted(() => {
-    //   console.log("Le composant est monté !");
-    // });
+    // Charger les plages horaires du jour lors du montage
+    onMounted(async () => {
+      await fetchPlagesHoraires(selectedDate.value);
+    });
 
     return {
       calendarOptions,
-      // selectedDate,
-      // plagesHoraires,
     };
   },
 };
 </script>
 
+
 <style scoped>
-/* Appliquer les modifications de style pour changer la couleur bleue en noir et enlever le soulignement */
+.disabled-date {
+  background-color: #e0e0e0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .fc-toolbar-title {
   color: black; /* Change la couleur du titre du calendrier */
 }
