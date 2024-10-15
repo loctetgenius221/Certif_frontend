@@ -152,9 +152,33 @@
 </template>
 
 <script setup>
-import "@/assets/css/BlogView.css";
+// import "@/assets/css/BlogView.css";
 import EnTete from "../../components/EnTete.vue";
 import PiedDePage from '../../components/PiedDePage.vue';
-
-
 </script>
+
+
+<style scoped>
+.hero-banner {
+  width: 100%;
+  height: 40vh;
+  background: linear-gradient(to right, #2980B9, rgba(41, 127, 185, 0.703)), url(../../../public/image/hero-banner.jpg) no-repeat center center/cover;
+}
+
+.hero-banner .container {
+  text-align: center;
+  color: white;
+}
+
+.hero-banner .container h1 {
+  font-family: 'Montserrat';
+  font-weight: bold;
+}
+
+.hero-banner .container p {
+  font-size: 18px;
+}
+
+
+</style>
+

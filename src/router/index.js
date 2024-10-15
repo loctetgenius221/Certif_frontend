@@ -6,8 +6,25 @@ import BlogView from '@/views/portail/BlogView.vue';
 import AcceuilView from '@/views/portail/AcceuilView.vue';
 import AdminDashboardView from '@/views/admin/AdminDashboardView.vue';
 import { useAuthStore } from '@/store/auth';
+import MedecinDashboardView from '@/views/medecin/MedecinDashboardView.vue';
+import PatientDashboardView from '@/views/patient/PatientDashboardView.vue';
+import AssistantDashbordView from '@/views/assistant/AssistantDashbordView.vue';
+import DossiermedicalView from '@/views/medecin/DossiermedicalView.vue';
+import ConsultationView from '@/views/medecin/ConsultationView.vue';
+import ProfilView from '@/views/medecin/ProfilView.vue';
+import DetaildmeView from '@/views/medecin/DetaildmeView.vue';
+import DetailConsultationView from '@/views/medecin/DetailConsultationView.vue';
+import DossierPatientView from '@/views/patient/DossierPatientView.vue';
+import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
+import ListMedecinView from '@/views/patient/ListMedecinView.vue';
+import RdvFormView from '@/views/patient/RdvFormView.vue';
 
 const routes = [
+
+  //==========================================//
+  //           Routes pour le portail         //
+  //==========================================//
+
   {
     path: '/',
     name: 'Portail',
@@ -35,33 +52,104 @@ const routes = [
     component: ConnexionView,
   },
 
-  // Routes pour Administrateur
+  //==========================================//
+  //         Routes pour Administrateur       //
+  //==========================================//
+
   {
     path: "/admin",
     name: "AdminDashboard",
     component: AdminDashboardView,
     meta: { requiresAuth: true, role: 'administrateur' },
   },
-  // {
-  //   path: '/admin',
-  //   name: 'Admin',
-  //   component: AdminView
-  // },
-  // {
-  //   path: '/medecin',
-  //   name: 'Medecin',
-  //   component: MedecinView,
-  // },
-  // {
-  //   path: '/patient',
-  //   name: 'Patient',
-  //   component: PatientView,
-  // },
-  // {
-  //   path: '/assistant',
-  //   name: 'Assistant',
-  //   component: AssistantView,
-  // },
+
+  //==========================================//
+  //            Routes pour Médecin           //
+  //==========================================//
+
+  {
+    path: '/medecin',
+    name: 'Medecin',
+    component: MedecinDashboardView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/medecin/dossier-medical',
+    name: 'DossierMédicalMedecin',
+    component: DossiermedicalView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/dossiers-medicaux/:id',
+    name: 'Détail-DME',
+    component: DetaildmeView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/medecin/consultation',
+    name: 'ConsultationMedecin',
+    component: ConsultationView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/consultation/:id',
+    name: 'Detail-consultation',
+    component: DetailConsultationView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/medecin/profil',
+    name: 'ProfilMedecin',
+    component: ProfilView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+
+  //==========================================//
+  //            Routes pour Patient           //
+  //==========================================//
+
+  {
+    path: '/patient',
+    name: 'Patient',
+    component: PatientDashboardView,
+    meta: { requiresAuth: true, role: 'patient' },
+  },
+  {
+    path: '/dossier',
+    name: 'DossierPatient',
+    component: DossierPatientView,
+    meta: { requiresAuth: true, role: 'patient' },
+  },
+  {
+    path: '/profilpatient',
+    name: 'ProfilPatient',
+    component: ProfilPatientView,
+    meta: { requiresAuth: true, role: 'patient' },
+  },
+  {
+    path: '/listemedecin',
+    name: 'ListeMedecin',
+    component: ListMedecinView,
+    meta: { requiresAuth: true, role: 'patient'}
+  },
+  {
+    path: '/rdv-form',
+    name: 'RdvForm',
+    component: RdvFormView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  
+
+  //==========================================//
+  //            Routes pour Assistant         //
+  //==========================================//
+
+  {
+    path: '/assistant',
+    name: 'Assistant',
+    component: AssistantDashbordView,
+    meta: { requiresAuth: true, role: 'assistant' },
+  },
 ]
 
 const router = createRouter({
@@ -69,26 +157,6 @@ const router = createRouter({
   routes
 });
 
-// Middleware pour protéger les routes et gérer la redirection en fonction du rôle
-// router.beforeEach((to, from, next) => {
-//   const authStore = useAuthStore; 
-
-//   if (to.meta.requiresAuth) {
-//     if (!authStore.token) {
-//       // Redirection vers la connexion si non authentifié
-//       return next({ name: "Connexion" });
-//     }
-
-//     // Vérification du rôle de l'utilisateur
-//     if (to.meta.role && authStore.user?.role !== to.meta.role) {
-//       // Redirection si le rôle ne correspond pas
-//       return next({ name: "Connexion" }); 
-//     }
-//   }
-
-//   // Autoriser la navigation si tout est bon
-//   next(); 
-// });
 // Middleware de protection des routes
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
