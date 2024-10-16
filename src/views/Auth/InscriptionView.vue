@@ -117,8 +117,11 @@
 // import "@/assets/css/auth/InscriptionView.css";
 import { reactive, ref } from "vue";
 import { useAuthStore } from "@/store/auth";
+import Swal from 'sweetalert2';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
+const router = useRouter();
 const errorMessage = ref("");
 
 // Données du formulaire
@@ -170,7 +173,7 @@ const validateField = (field) => {
 };
 
 // Soumission du formulaire
-const handleSubmit = () => {
+const handleSubmit = async () => {
   validateField('prenom');
   validateField('nom');
   validateField('telephone');
@@ -186,7 +189,28 @@ const handleSubmit = () => {
 
   // Si tout est valide, procéder à l'inscription
   errorMessage.value = "";
-  authStore.authenticate('register/patient', formData);
+  try {
+    await authStore.authenticate('register/patient', formData);
+
+    // Afficher une SweetAlert à l'inscription réussie
+    Swal.fire({
+      title: 'Inscription réussie!',
+      text: 'Votre compte a été créé avec succès.',
+      icon: 'success',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      // Redirection vers la page de connexion après la fermeture de l'alerte
+      router.push({ name: 'Connexion' });
+    });
+  } catch (error) {
+    // Gérer les erreurs d'inscription
+    Swal.fire({
+      title: 'Erreur!',
+      text: 'Une erreur est survenue lors de l\'inscription.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
+  }
 };
 </script>
 
