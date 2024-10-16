@@ -1,80 +1,11 @@
 <template>
   <div class="medecin-dashboard d-flex">
-    <div class="sidebar">
-      <div class="logo"></div>
-      <ul class="menu">
-        <li class="active">
-          <a class="active" href="#">
-            <i class="far fa-calendar-check"></i>
-            <span
-              ><router-link :to="{ name: 'Medecin' }"
-                >Rendez-vous</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-folder-open"></i>
-            <span
-              ><router-link :to="{ name: 'DossierMédicalMedecin' }"
-                >Dossiers Médicales</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-stethoscope"></i>
-            <span
-              ><router-link :to="{ name: 'ConsultationMedecin' }"
-                >Consultations</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-user"></i>
-            <span
-              ><router-link :to="{ name: 'ProfilMedecin' }"
-                >Profil</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li class="logout">
-          <a href="#">
-            <i class="fas fa-sign-out-alt"></i>
-            <span @click="logout">Deconnexion</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+    <!-- Votre sidebar et en-tête ici -->
     <div class="main--content">
       <div class="header--wrapper">
-        <div class="header--title">
-          <div class="search--box">
-            <i class="fa-solid fa-search"></i>
-            <input type="text" placeholder="Search" />
-          </div>
-        </div>
-        <div class="user--info">
-          <i class="fas fa-bell"></i>
-          <div class="d-flex align-items-center gap-2">
-            <img
-              src="../../../public/image/photo-profil.png"
-              alt="photo de profil"
-            />
-            <div>
-              <h4 class="m-0 p-0">Marème Thiaw</h4>
-              <p class="m-0 p-0">Medecin</p>
-            </div>
-          </div>
-        </div>
+        <!-- En-tête de votre dashboard ici -->
       </div>
 
-      <!-- Contenu ici -->
       <div class="detail-section">
         <div class="section-container mb-5">
           <h1>Détail du dossier médical</h1>
@@ -116,6 +47,10 @@
                 <p>{{ consultation.url_teleconsultation }}</p>
               </div>
             </div>
+            <div>
+              <!-- Passer l'ID du rendez-vous comme roomName -->
+              <JitsiMeeting :roomName="consultation.rendez_vous_id" />
+            </div>
           </div>
 
           <!-- Chargement en cours -->
@@ -131,11 +66,11 @@
 <script setup>
 import { handleError, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import router from "@/router";
+// import router from "@/router";
 import { getConsultation } from "@/services/consultationService";
+import JitsiMeeting from "@/components/JitsiMeeting.vue";
 
-const consultation = ref([null]);
-const rendezvous = ref([null]);
+const consultation = ref(null);
 const route = useRoute();
 
 const fetchConsultation = async () => {
@@ -143,7 +78,6 @@ const fetchConsultation = async () => {
   try {
     const response = await getConsultation(consultationId);
     consultation.value = response.data;
-    rendezvous.value = response.data.rendezvous;
     console.log(consultation.value);
   } catch (error) {
     handleError(error);
@@ -155,11 +89,12 @@ onMounted(() => {
   fetchConsultation();
 });
 
-const logout = () => {
-  localStorage.removeItem("token");
-  router.push({ name: "connexion" });
-};
+// const logout = () => {
+//   localStorage.removeItem("token");
+//   router.push({ name: "connexion" });
+// };
 </script>
+
 
 <style scoped>
 .main--content {
