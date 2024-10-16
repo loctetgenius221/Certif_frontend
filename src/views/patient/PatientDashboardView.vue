@@ -77,179 +77,174 @@
           </div>
         </div>
       </div>
-
-      <!-- Modal pour afficher les détails -->
-      <div
-        v-if="selectedRdv"
-        class="modal right fade"
-        id="detailsModal"
-        tabindex="-1"
-        aria-labelledby="detailsModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-1-4">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="detailsModalLabel">
-                Détails du Rendez-vous
-              </h5>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="d-flex gap-2 mb-4">
-                <div class="head-input mb-3">
-                  <img
-                    class="header-icon"
-                    src="../../../public/image/ant-design_user-outlined.svg"
-                    alt=""
-                  />
-                  <label for="medecin" class="form-label">Médecin</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="medecin"
-                    :value="
-                      'Dr ' +
-                      selectedRdv.medecin.prenom +
-                      ' ' +
-                      selectedRdv.medecin.nom
-                    "
-                    readonly
-                  />
-                </div>
-                <div class="head-input mb-3">
-                  <img
-                    class="header-icon"
-                    src="../../../public/image/carbon_time.svg"
-                    alt=""
-                  />
-                  <label for="dateHeure" class="form-label"
-                    >Date et Heure</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="dateHeure"
-                    :value="
-                      formatDateTime(selectedRdv.date, selectedRdv.heure_debut)
-                    "
-                    readonly
-                  />
-                </div>
-                <div class="head-input mb-3">
-                  <img
-                    class="header-icon"
-                    src="../../../public/image/fluent_location-48-regular.svg"
-                    alt=""
-                  />
-                  <label for="localisation" class="form-label"
-                    >Localisation</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="localisation"
-                    :value="selectedRdv.lieu"
-                    readonly
-                  />
-                </div>
-              </div>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <label for="patient" class="form-label">Patient</label>
+    </div>
+    <!-- Modal pour afficher les détails -->
+    <div
+      v-if="selectedRdv"
+      class="modal right fade"
+      id="detailsModal"
+      tabindex="-1"
+      aria-labelledby="detailsModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-1-4">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detailsModalLabel">
+              Détails du Rendez-vous
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="d-flex gap-2 mb-4">
+              <div class="head-input mb-3">
+                <img
+                  class="header-icon"
+                  src="../../../public/image/ant-design_user-outlined.svg"
+                  alt=""
+                />
+                <label for="medecin" class="form-label">Médecin</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="patient"
+                  id="medecin"
                   :value="
-                    selectedRdv.patient.prenom + ' ' + selectedRdv.patient.nom
+                    'Dr ' +
+                    selectedRdv.medecin.prenom +
+                    ' ' +
+                    selectedRdv.medecin.nom
                   "
                   readonly
                 />
               </div>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <label for="motif" class="form-label"
-                  >Motif du rendez-vous</label
+              <div class="head-input mb-3">
+                <img
+                  class="header-icon"
+                  src="../../../public/image/carbon_time.svg"
+                  alt=""
+                />
+                <label for="dateHeure" class="form-label">Date et Heure</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="dateHeure"
+                  :value="
+                    formatDateTime(selectedRdv.date, selectedRdv.heure_debut)
+                  "
+                  readonly
+                />
+              </div>
+              <div class="head-input mb-3">
+                <img
+                  class="header-icon"
+                  src="../../../public/image/fluent_location-48-regular.svg"
+                  alt=""
+                />
+                <label for="localisation" class="form-label"
+                  >Localisation</label
                 >
                 <input
                   type="text"
                   class="form-control"
-                  id="motif"
-                  v-model="selectedRdv.motif"
+                  id="localisation"
+                  :value="selectedRdv.lieu"
                   readonly
                 />
               </div>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <label for="status" class="form-label"
-                  >Statut du rendez-vous</label
-                >
-                <div class="status-buttons">
-                  <span
-                    :class="[
-                      'status-btn',
-                      { active: selectedRdv.status === 'à venir' },
-                    ]"
-                  >
-                    À venir
-                  </span>
-                  <span
-                    :class="[
-                      'status-btn',
-                      { active: selectedRdv.status === 'terminé' },
-                    ]"
-                  >
-                    Terminé
-                  </span>
-                  <span
-                    :class="[
-                      'status-btn',
-                      { active: selectedRdv.status === 'annulé' },
-                    ]"
-                  >
-                    Annulé
-                  </span>
-                </div>
-              </div>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <label class="form-label">Type de rendez-vous</label>
-                <div class="typeRdv-btn">
-                  <span class="me-3">
-                    {{
-                      selectedRdv.type_rendez_vous === "Présentiel"
-                        ? "Présentiel"
-                        : "En ligne"
-                    }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="d-flex align-items-center gap-3 mb-3">
-                <label class="form-label">Consultation à distance</label>
-                <div>
-                  <span class="me-3">
-                    {{ selectedRdv.consultationDistance ? "Oui" : "Non" }}
-                  </span>
-                </div>
-              </div>
             </div>
 
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <label for="patient" class="form-label">Patient</label>
+              <input
+                type="text"
+                class="form-control"
+                id="patient"
+                :value="
+                  selectedRdv.patient.prenom + ' ' + selectedRdv.patient.nom
+                "
+                readonly
+              />
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <label for="motif" class="form-label">Motif du rendez-vous</label>
+              <input
+                type="text"
+                class="form-control"
+                id="motif"
+                v-model="selectedRdv.motif"
+                readonly
+              />
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <label for="status" class="form-label"
+                >Statut du rendez-vous</label
               >
-                Fermer
-              </button>
+              <div class="status-buttons">
+                <span
+                  :class="[
+                    'status-btn',
+                    { active: selectedRdv.status === 'à venir' },
+                  ]"
+                >
+                  À venir
+                </span>
+                <span
+                  :class="[
+                    'status-btn',
+                    { active: selectedRdv.status === 'terminé' },
+                  ]"
+                >
+                  Terminé
+                </span>
+                <span
+                  :class="[
+                    'status-btn',
+                    { active: selectedRdv.status === 'annulé' },
+                  ]"
+                >
+                  Annulé
+                </span>
+              </div>
             </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <label class="form-label">Type de rendez-vous</label>
+              <div class="typeRdv-btn">
+                <span class="me-3">
+                  {{
+                    selectedRdv.type_rendez_vous === "Présentiel"
+                      ? "Présentiel"
+                      : "En ligne"
+                  }}
+                </span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <label class="form-label">Consultation à distance</label>
+              <div>
+                <span class="me-3">
+                  {{ selectedRdv.consultationDistance ? "Oui" : "Non" }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Fermer
+            </button>
           </div>
         </div>
       </div>
