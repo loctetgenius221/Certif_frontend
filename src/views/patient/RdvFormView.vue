@@ -230,7 +230,6 @@ const planifierRendezVous = async () => {
   color: green;
 }
 .wrapper {
-  border: 1px solid red;
   width: 100%;
   padding: 0;
   margin: 0;

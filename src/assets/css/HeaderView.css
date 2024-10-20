@@ -42,3 +42,13 @@ header .btn-corail:hover {
   opacity: 1;
   background-color: #BDBDBD;
 }
+
+/* ********************************* */
+/*            Responsive             */
+/* ********************************* */
+
+@media (max-width: 768px) {
+  .container .header-top {
+    border-bottom: none;
+  }
+}
