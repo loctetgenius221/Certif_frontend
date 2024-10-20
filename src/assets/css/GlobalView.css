@@ -91,3 +91,13 @@ h3 {
   background-color: #ef776a;
   color: #fff;
 }
+
+/* ************************************ */
+/*              Responsive              */
+/* ************************************ */
+
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+}
