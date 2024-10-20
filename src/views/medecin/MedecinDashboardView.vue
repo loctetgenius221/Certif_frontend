@@ -1,56 +1,6 @@
 <template>
   <div class="medecin-dashboard d-flex">
-    <div class="sidebar">
-      <div class="logo"></div>
-      <ul class="menu">
-        <li class="active">
-          <a class="active" href="#">
-            <i class="far fa-calendar-check"></i>
-            <span
-              ><router-link :to="{ name: 'Medecin' }"
-                >Rendez-vous</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-folder-open"></i>
-            <span
-              ><router-link :to="{ name: 'DossierMédicalMedecin' }"
-                >Dossiers Médicales</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-stethoscope"></i>
-            <span
-              ><router-link :to="{ name: 'ConsultationMedecin' }"
-                >Consultations</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="fas fa-user"></i>
-            <span
-              ><router-link :to="{ name: 'ProfilMedecin' }"
-                >Profil</router-link
-              ></span
-            >
-          </a>
-        </li>
-        <li class="logout">
-          <a href="#">
-            <i class="fas fa-sign-out-alt"></i>
-            <span @click="logout">Deconnexion</span>
-          </a>
-        </li>
-      </ul>
-    </div>
+    <SidebarMedecin/>
 
     <div class="main--content">
       <HeaderPatient />
@@ -310,29 +260,18 @@
 </template>
 
 <script setup>
+import SidebarMedecin from "@/components/SidebarMedecin.vue";
 import "@/assets/css/Dashboard/SidebarView.css";
-import { useAuthStore } from "@/store/auth";
-import { useRouter } from "vue-router";
 import MonAgenda from "@/components/MonAgenda.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import { ref, onMounted, computed } from "vue";
 import { getRendezVousMedecin } from "@/services/rendezvousService";
 import { Modal } from "bootstrap";
 
-const authStore = useAuthStore();
-const router = useRouter();
 const rendezVous = ref([]);
 const selectedRdv = ref(null);
 const selectedFilter = ref("à venir");
 
-const logout = async () => {
-  try {
-    await authStore.logout();
-    router.push({ name: "Connexion" });
-  } catch (error) {
-    console.error("Erreur lors de la déconnexion:", error);
-  }
-};
 
 const fetchRendezVous = async () => {
   const medecinId = localStorage.getItem("medecin_id");

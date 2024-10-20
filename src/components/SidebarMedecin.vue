@@ -32,12 +32,30 @@
             <span>Profil</span>
           </router-link>
         </li>
-        <!-- <li class="logout">
+        <li class="logout">
           <a href="#">
             <i class="fas fa-sign-out-alt"></i>
             <span @click="logout">Deconnexion</span>
           </a>
-        </li> -->
+        </li>
       </ul>
     </div>
 </template>
+
+<script setup>
+import { useAuthStore } from '@/store/auth';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const logout = async () => {
+  try {
+    await authStore.logout();
+    router.push({ name: "Connexion" });
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion:", error);
+  }
+};
+
+</script>

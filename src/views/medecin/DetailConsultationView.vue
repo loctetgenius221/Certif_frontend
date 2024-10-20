@@ -1,10 +1,8 @@
 <template>
   <div class="medecin-dashboard d-flex">
-    <!-- Votre sidebar et en-tête ici -->
-    <div class="main--content">
-      <div class="header--wrapper">
-        <!-- En-tête de votre dashboard ici -->
-      </div>
+    <SidebarMedecin/>
+    <div class="section-content">
+      <HeaderPatient/>
 
       <div class="detail-section">
         <div class="section-container mb-5">
@@ -64,6 +62,8 @@
 </template>
 
 <script setup>
+import SidebarMedecin from '@/components/SidebarMedecin.vue';
+import HeaderPatient from '@/components/HeaderPatient.vue';
 import { handleError, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 // import router from "@/router";
