@@ -14,6 +14,7 @@ import ConsultationView from '@/views/medecin/ConsultationView.vue';
 import ProfilView from '@/views/medecin/ProfilView.vue';
 import DetaildmeView from '@/views/medecin/DetaildmeView.vue';
 import DetailConsultationView from '@/views/medecin/DetailConsultationView.vue';
+import PlageHoraireView from '@/views/medecin/PlageHoraireView.vue';
 import DossierPatientView from '@/views/patient/DossierPatientView.vue';
 import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
 import ListMedecinView from '@/views/patient/ListMedecinView.vue';
@@ -103,6 +104,13 @@ const routes = [
     component: ProfilView,
     meta: { requiresAuth: true, role: 'medecin' },
   },
+  {
+    path: '/plageHoraire',
+    name: 'PlageHoraire',
+    component: PlageHoraireView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  
 
   //==========================================//
   //            Routes pour Patient           //
