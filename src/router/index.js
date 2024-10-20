@@ -14,6 +14,7 @@ import ConsultationView from '@/views/medecin/ConsultationView.vue';
 import ProfilView from '@/views/medecin/ProfilView.vue';
 import DetaildmeView from '@/views/medecin/DetaildmeView.vue';
 import DetailConsultationView from '@/views/medecin/DetailConsultationView.vue';
+import PlageHoraireView from '@/views/medecin/PlageHoraireView.vue';
 
 const routes = [
   {
@@ -86,6 +87,12 @@ const routes = [
     path: '/medecin/profil',
     name: 'ProfilMedecin',
     component: ProfilView,
+    meta: { requiresAuth: true, role: 'medecin' },
+  },
+  {
+    path: '/plageHoraire',
+    name: 'PlageHoraire',
+    component: PlageHoraireView,
     meta: { requiresAuth: true, role: 'medecin' },
   },
   
