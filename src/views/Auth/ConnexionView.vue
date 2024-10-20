@@ -27,6 +27,7 @@
           <div class="form-panel col-md-7">
             <h3>Se connecter à son compte</h3>
             <form @submit.prevent="handleSubmit">
+              <!-- Champ email -->
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input
@@ -36,7 +37,10 @@
                   placeholder="exemple@exemple.com"
                   v-model="formData.email"
                 />
+                <p v-if="errors.email" class="text-danger">{{ errors.email }}</p>
               </div>
+
+              <!-- Champ mot de passe -->
               <div class="mb-3">
                 <label for="password" class="form-label">Mot de passe</label>
                 <input
@@ -46,16 +50,23 @@
                   placeholder="Mot de passe"
                   v-model="formData.password"
                 />
+                <p v-if="errors.password" class="text-danger">{{ errors.password }}</p>
               </div>
 
+              <!-- Affichage erreur d'authentification -->
+              <p v-if="errors.auth" class="text-danger">{{ errors.auth }}</p>
+
+              <!-- Bouton de soumission -->
               <div class="d-grid">
                 <button type="submit" class="btn btn-custom">
                   Se connecter
                 </button>
               </div>
+
+              <!-- Lien pour inscription -->
               <div class="already-account">
                 <p>
-                  Déjà un compte ?
+                  Pas encore de compte ?
                   <router-link :to="{ name: 'Inscription' }"
                     >S'inscrire ici</router-link
                   >
@@ -70,7 +81,6 @@
 </template>
 
 <script setup>
-// import "@/assets/css/auth/ConnexionView.css";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/store/auth";
@@ -78,15 +88,60 @@ import { useAuthStore } from "@/store/auth";
 const router = useRouter();
 const authStore = useAuthStore();
 
+// Les données du formulaire
 const formData = reactive({
   email: "",
   password: ""
 });
 
+// Les erreurs de validation
+const errors = reactive({
+  email: "",
+  password: "",
+  auth: "" 
+});
+
+// Fonction de validation des champs
+const validateForm = () => {
+  let isValid = true;
+
+  // Validation de l'email
+  if (!formData.email) {
+    errors.email = "L'email est requis.";
+    isValid = false;
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    errors.email = "L'email n'est pas valide.";
+    isValid = false;
+  } else {
+    errors.email = "";
+  }
+
+  // Validation du mot de passe
+  if (!formData.password) {
+    errors.password = "Le mot de passe est requis.";
+    isValid = false;
+  } else if (formData.password.length < 6) {
+    errors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+    isValid = false;
+  } else {
+    errors.password = ""; // Efface le message d'erreur s'il est valide
+  }
+
+  return isValid;
+};
+
+// Gestion de la soumission du formulaire
 const handleSubmit = async () => {
+  // Réinitialise les erreurs d'authentification avant de soumettre
+  errors.auth = "";
+
+  if (!validateForm()) {
+    return;
+  }
+
   try {
     // Authentification via le store
-    await authStore.authenticate('login', formData);
+    await authStore.authenticate("login", formData);
 
     // Vérifier le rôle de l'utilisateur et rediriger en fonction
     const userRole = authStore.user?.role[0]; // Assure-toi que `role` est un tableau
@@ -98,28 +153,41 @@ const handleSubmit = async () => {
 
     // Rediriger selon le rôle
     switch (userRole) {
-      case 'administrateur':
-        router.push({ name: 'AdminDashboard' });
+      case "administrateur":
+        router.push({ name: "AdminDashboard" });
         break;
-      case 'medecin':
-        router.push({ name: 'MedecinDashboard' });
+      case "medecin":
+        router.push({ name: "MedecinDashboard" });
         break;
-      case 'patient':
-        router.push({ name: 'PatientDashboard' });
+      case "patient":
+        router.push({ name: "PatientDashboard" });
         break;
-      case 'assistant':
-        router.push({ name: 'AssistantDashboard' });
+      case "assistant":
+        router.push({ name: "AssistantDashboard" });
         break;
       default:
         console.error("Rôle non reconnu.");
     }
   } catch (error) {
+    // Gestion des erreurs provenant du backend (par exemple : email/mot de passe incorrect)
+    if (error.response && error.response.data && error.response.data.message) {
+      errors.auth = error.response.data.message;
+    } else {
+      errors.auth = "Une erreur s'est produite lors de la connexion."; // Message générique en cas d'erreur
+    }
     console.error("Erreur lors de la connexion", error);
   }
 };
 </script>
 
+
 <style scoped>
+.text-danger {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 .connexion-container {
   display: flex;
   align-items: center;
