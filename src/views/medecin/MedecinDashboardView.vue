@@ -1,8 +1,7 @@
 <template>
   <div class="medecin-dashboard d-flex">
     <SidebarMedecin/>
-
-    <div class="main--content">
+    <div class="section-container">
       <HeaderPatient />
 
       <div class="content-wrapper d-flex">
@@ -261,7 +260,6 @@
 
 <script setup>
 import SidebarMedecin from "@/components/SidebarMedecin.vue";
-import "@/assets/css/Dashboard/SidebarView.css";
 import MonAgenda from "@/components/MonAgenda.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import { ref, onMounted, computed } from "vue";

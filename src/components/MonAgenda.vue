@@ -69,7 +69,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { createEventId } from "@/even.utils";
 import { getRendezVousList, getRendezVous } from "@/services/rendezvousService";
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 export default {
   components: {

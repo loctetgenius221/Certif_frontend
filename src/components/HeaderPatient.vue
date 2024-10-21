@@ -35,7 +35,7 @@
   left: 0;
   background: #fff;
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0rem;
 }
 
 /* .sidebar {
@@ -68,7 +68,7 @@
   flex-wrap: wrap;
   background: #fff;
   border-radius: 10px;
-  padding: 10px 2rem;
+  padding: 10px 0rem;
   margin-bottom: 1rem;
 }
 

@@ -1,188 +1,201 @@
 <template>
-  <div class="medecin-dashboard d-flex">
-    <SidebarMedecin/>
-    <div class="section-content">
-      <HeaderPatient/>
-
-      <!-- Contenu ici -->
+  <div class="medecin-dashboard">
+    <SidebarMedecin />
+    <div class="main-content">
+      <HeaderPatient />
       <div class="dme-section">
-        <div
-          class="dme-heading d-flex align-items-center justify-content-between mb-3"
-        >
+        <div class="dme-heading">
           <h1>Liste des dossiers médicaux</h1>
-          <div class="filtre">
-            <form class="d-flex" role="search">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="dme,nom,prénom,date"
-                aria-label="Search"
-              />
-            </form>
+          <div class="search-box">
+            <input
+              type="search"
+              placeholder="Rechercher par DME, nom, prénom, date"
+              aria-label="Search"
+            />
+            <i class="fas fa-search"></i>
           </div>
         </div>
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Photo</th>
-              <th scope="col">N°DME</th>
-              <th scope="col">Prénom</th>
-              <th scope="col">Nom</th>
-              <th scope="col">Date de création</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="dossier in dossiers" :key="dossier.id">
-              <td>
-                <img src="../../../public/image/photo-profil.png" alt="" />
-              </td>
-              <td>{{ dossier.numero_dme }}</td>
-              <td>{{ dossier.patient.user.prenom   }}</td>
-              <td>{{ dossier.patient.user.nom  }}</td>
-              <td>{{ dossier.date_creation }}</td>
-              <td>
-                <router-link class="btn-detail" :to="{ name: 'Détail-DME', params: { id: dossier.id } }">Voir plus...</router-link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <br />
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Photo</th>
+                <th>N°DME</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Date de création</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="dossier in dossiers" :key="dossier.id">
+                <td>
+                  <img :src="dossier.patient.user.photo || '../../../public/image/photo-profil.png'" :alt="dossier.patient.user.nom" class="patient-photo" />
+                </td>
+                <td>{{ dossier.numero_dme }}</td>
+                <td>{{ dossier.patient.user.prenom }}</td>
+                <td>{{ dossier.patient.user.nom }}</td>
+                <td>{{ formatDate(dossier.date_creation) }}</td>
+                <td>
+                  <router-link class="btn-detail" :to="{ name: 'Détail-DME', params: { id: dossier.id } }">
+                    Voir plus
+                  </router-link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from "vue";
+import { getDossierMedicalList } from "@/services/dossiermedicalService";
 import SidebarMedecin from "@/components/SidebarMedecin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
-import { ref, onMounted } from "vue"; // Importer ref et onMounted
-import { getDossierMedicalList } from "@/services/dossiermedicalService"; // Importer votre fonction API
 
-const dossiers = ref([]); // Déclaration de la variable réactive pour les dossiers
+const dossiers = ref([]);
 
-// Fonction pour récupérer la liste des dossiers médicaux
 const fetchDossiers = async () => {
-  const data = await getDossierMedicalList(); // Appeler la fonction API
-  dossiers.value = data.data; // Mettre à jour la valeur réactive
+  try {
+    const response = await getDossierMedicalList();
+    dossiers.value = response.data;
+  } catch (error) {
+    console.error("Erreur lors de la récupération des dossiers:", error);
+  }
 };
 
-// Appeler la fonction fetchDossiers lors du montage du composant
-onMounted(() => {
-  fetchDossiers();
-});
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+onMounted(fetchDossiers);
 </script>
 
 <style scoped>
-.main--content {
-  position: sticky;
-  top: 80px;
-  left: 0;
-  background: #fff;
-  width: 100%;
-  padding: 0.5rem 1rem;
-}
-
-/* .sidebar {
-  position: ;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 110px;
-  height: 100vh;
-  padding: 0 1.7rem;
-  color: #fff;
-  overflow: hidden;
-  transition: all 0.5s linear;
-  background: #fff;
-  box-shadow: 0px 10px 25px #297fb918;
-  z-index: 5;
-} */
-
-.header--wrapper img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.header--wrapper {
+.medecin-dashboard {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  background: #fff;
-  border-radius: 10px;
-  padding: 10px 2rem;
-  margin-bottom: 1rem;
+  min-height: 100vh;
 }
 
-.user--info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user--info i {
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.user--info h4 {
-  font-size: 1rem;
-}
-
-.search--box {
-  background: none;
-  border: 1px solid #e9ecef;
-  border-radius: 5px;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-}
-
-.search--box input {
-  background: transparent;
-  padding: 6px 15px;
-  border: none;
-  outline: none;
-  /* color: #ADB5BD; */
-  font-size: 16px;
-}
-
-.search--box i {
-  color: #adb5bd;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.5s ease-out;
-}
-
-.search--box i:hover {
-  transform: scale(1.2);
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
 }
 
 .dme-section {
-  padding: 10px 32px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
 }
 
-.dme-section .dme-heading h1 {
-  font-family: "Montserrat";
-  font-size: 18px;
+.dme-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-.dme-section .table thead {
-  background: #2980b9;
+.dme-heading h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #f1f3f5;
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  width: 250px;
+}
+
+.search-box i {
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+}
+
+.table thead th {
+  background-color: #3498db;
   color: white;
+  font-weight: 600;
+  padding: 12px;
+  text-align: left;
 }
 
-.dme-section .table tbody tr {
+.table tbody tr {
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table td {
+  padding: 12px;
   vertical-align: middle;
 }
 
-.dme-section .table .btn-detail  {
-  color: #F1948A;
-  text-decoration: none;
-  font-weight: bold;
+.patient-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
+.btn-detail {
+  color: #e74c3c;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.btn-detail:hover {
+  color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .dme-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-box {
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+}
 </style>
