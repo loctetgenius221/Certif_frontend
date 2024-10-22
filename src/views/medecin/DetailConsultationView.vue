@@ -1,62 +1,60 @@
 <template>
   <div class="medecin-dashboard d-flex">
-    <!-- Votre sidebar et en-tête ici -->
-    <div class="main--content">
-      <div class="header--wrapper">
-        <!-- En-tête de votre dashboard ici -->
-      </div>
+    <SidebarMedecin/>
+    <div class="section-container">
+      <HeaderPatient/>
 
-      <div class="detail-section">
-        <div class="section-container mb-5">
-          <h1>Détail du dossier médical</h1>
+      <div class="virtual-consultation-room">
+        <h1>Salle de Consultation Virtuelle</h1>
 
-          <!-- Vérifier si le dossier médical existe -->
-          <div class="detail-content" v-if="consultation">
-            <!-- Affichage des antécédents médicaux et des traitements -->
-            <div class="info-consultation">
-              <div>
-                <p><strong>Date de la consultation</strong></p>
-                <p>{{ consultation.date }}</p>
+        <div v-if="consultation" class="consultation-layout">
+          <div class="consultation-info">
+            <h2>Détails de la Consultation</h2>
+            <div class="info-grid">
+              <div class="info-item">
+                <strong>Date :</strong>
+                <span>{{ formatDate(consultation.date) }}</span>
               </div>
-              <div>
-                <p><strong>ID du rendez-vous</strong></p>
-                <p>{{ consultation.rendez_vous_id }}</p>
+              <div class="info-item">
+                <strong>ID du rendez-vous :</strong>
+                <span>{{ consultation.rendez_vous_id }}</span>
               </div>
-              <div>
-                <p><strong>Heure de début de la consultation</strong></p>
-                <p>{{ consultation.heure_debut }}</p>
+              <div class="info-item">
+                <strong>Heure de début :</strong>
+                <span>{{ consultation.heure_debut }}</span>
               </div>
-              <div>
-                <p><strong>Heure de fin de la consultation</strong></p>
-                <p>{{ consultation.heure_fin }}</p>
+              <div class="info-item">
+                <strong>Heure de fin :</strong>
+                <span>{{ consultation.heure_fin }}</span>
               </div>
-              <div>
-                <p><strong>Type de consultation</strong></p>
-                <p>{{ consultation.type_consultation }}</p>
-              </div>
-              <div>
-                <p><strong>Diagnostique de la consultation</strong></p>
-                <p>{{ consultation.diagnostic }}</p>
-              </div>
-              <div>
-                <p><strong>Note lors de la consultation</strong></p>
-                <p>{{ consultation.notes_medecin }}</p>
-              </div>
-              <div>
-                <p><strong>Url de la consultation</strong></p>
-                <p>{{ consultation.url_teleconsultation }}</p>
+              <div class="info-item">
+                <strong>Type :</strong>
+                <span>{{ consultation.type_consultation }}</span>
               </div>
             </div>
-            <div>
-              <!-- Passer l'ID du rendez-vous comme roomName -->
-              <JitsiMeeting :roomName="consultation.rendez_vous_id" />
+            <div class="info-item full-width">
+              <strong>Diagnostic :</strong>
+              <p>{{ consultation.diagnostic }}</p>
+            </div>
+            <div class="info-item full-width">
+              <strong>Notes du médecin :</strong>
+              <p>{{ consultation.notes_medecin }}</p>
+            </div>
+            <div class="info-item full-width">
+              <strong>Url de la téléconsultation :</strong>
+              <p>{{ consultation.url_teleconsultation }}</p>
             </div>
           </div>
-
-          <!-- Chargement en cours -->
-          <div v-else>
-            <p>Chargement des données...</p>
+          
+          <div class="video-chat">
+            <h2>Vidéo Consultation</h2>
+            <JitsiMeeting :roomName="consultation.rendez_vous_id" />
           </div>
+        </div>
+
+        <div v-else class="loading">
+          <p>Chargement de la consultation...</p>
+          <div class="spinner"></div>
         </div>
       </div>
     </div>
@@ -64,9 +62,10 @@
 </template>
 
 <script setup>
-import { handleError, onMounted, ref } from "vue";
+import SidebarMedecin from '@/components/SidebarMedecin.vue';
+import HeaderPatient from '@/components/HeaderPatient.vue';
+import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-// import router from "@/router";
 import { getConsultation } from "@/services/consultationService";
 import JitsiMeeting from "@/components/JitsiMeeting.vue";
 
@@ -80,91 +79,118 @@ const fetchConsultation = async () => {
     consultation.value = response.data;
     console.log(consultation.value);
   } catch (error) {
-    handleError(error);
+    console.error("Erreur lors de la récupération de la consultation:", error);
   }
 };
 
-// Appel à la fonction lors du montage du composant
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
 onMounted(() => {
   fetchConsultation();
 });
-
-// const logout = () => {
-//   localStorage.removeItem("token");
-//   router.push({ name: "connexion" });
-// };
 </script>
 
-
 <style scoped>
-.main--content {
-  position: sticky;
-  top: 80px;
-  left: 0;
-  background: #fff;
-  width: 100%;
-  padding: 0.5rem 0;
+.section-container {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: none;
 }
 
-.header--wrapper img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-  border-radius: 50%;
+.virtual-consultation-room {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 0 8px #297fb939;
 }
 
-.header--wrapper {
+h1 {
+  color: #2c3e50;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.consultation-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  background: #fff;
-  border-radius: 10px;
-  padding: 10px 2rem;
-  margin-bottom: 1rem;
+  gap: 24px;
 }
 
-.user--info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.consultation-info {
+  flex: 1;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 4px #297fb939;
 }
 
-.user--info i {
-  font-size: 1.5rem;
-  cursor: pointer;
+.video-chat {
+  flex: 2;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 4px #297fb939;
 }
 
-.user--info h4 {
+h2 {
+  color: #2980b9;
+  margin-bottom: 16px;
   font-size: 1rem;
 }
 
-.search--box {
-  background: none;
-  border: 1px solid #e9ecef;
-  border-radius: 5px;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
-.search--box input {
-  background: transparent;
-  padding: 6px 15px;
-  border: none;
-  outline: none;
-  /* color: #ADB5BD; */
-  font-size: 16px;
+.info-item {
+  margin-bottom: 12px;
 }
 
-.search--box i {
-  color: #adb5bd;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: all 0.5s ease-out;
+.info-item strong {
+  display: block;
+  color: #34495e;
+  margin-bottom: 4px;
 }
 
-.search--box i:hover {
-  transform: scale(1.2);
+.info-item span, .info-item p {
+  color: #7f8c8d;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2980b9;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .consultation-layout {
+    flex-direction: column;
+  }
 }
 </style>

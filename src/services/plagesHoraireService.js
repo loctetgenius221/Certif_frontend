@@ -39,7 +39,7 @@ export const createPlageHoraire = async (data) => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await api.post("/plages-horaires", data, {
+    const response = await api.post("/plageshoraires", data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -68,12 +68,14 @@ export const getPlageHoraire = async (id) => {
   }
 };
 
-// Mettre à jour une plage horaire
+/* *************************************************** */
+/*            Mettre à jour une plage horaire          */
+/* *************************************************** */
 export const updatePlageHoraire = async (id, data) => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await api.put(`/plages-horaires/${id}`, data, {
+    const response = await api.put(`/plageshoraires/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -89,15 +91,24 @@ export const updatePlageHoraire = async (id, data) => {
 export const deletePlageHoraire = async (id) => {
   try {
     const token = localStorage.getItem("token");
-
-    const response = await api.delete(`/plages-horaires/${id}`, {
+    // Vérifie si le token est disponible
+    if (!token) {
+      throw new Error("Token manquant. Veuillez vous reconnecter.");
+    }
+    // Appel à l'API pour supprimer la plage horaire
+    const response = await api.delete(`/plageshoraires/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
+    // Retourne la réponse de l'API si la suppression réussit
+    console.log("Réponse de l'API lors de la suppression :", response.data); // Ajoutez ce log
     return response.data;
+
   } catch (error) {
     console.error("Erreur lors de la suppression de la plage horaire", error);
+    // Lève l'erreur pour que l'appelant puisse la gérer
+    throw error;
   }
 };
+
