@@ -104,13 +104,102 @@
                   Supprimer
                 </button>
                 <button
-                  @click="modifierPlage(plage.id)"
-                  class="btn btn-modifier "
+                  @click="ouvrirModalModification(plage)"
+                  class="btn btn-modifier"
                 >
                   Modifier
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal pour la modification de plage horaire -->
+    <div
+      class="modal fade"
+      id="modalModifierPlage"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-slide modal-dialog-right">
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Modifier la Plage Horaire
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form @submit.prevent="modifierPlageHoraire">
+              <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input
+                  type="date"
+                  v-model="plageAmodifier.date"
+                  class="form-control"
+                  id="date"
+                  required
+                />
+                <div class="text-danger">{{ errors.date }}</div>
+              </div>
+              <div class="mb-3">
+                <label for="heure_debut" class="form-label"
+                  >Heure de début</label
+                >
+                <select
+                  v-model="plageAmodifier.heure_debut"
+                  class="form-select"
+                  required
+                >
+                  <option
+                    v-for="heure in heuresDisponibles"
+                    :key="heure"
+                    :value="heure"
+                  >
+                    {{ heure }}
+                  </option>
+                </select>
+                <div class="text-danger">{{ errors.heure_debut }}</div>
+              </div>
+              <div class="mb-3">
+                <label for="heure_fin" class="form-label">Heure de fin</label>
+                <select
+                  v-model="plageAmodifier.heure_fin"
+                  class="form-select"
+                  required
+                >
+                  <option
+                    v-for="heure in heuresDisponibles"
+                    :key="heure"
+                    :value="heure"
+                  >
+                    {{ heure }}
+                  </option>
+                </select>
+                <div class="text-danger">{{ errors.heure_fin }}</div>
+              </div>
+              <div class="mb-3">
+                <label for="recurrence" class="form-label">Récurrence</label>
+                <select
+                  v-model="plageAmodifier.recurrence"
+                  class="form-select"
+                  required
+                >
+                  <option value="unique">Unique</option>
+                  <option value="quotidienne">Quotidienne</option>
+                  <option value="hebdomadaire">Hebdomadaire</option>
+                </select>
+                <div class="text-danger">{{ errors.recurrence }}</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Modifier</button>
+            </form>
           </div>
         </div>
       </div>
@@ -125,15 +214,27 @@ import SidebarMedecin from "@/components/SidebarMedecin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import {
   createPlageHoraire,
+  updatePlageHoraire,
   deletePlageHoraire,
 } from "@/services/plagesHoraireService";
 import { getPlagesHorairesMedecin } from "@/services/rendezvousService";
 import Swal from "sweetalert2";
+// import bootstrap from "bootstrap";
+import bootstrapBundleMin from "bootstrap/dist/js/bootstrap.bundle.min";
 
 const router = useRouter();
 
 const nouvellePlage = ref({
   date: new Date().toISOString().split("T")[0],
+  heure_debut: "",
+  heure_fin: "",
+  recurrence: "unique",
+});
+
+// La plage horaire en cours de modification
+const plageAmodifier = ref({
+  id: null,
+  date: "",
   heure_debut: "",
   heure_fin: "",
   recurrence: "unique",
@@ -236,7 +337,14 @@ const chargerPlagesHoraires = async () => {
     const dateISO = nouvellePlage.value.date;
     const data = await getPlagesHorairesMedecin(medecinId, dateISO);
     plagesHoraires.value = data;
-    console.log("Le médecin :", medecinId, "Date du :", dateISO, "Les plages de la date :", plagesHoraires.value);
+    console.log(
+      "Le médecin :",
+      medecinId,
+      "Date du :",
+      dateISO,
+      "Les plages de la date :",
+      plagesHoraires.value
+    );
   } catch (err) {
     error.value = "Erreur lors de la récupération des plages horaires";
     console.error(err);
@@ -271,16 +379,16 @@ const ajouterPlageHoraire = async () => {
 
       // Appel à l'API pour créer la plage horaire
       const response = await createPlageHoraire(plageHoraireToSend);
-      console.log("Réponse de l'api :",response)
+      console.log("Réponse de l'api :", response);
 
       // S'assurer que l'API a bien répondu avec un succès (par exemple, un status 200 ou 201)
       if (response.message === "Plage horaire créée avec succès") {
         // Si tout se passe bien, on affiche l'alerte de succès
         Swal.fire({
-          icon: 'success',
-          title: 'Plage horaire ajoutée',
-          text: 'Votre plage horaire a été enregistrée avec succès !',
-          confirmButtonText: 'OK',
+          icon: "success",
+          title: "Plage horaire ajoutée",
+          text: "Votre plage horaire a été enregistrée avec succès !",
+          confirmButtonText: "OK",
         });
 
         // Recharge les plages horaires après ajout
@@ -298,10 +406,12 @@ const ajouterPlageHoraire = async () => {
       // Si une erreur 409 (conflit) survient
       if (err.response && err.response.status === 409) {
         Swal.fire({
-          icon: 'warning',
-          title: 'Conflit de plage horaire',
-          text: err.response.data.message || 'Une plage horaire en conflit existe déjà. Veuillez choisir un autre horaire.',
-          confirmButtonText: 'OK',
+          icon: "warning",
+          title: "Conflit de plage horaire",
+          text:
+            err.response.data.message ||
+            "Une plage horaire en conflit existe déjà. Veuillez choisir un autre horaire.",
+          confirmButtonText: "OK",
         });
         console.log("Erreur de conflit :", err.response.data.message);
       } else {
@@ -310,30 +420,104 @@ const ajouterPlageHoraire = async () => {
         console.error(err);
 
         Swal.fire({
-          icon: 'error',
-          title: 'Erreur',
+          icon: "error",
+          title: "Erreur",
           text: "Une erreur est survenue lors de l'enregistrement de la plage horaire. Veuillez réessayer.",
-          confirmButtonText: 'OK',
+          confirmButtonText: "OK",
         });
       }
     }
   }
 };
 
+// Préparer la modification d'une plage horaire
+const ouvrirModalModification = (plage) => {
+  plageAmodifier.value = { 
+    ...plage,
+    // Prend les 5 premiers caractères 'HH:mm'
+    heure_debut: plage.heure_debut.slice(0, 5), 
+    heure_fin: plage.heure_fin.slice(0, 5),
+  };
+  console.log(plageAmodifier.value)
+
+  const modal = new bootstrapBundleMin.Modal(
+    document.getElementById("modalModifierPlage")
+  );
+  modal.show();
+};
+
+// Modifier la plage horaire
+const modifierPlageHoraire = async () => {
+  try {
+    // Validation du formulaire
+    if (validateForm()) {
+      // Formatage des heures et de la date
+      const heureDebutFormatted = formatHeure(plageAmodifier.value.heure_debut);
+      const heureFinFormatted = formatHeure(plageAmodifier.value.heure_fin);
+      const dateFormatted = formatDateISO(plageAmodifier.value.date);
+
+      const plageHoraireToUpdate = {
+        ...plageAmodifier.value,
+        date: dateFormatted,
+        heure_debut: heureDebutFormatted,
+        heure_fin: heureFinFormatted,
+      };
+
+      const response = await updatePlageHoraire(
+        plageAmodifier.value.id,
+        plageHoraireToUpdate
+      );
+      console.log("Réponse de l'api :",response)
+      // Vérification de la réponse de l'API
+      if (response && response.message === "Plage horaire mise à jour avec succès") {
+        Swal.fire({
+          icon: "success",
+          title: "Plage horaire modifiée",
+          text: "Votre plage horaire a été modifiée avec succès !",
+          confirmButtonText: "OK",
+        });
+
+        // Recharger les plages horaires après modification
+        await chargerPlagesHoraires();
+
+        // Fermer le modal
+        const modal = bootstrapBundleMin.Modal.getInstance(
+          document.getElementById("modalModifierPlage")
+        );
+        modal.hide();
+      } else {
+        console.error("Erreur dans la réponse de l'API :", response);
+        Swal.fire({
+          icon: "error",
+          title: "Erreur",
+          text: "La plage horaire n'a pas pu être modifiée. Veuillez réessayer.",
+          confirmButtonText: "OK",
+        });
+      }
+    }
+  } catch (err) {
+    console.error("Erreur lors de la modification de la plage horaire :", err);
+    Swal.fire({
+      icon: "error",
+      title: "Erreur",
+      text: "Une erreur est survenue lors de la modification. Veuillez réessayer.",
+      confirmButtonText: "OK",
+    });
+  }
+};
+
 
 const supprimerPlage = async (id) => {
-  console.log("ID de la plage à supprimer :", id); // Ajoutez ce log pour déboguer
-
   try {
     // Affiche un SweetAlert pour la confirmation de la suppression
     const result = await Swal.fire({
-      title: 'Êtes-vous sûr ?',
+      title: "Êtes-vous sûr ?",
       text: "Cette action est irréversible. Voulez-vous vraiment supprimer cette plage horaire ?",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Oui, supprimer',
-      cancelButtonText: 'Annuler',
-      reverseButtons: true
+      confirmButtonText: "Oui, supprimer",
+      cancelButtonText: "Annuler",
+      reverseButtons: true,
     });
 
     // Si l'utilisateur confirme la suppression
@@ -343,18 +527,18 @@ const supprimerPlage = async (id) => {
 
       // Affiche une alerte de succès après la suppression
       Swal.fire({
-        icon: 'success',
-        title: 'Supprimé !',
-        text: 'La plage horaire a été supprimée avec succès.',
-        confirmButtonText: 'OK'
+        icon: "success",
+        title: "Supprimé !",
+        text: "La plage horaire a été supprimée avec succès.",
+        confirmButtonText: "OK",
       });
     } else if (result.dismiss === Swal.DismissReason.cancel) {
       // Si l'utilisateur annule la suppression, affiche un message d'annulation
       Swal.fire({
-        icon: 'info',
-        title: 'Annulé',
-        text: 'La suppression de la plage horaire a été annulée.',
-        confirmButtonText: 'OK'
+        icon: "info",
+        title: "Annulé",
+        text: "La suppression de la plage horaire a été annulée.",
+        confirmButtonText: "OK",
       });
     }
   } catch (err) {
@@ -364,10 +548,10 @@ const supprimerPlage = async (id) => {
 
     // Affiche une alerte d'erreur
     Swal.fire({
-      icon: 'error',
-      title: 'Erreur',
+      icon: "error",
+      title: "Erreur",
       text: "Une erreur est survenue lors de la suppression de la plage horaire. Veuillez réessayer.",
-      confirmButtonText: 'OK'
+      confirmButtonText: "OK",
     });
   }
 };
@@ -383,7 +567,6 @@ onMounted(() => {
 
 watch(() => nouvellePlage.value.date, chargerPlagesHoraires);
 </script>
-
 
 <style scoped>
 .error {
@@ -517,4 +700,38 @@ watch(() => nouvellePlage.value.date, chargerPlagesHoraires);
   cursor: pointer;
   margin-top: 10px;
 }
+
+/* *************************** */
+/*          Style Modal        */
+/* *************************** */
+
+/* Style pour animer le modal de droite à gauche */
+/* @keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Applique l'animation au modal */
+/* .modal-dialog-slide .modal-content {
+  animation: slideInFromRight 0.5s ease;
+} */
+
+/* Assure que le modal sort du côté droit */
+/* .modal-dialog-right {
+  position: absolute;
+  right: 0;
+  margin: 0;
+  top: 0;
+} */
+
+/* Largeur : 1/3 de l'écran, hauteur : toute l'écran */
+/* .modal-content {
+  height: 100vh;
+  width: 50vw;
+  padding: 50px;
+} */ 
 </style>

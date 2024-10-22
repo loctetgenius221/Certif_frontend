@@ -68,12 +68,14 @@ export const getPlageHoraire = async (id) => {
   }
 };
 
-// Mettre à jour une plage horaire
+/* *************************************************** */
+/*            Mettre à jour une plage horaire          */
+/* *************************************************** */
 export const updatePlageHoraire = async (id, data) => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await api.put(`/plages-horaires/${id}`, data, {
+    const response = await api.put(`/plageshoraires/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
