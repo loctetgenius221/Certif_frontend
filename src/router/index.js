@@ -19,6 +19,7 @@ import DossierPatientView from '@/views/patient/DossierPatientView.vue';
 import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
 import ListMedecinView from '@/views/patient/ListMedecinView.vue';
 import RdvFormView from '@/views/patient/RdvFormView.vue';
+import ConsultationPatientView from '@/views/patient/ConsultationPatientView.vue';
 
 const routes = [
 
@@ -146,6 +147,13 @@ const routes = [
     component: RdvFormView,
     meta: { requiresAuth: true, role: 'patient' }
   },
+  {
+    path: '/consultation',
+    name: 'ConsultationPatient',
+    component: ConsultationPatientView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  
   
 
   //==========================================//
