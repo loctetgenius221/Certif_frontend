@@ -91,3 +91,614 @@
   padding: 15px;
   font-weight: bold;
 } 
+
+
+
+
+
+
+
+
+<template>
+  <div class="medecin-dashboard d-flex">
+    <SidebarMedecin />
+    <div class="section-content">
+      <HeaderPatient />
+
+      <!-- Contenu ici -->
+      <div class="detail-section">
+        <!-- Loading state -->
+        <div v-if="isLoading" class="text-center p-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+          </div>
+          <p>Chargement des données...</p>
+        </div>
+
+        <!-- Error state -->
+        <div v-else-if="error" class="alert alert-danger" role="alert">
+          {{ error }}
+        </div>
+
+        <!-- Content when data is loaded -->
+        <div class="section-container mb-5" v-else-if="dossier && patient">
+          <h1>Détail du dossier médical</h1>
+          <div class="dossier-content">
+            <div class="info-medeicale">
+              <!-- Antécédents médicaux -->
+              <div class="mb-4">
+                <h2>Antécédents médicaux</h2>
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="openModal('antecedents')"
+                >
+                  <i class="bi bi-plus-lg"></i> Ajouter
+                </button>
+                <ul v-if="dossier.antecedents_medicaux && dossier.antecedents_medicaux.length">
+                  <li
+                    v-for="(antecedent, index) in dossier.antecedents_medicaux"
+                    :key="index"
+                  >
+                    {{ antecedent }}
+                  </li>
+                </ul>
+                <p v-else class="text-muted">Aucun antécédent médical enregistré</p>
+              </div>
+
+              <!-- Traitements -->
+              <div class="mb-4">
+                <h2>Traitements médicaux</h2>
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="openModal('traitements')"
+                >
+                  <i class="bi bi-plus-lg"></i> Ajouter
+                </button>
+                <div v-if="dossier.traitements && dossier.traitements.length">
+                  <div
+                    v-for="traitement in dossier.traitements"
+                    :key="traitement.id"
+                    class="traitement-item"
+                  >
+                    <p><strong>Médicament :</strong> {{ traitement.nom }}</p>
+                    <p><strong>Dosage :</strong> {{ traitement.dosage }}</p>
+                    <p>
+                      <strong>Date début :</strong> {{ formatDate(traitement.date_debut) }}
+                    </p>
+                    <p><strong>Date fin :</strong> {{ formatDate(traitement.date_fin) }}</p>
+                    <p>
+                      <strong>Prescripteur :</strong>
+                      {{ traitement.prescripteur }}
+                    </p>
+                  </div>
+                </div>
+                <p v-else class="text-muted">Aucun traitement enregistré</p>
+              </div>
+
+              <!-- Notes d'observations -->
+              <div class="mb-4">
+                <h2>Notes d'observations</h2>
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="openModal('notes')"
+                >
+                  <i class="bi bi-plus-lg"></i> Ajouter
+                </button>
+                <ul v-if="dossier.notes_observations && dossier.notes_observations.length">
+                  <li
+                    v-for="(note, index) in dossier.notes_observations"
+                    :key="index"
+                  >
+                    {{ note }}
+                  </li>
+                </ul>
+                <p v-else class="text-muted">Aucune note d'observation enregistrée</p>
+              </div>
+
+              <!-- Interventions chirurgicales -->
+              <div class="mb-4">
+                <h2>Interventions chirurgicales</h2>
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="openModal('interventions')"
+                >
+                  <i class="bi bi-plus-lg"></i> Ajouter
+                </button>
+                <ul v-if="dossier.intervention_chirurgicale && dossier.intervention_chirurgicale.length">
+                  <li
+                    v-for="(intervention, index) in dossier.intervention_chirurgicale"
+                    :key="index"
+                  >
+                    {{ intervention }}
+                  </li>
+                </ul>
+                <p v-else class="text-muted">Aucune intervention chirurgicale enregistrée</p>
+              </div>
+
+              <!-- Informations supplémentaires -->
+              <div class="mb-4">
+                <h2>Informations supplémentaires</h2>
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="openModal('infos')"
+                >
+                  <i class="bi bi-plus-lg"></i> Ajouter
+                </button>
+                <ul v-if="dossier.info_sup && dossier.info_sup.length">
+                  <li v-for="(info, index) in dossier.info_sup" :key="index">
+                    {{ info }}
+                  </li>
+                </ul>
+                <p v-else class="text-muted">Aucune information supplémentaire enregistrée</p>
+              </div>
+            </div>
+
+            <!-- Informations générales -->
+            <div class="info-generale">
+              <div class="d-flex flex-column align-items-center gap-3">
+                <img
+                  src="@/assets/image/portrait-3d-female-doctor.jpg"
+                  alt="Photo de profil du patient"
+                />
+                <h3>Informations générales</h3>
+              </div>
+              <div v-if="patient.user">
+                <p>
+                  Prénom: <strong>{{ patient.user.prenom }}</strong>
+                </p>
+                <p>
+                  Nom: <strong>{{ patient.user.nom }}</strong>
+                </p>
+                <p>
+                  Numéro de dossier: <strong>{{ dossier.numero_dme }}</strong>
+                </p>
+                <p>
+                  Date de naissance:
+                  <strong>{{ formatDate(patient.user.dateNaissance) }}</strong>
+                </p>
+                <p>
+                  Contact: <strong>{{ patient.user.telephone }}</strong>
+                </p>
+                <p>
+                  Email: <strong>{{ patient.user.email }}</strong>
+                </p>
+                <p>
+                  Adresse: <strong>{{ patient.user.adresse }}</strong>
+                </p>
+                <p>
+                  Numéro patient: <strong>{{ patient.numero_patient }}</strong>
+                </p>
+                <p>
+                  Contact d'urgence:
+                  <strong>{{ patient.numero_urgence }}</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Section -->
+          <div>
+            <div class="document-content d-flex mb-5">
+              <div class="document-contenu">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <h3 class="mb-0">Mes documents</h3>
+                </div>
+                <div v-if="documents && documents.length">
+                  <div
+                    v-for="document in documents"
+                    :key="document.id"
+                    class="d-flex gap-2"
+                  >
+                    <i class="bi bi-file-earmark-text"></i>
+                    <p>
+                      <a :href="document.file_path" target="_blank">
+                        {{ document.type_document }} -
+                        {{ formatDate(document.upload_date) }}
+                      </a>
+                    </p>
+                  </div>
+                </div>
+                <div v-else>
+                  <p>Aucun document disponible</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Document Section -->
+            <div class="televerser-document">
+              <h4>Téléverser un document</h4>
+              <div class="upload-container p-3">
+                <form
+                  @submit.prevent="handleFileUpload"
+                  enctype="multipart/form-data"
+                >
+                  <div class="form-group mb-3">
+                    <label for="type_document">Type de document :</label>
+                    <input
+                      type="text"
+                      id="type_document"
+                      v-model="type_document"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <div
+                      class="drag-drop-area"
+                      id="drop-zone"
+                      :class="{ 'border-success': isFileValid }"
+                    >
+                      <div class="icon">
+                        <i class="bi bi-file-earmark"></i>
+                      </div>
+                      <p>Drag n Drop here</p>
+                      <p>Or <span class="browse-link">Browse</span></p>
+                      <input
+                        type="file"
+                        name="file"
+                        id="file-upload"
+                        class="file-input"
+                        @change="onFileChange"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button 
+                    type="submit" 
+                    class="btn btn-secondary mt-3"
+                    :disabled="!isFileValid"
+                  >
+                    Téléverser maintenant
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Component -->
+    <SlideModal 
+      :is-open="isModalOpen"
+      :type="modalType"
+      :title="modalTitle"
+      @close="closeModal"
+      @submit="handleModalSubmit"
+    />
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import Swal from 'sweetalert2';
+import SlideModal from "@/components/SlideModal.vue";
+import SidebarMedecin from "@/components/SidebarMedecin.vue";
+import HeaderPatient from "@/components/HeaderPatient.vue";
+import {
+  getDossierMedical,
+  uploadDocumentByMedecin,
+} from "@/services/dossiermedicalService";
+
+// État initial
+const documents = ref([]);
+const patient = ref({
+  user: null,
+  numero_patient: '',
+  numero_urgence: ''
+});
+const dossier = ref(null);
+const isLoading = ref(true);
+const error = ref(null);
+const route = useRoute();
+const file = ref(null);
+const type_document = ref("");
+const dossier_medical_id = ref(null);
+const isFileValid = ref(false);
+
+// État du modal
+const isModalOpen = ref(false);
+const modalType = ref('');
+const modalTitle = ref('');
+
+// Formatage des dates
+const formatDate = (dateString) => {
+  if (!dateString) return 'Non spécifiée';
+  return new Date(dateString).toLocaleDateString('fr-FR');
+};
+
+// Récupération du dossier médical
+const fetchDossierMedical = async () => {
+  isLoading.value = true;
+  error.value = null;
+  const dossierId = route.params.id;
+  dossier_medical_id.value = dossierId;
+
+  try {
+    const response = await getDossierMedical(dossierId);
+    dossier.value = response.data;
+    documents.value = response.data.documents || [];
+    patient.value = response.data.patient || { user: null };
+  } catch (err) {
+    console.error("Erreur lors de la récupération du dossier médical:", err);
+    error.value = "Impossible de charger le dossier médical. Veuillez réessayer.";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// Gestion des fichiers
+const onFileChange = (event) => {
+  file.value = event.target.files[0];
+  isFileValid.value = !!file.value;
+};
+
+// Upload de fichiers
+const handleFileUpload = async () => {
+  try {
+    if (!file.value || !type_document.value) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Veuillez sélectionner un fichier et renseigner le type de document.'
+      });
+      return;
+    }
+
+    const response = await uploadDocumentByMedecin(
+      dossier_medical_id.value,
+      type_document.value,
+      file.value
+    );
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Succès',
+      text: 'Document téléversé avec succès !'
+    });
+
+    // Réinitialisation des champs
+    file.value = null;
+    type_document.value = '';
+    isFileValid.value = false;
+    
+    // Rafraîchir la liste des documents
+    await fetchDossierMedical();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du document:", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Une erreur est survenue lors du téléversement du document.'
+    });
+  }
+};
+
+// Gestion du modal
+const openModal = (type) => {
+  modalType.value = type;
+  switch(type) {
+    case 'antecedents':
+      modalTitle.value = 'Ajouter un antécédent médical';
+      break;
+    case 'traitements':
+      modalTitle.value = 'Ajouter un traitement';
+      break;
+    case 'notes':
+      modalTitle.value = 'Ajouter une note d\'observation';
+      break;
+    case 'interventions':
+      modalTitle.value = 'Ajouter une intervention chirurgicale';
+      break;
+    case 'infos':
+      modalTitle.value = 'Ajouter une information supplémentaire';
+      break;
+  }
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const handleModalSubmit = async (formData) => {
+  try {
+    switch(modalType.value) {
+      case 'antecedents':
+        if (!dossier.value.antecedents_medicaux) {
+          dossier.value.antecedents_medicaux = [];
+        }
+        dossier.value.antecedents_medicaux.push(formData.antecedent);
+        break;
+      case 'traitements':
+        if (!dossier.value.traitements) {
+            case 'traitements':
+      modalTitle.value = 'Ajouter un traitement médical';
+      break;
+    case 'notes':
+      modalTitle.value = 'Ajouter une note d\'observation';
+      break;
+    case 'interventions':
+      modalTitle.value = 'Ajouter une intervention chirurgicale';
+      break;
+    case 'infos':
+      modalTitle.value = 'Ajouter une information supplémentaire';
+      break;
+    default:
+      modalTitle.value = '';
+  }
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const handleModalSubmit = async (data) => {
+  try {
+    switch (modalType.value) {
+      case 'antecedents':
+        await addAntecedent(data);
+        break;
+      case 'traitements':
+        await addTraitement(data);
+        break;
+      case 'notes':
+        await addNoteObservation(data);
+        break;
+      case 'interventions':
+        await addIntervention(data);
+        break;
+      case 'infos':
+        await addInfoSup(data);
+        break;
+      default:
+        throw new Error('Type de modal non géré.');
+    }
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Succès',
+      text: 'Données ajoutées avec succès !'
+    });
+
+    // Réinitialiser le modal
+    closeModal();
+    
+    // Rafraîchir le dossier médical
+    await fetchDossierMedical();
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de données :", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Une erreur est survenue lors de l\'ajout des données.'
+    });
+  }
+};
+
+// Exemple de méthodes pour ajouter des données
+const addAntecedent = async (data) => {
+  // Appel au service pour ajouter un antécédent
+};
+
+const addTraitement = async (data) => {
+  // Appel au service pour ajouter un traitement
+};
+
+const addNoteObservation = async (data) => {
+  // Appel au service pour ajouter une note d'observation
+};
+
+const addIntervention = async (data) => {
+  // Appel au service pour ajouter une intervention chirurgicale
+};
+
+const addInfoSup = async (data) => {
+  // Appel au service pour ajouter une information supplémentaire
+};
+
+
+
+
+
+
+
+
+
+
+
+(((((((((((((
+  // Gestion du modal
+const openModal = (type) => {
+  modalType.value = type;
+  switch(type) {
+    case 'antecedents':
+      modalTitle.value = 'Ajouter un antécédent médical';
+      break;
+    case 'traitements':
+      modalTitle.value = 'Ajouter un traitement';
+      break;
+    case 'notes':
+      modalTitle.value = 'Ajouter une note d\'observation';
+      break;
+    case 'interventions':
+      modalTitle.value = 'Ajouter une intervention chirurgicale';
+      break;
+    case 'infos':
+      modalTitle.value = 'Ajouter une information supplémentaire';
+      break;
+  }
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+const handleModalSubmit = async (formData) => {
+  try {
+    switch(modalType.value) {
+      case 'antecedents':
+        if (!dossier.value.antecedents_medicaux) {
+          dossier.value.antecedents_medicaux = [];
+        }
+        dossier.value.antecedents_medicaux.push(formData.antecedent);
+        break;
+      case 'traitements':
+        if (!dossier.value.traitements) {
+          dossier.value.traitements = [];
+        }
+        dossier.value.traitements.push({
+          id: Date.now(), // Identifiant temporaire
+          nom: formData.medicament,
+          dosage: formData.dosage,
+          date_debut: formData.dateDebut,
+          date_fin: formData.dateFin,
+          prescripteur: formData.prescripteur
+        });
+        break;
+      case 'notes':
+        if (!dossier.value.notes_observations) {
+          dossier.value.notes_observations = [];
+        }
+        dossier.value.notes_observations.push(formData.note);
+        break;
+      case 'interventions':
+        if (!dossier.value.intervention_chirurgicale) {
+          dossier.value.intervention_chirurgicale = [];
+        }
+        dossier.value.intervention_chirurgicale.push(formData.intervention);
+        break;
+      case 'infos':
+        if (!dossier.value.info_sup) {
+          dossier.value.info_sup = [];
+        }
+        dossier.value.info_sup.push(formData.information);
+        break;
+    }
+
+    // Mettre à jour le dossier médical sur le serveur
+    await updateDossierMedical(dossier_medical_id.value, dossier.value);
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Succès',
+      text: 'Information ajoutée avec succès !'
+    });
+
+    closeModal();
+    await fetchDossierMedical(); // Rafraîchir les données
+  } catch (error) {
+    console.error("Erreur lors de l'ajout de l'information:", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur',
+      text: 'Une erreur est survenue lors de l\'ajout de l\'information.'
+    });
+  }
+};
+
+)))))))))))))
