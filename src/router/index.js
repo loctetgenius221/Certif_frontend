@@ -20,7 +20,7 @@ import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
 import ListMedecinView from '@/views/patient/ListMedecinView.vue';
 import RdvFormView from '@/views/patient/RdvFormView.vue';
 import ConsultationPatientView from '@/views/patient/ConsultationPatientView.vue';
-
+import DetailConsultationPatientView from '@/views/patient/DetailConsultationPatientView.vue';
 const routes = [
 
   //==========================================//
@@ -151,6 +151,12 @@ const routes = [
     path: '/consultation',
     name: 'ConsultationPatient',
     component: ConsultationPatientView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  {
+    path: '/Détail-consultation/:id',
+    name: 'Detail',
+    component: DetailConsultationPatientView,
     meta: { requiresAuth: true, role: 'patient' }
   },
   

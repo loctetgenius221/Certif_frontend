@@ -47,13 +47,12 @@
                 <tbody>
                   <tr v-for="(consultation, index) in consultations" :key="consultation.id">
                     <th scope="row">{{ index + 1 }}</th>
-                    <!-- <td>{{ formatDate(consultation.date) }}</td> -->
                     <td>{{ (consultation.date) }}</td>
                     <td>{{ consultation.type_consultation }}</td>
                     <td>
                       <router-link 
                         class="btn btn-info btn-sm"
-                        :to="{ name: '', params: { id: consultation.id } }"
+                        :to="{ name: 'Detail', params: { id: consultation.id } }"
                       >
                         Voir plus
                       </router-link>
