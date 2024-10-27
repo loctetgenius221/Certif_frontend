@@ -5,6 +5,7 @@
       <HeaderPatient/>
       <div class="section-container">
         <h1>Dashboard Administrateur</h1>
+        <DashboardAdminStat/>
       </div>
     </div>
     
@@ -15,6 +16,7 @@
 import '@/assets/css/GlobalView.css'
 import SidebarAdmin from '@/components/SidebarAdmin.vue';
 import HeaderPatient from '@/components/HeaderPatient.vue';
+import DashboardAdminStat from '@/components/DashboardAdminStat.vue';
 
 
 </script>
