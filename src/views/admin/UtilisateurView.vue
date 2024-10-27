@@ -4,17 +4,13 @@
     <div class="section-content">
       <HeaderPatient/>
       <div class="section-container">
-        <h1>Dashboard Administrateur</h1>
+        <h1>Utilisateurs</h1>
       </div>
     </div>
-    
   </div>
 </template>
 
 <script setup>
-import '@/assets/css/GlobalView.css'
 import SidebarAdmin from '@/components/SidebarAdmin.vue';
 import HeaderPatient from '@/components/HeaderPatient.vue';
-
-
 </script>

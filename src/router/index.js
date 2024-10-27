@@ -19,6 +19,10 @@ import DossierPatientView from '@/views/patient/DossierPatientView.vue';
 import ProfilPatientView from '@/views/patient/ProfilPatientView.vue';
 import ListMedecinView from '@/views/patient/ListMedecinView.vue';
 import RdvFormView from '@/views/patient/RdvFormView.vue';
+import UtilisateurView from '@/views/admin/UtilisateurView.vue';
+import RendezvousView from '@/views/admin/RendezvousView.vue';
+import DossierMedicalView from '@/views/admin/DossierMedicalView.vue';
+import ArticleAdminView from '@/views/admin/ArticleAdminView.vue';
 
 const routes = [
 
@@ -61,6 +65,30 @@ const routes = [
     path: "/admin",
     name: "AdminDashboard",
     component: AdminDashboardView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/utilisateur",
+    name: "Utilisateur",
+    component: UtilisateurView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/rendez-vous",
+    name: "RendezvousAdmin",
+    component: RendezvousView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/dossier-medical",
+    name: "DossierMedicalAdmin",
+    component: DossierMedicalView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/articles",
+    name: "ArticleAdmin",
+    component: ArticleAdminView,
     meta: { requiresAuth: true, role: 'administrateur' },
   },
 
