@@ -23,6 +23,8 @@ import UtilisateurView from '@/views/admin/UtilisateurView.vue';
 import RendezvousView from '@/views/admin/RendezvousView.vue';
 import DossierMedicalView from '@/views/admin/DossierMedicalView.vue';
 import ArticleAdminView from '@/views/admin/ArticleAdminView.vue';
+import GestionUtilisateurView from '@/views/admin/GestionUtilisateurView.vue';
+// import DetailUtilisateurView from '@/components/DetailUtilisateur.vue';
 
 const routes = [
 
@@ -71,6 +73,12 @@ const routes = [
     path: "/utilisateur",
     name: "Utilisateur",
     component: UtilisateurView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/gestionUser",
+    name: "GestionUser",
+    component: GestionUtilisateurView,
     meta: { requiresAuth: true, role: 'administrateur' },
   },
   {

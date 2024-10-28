@@ -21,7 +21,7 @@
     </div>
 
     <!-- Graphiques principaux -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 d-flex flex-wrap">
       <!-- Consultations Graph -->
       <div class="bg-white rounded-lg shadow p-4">
         <h3 class="text-lg font-semibold mb-4">Évolution des consultations</h3>
@@ -36,7 +36,7 @@
     </div>
 
     <!-- Statistiques détaillées -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 d-flex">
       <!-- Revenus mensuels -->
       <div class="bg-white rounded-lg shadow p-4">
         <h3 class="text-lg font-semibold mb-4">Revenus mensuels</h3>
