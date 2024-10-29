@@ -314,10 +314,6 @@ onMounted(() => {
   width: 100%;
 }
 
-.section-container {
-  padding: 0 48px;
-}
-
 .section-container .heading h1 {
   font-family: "Montserrat";
   font-size: 18px;

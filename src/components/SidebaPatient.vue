@@ -3,29 +3,35 @@
     <div class="sidebar">
       <div class="logo"></div>
       <ul class="menu">
-        <li class="active">
-          <a class="active" href="#">
+        <li :class="{ active: $route.name === 'Patient' }">
+          <router-link class="link" :to="{ name: 'Patient' }">
             <i class="far fa-calendar-check"></i>
-            <span><router-link :to="{ name: 'Patient' }">Rendezvous</router-link></span>
-          </a>
+            <span>Rendezvous</span>
+          </router-link>
         </li>
-        <li>
-          <a href="#">
+        <li :class="{ active: $route.name === 'DossierPatient' }">
+          <router-link class="link" :to="{ name: 'DossierPatient' }">
             <i class="fas fa-folder-open"></i>
-            <span><router-link :to="{ name: 'DossierPatient' }">DossiersMédicales</router-link></span>
-          </a>
+            <span>DossiersMédicales</span>
+          </router-link>
         </li>
-        <li>
-          <a href="#">
+        <li :class="{ active: $route.name === 'ConsultationPatient' }">
+          <router-link class="link" :to="{ name: 'ConsultationPatient' }">
+            <i class="fas fa-stethoscope"></i>
+            <span>Consultations</span>
+          </router-link>
+        </li>
+        <li :class="{ active: $route.name === 'ProfilPatient' }">
+          <router-link class="link" :to="{ name: 'ProfilPatient' }">
             <i class="fas fa-user"></i>
-            <span><router-link :to="{ name: 'ProfilPatient' }">Profil</router-link></span>
-          </a>
+            <span>Profil</span>
+          </router-link>
         </li>
         <li class="logout">
-          <a href="#">
+          <router-link class="link" to="#" @click="logout">
             <i class="fas fa-sign-out-alt"></i>
-            <span @click="logout">Deconnexion</span>
-          </a>
+            <span>Deconnexion</span>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -33,8 +39,8 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/store/auth';
-import { useRouter } from 'vue-router'; 
+import { useAuthStore } from "@/store/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -52,7 +58,6 @@ const logout = async () => {
 </script>
 
 <style scoped>
-
 .sidebar {
   position: sticky;
   top: 0;
@@ -75,7 +80,7 @@ const logout = async () => {
 }
 
 .logo {
-  color: #2980B9;
+  color: #2980b9;
   height: 80px;
   padding: 16px;
 }
@@ -88,24 +93,19 @@ const logout = async () => {
 }
 
 .menu li {
-  color: #8A92A6;
+  color: #8a92a6;
   padding: 1rem;
   margin: 8px 0;
   border-radius: 8px;
   transition: all 0.5 ease-in-out;
 }
 
-.menu li:hover,.menu a:hover,
-.active {
+.menu li.active,
+.menu li:hover {
   color: #fff;
   background: #2980B9;
 }
-
-.menu a.active {
-  color: white;
-}
-
-.menu a {
+.menu .link {
   color: inherit;
   font-size: 16px;
   font-weight: bold;
@@ -115,11 +115,11 @@ const logout = async () => {
   gap: 1.5rem;
 }
 
-.menu a span {
+.menu .link span {
   overflow: hidden;
 }
 
-.menu a i {
+.menu .link i {
   font-size: 1.2rem;
 }
 
@@ -129,5 +129,4 @@ const logout = async () => {
   left: 0;
   width: 100%;
 }
-
 </style>

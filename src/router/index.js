@@ -27,6 +27,8 @@ import GestionUtilisateurView from '@/views/admin/GestionUtilisateurView.vue';
 import EditeurarticleView from '@/views/admin/EditeurarticleView.vue';
 // import DetailUtilisateurView from '@/components/DetailUtilisateur.vue';
 
+import ConsultationPatientView from '@/views/patient/ConsultationPatientView.vue';
+import DetailConsultationPatientView from '@/views/patient/DetailConsultationPatientView.vue';
 const routes = [
 
   //==========================================//
@@ -189,6 +191,19 @@ const routes = [
     component: RdvFormView,
     meta: { requiresAuth: true, role: 'patient' }
   },
+  {
+    path: '/consultation',
+    name: 'ConsultationPatient',
+    component: ConsultationPatientView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  {
+    path: '/Détail-consultation/:id',
+    name: 'Detail',
+    component: DetailConsultationPatientView,
+    meta: { requiresAuth: true, role: 'patient' }
+  },
+  
   
 
   //==========================================//

@@ -55,3 +55,32 @@ export const getConsultation = async (id) => {
     throw error;
   }
 };
+
+// Recupération de la liste des consultations d'un patient
+export const getConsultationByPatient = async (patient_id) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // Vérification si le token est disponible
+    if (!token) {
+      throw new Error("Token d'authentification non trouvé. Veuillez vous connecter.");
+    }
+    // Requete Api pour recupérer les consultations
+    const response = await api.get(`consultations/patient/${patient_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    // Gestion des erreurs plus spécifique
+    if (error.response && error.response.status === 401) {
+      console.error("Erreur 401: Non autorisé. Token invalide ou expiré.");
+    } else {
+      console.error("Erreur lors de la récupération des consultation du patient:", error.message);
+    }
+    // Propager l'erreur pour qu'elle soit gérée par l'appelant
+    throw error;
+  }
+}

@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <SidebarMedecin />
+    <SidebaPatient />
     <div class="section-content">
       <HeaderPatient />
       <div class="section-container">
@@ -47,13 +47,12 @@
                 <tbody>
                   <tr v-for="(consultation, index) in consultations" :key="consultation.id">
                     <th scope="row">{{ index + 1 }}</th>
-                    <!-- <td>{{ formatDate(consultation.date) }}</td> -->
                     <td>{{ (consultation.date) }}</td>
                     <td>{{ consultation.type_consultation }}</td>
                     <td>
                       <router-link 
                         class="btn btn-info btn-sm"
-                        :to="{ name: 'Detail-consultation', params: { id: consultation.id } }"
+                        :to="{ name: 'Detail', params: { id: consultation.id } }"
                       >
                         Voir plus
                       </router-link>
@@ -64,54 +63,47 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </template>
+
 <script setup>
-import SidebarMedecin from '@/components/SidebarMedecin.vue';
+import SidebaPatient from '@/components/SidebaPatient.vue';
 import HeaderPatient from '@/components/HeaderPatient.vue';
-import {ref, onMounted} from "vue"
-import { getConsultationList } from "@/services/consultationService";
+import { onMounted, ref } from 'vue';
+import { getConsultationByPatient } from '@/services/consultationService';
 
 const consultations = ref([]);
 
-const fetchConsultations = async () => {
-  const data = await getConsultationList();
-  consultations.value = data.data;
+const patient_id = localStorage.getItem("patient_id");
+console.log("Id su patient :",patient_id);
+
+const fetchConsultationsByPatient = async () => {
+  if (patient_id) {  // Vérification si patient_id est défini
+    try {
+      const data = await getConsultationByPatient(patient_id);
+      consultations.value = data.data;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des consultations :", error);
+    }
+  } else {
+    console.error("patient_id non défini dans le localStorage.");
+  }
 };
 
-// Appel à la fonction fetchConsultations lors du montage du composant
 onMounted(() => {
-  fetchConsultations();
+  fetchConsultationsByPatient();
 })
 </script>
 
 <style scoped>
-
-.section-content {
-  flex-grow: 1;
-  padding: 20px;
-}
-
-.section-container {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 h1 {
   color: #333;
   margin-bottom: 20px;
   font-family: 'Montserrat';
   font-size: 18px;
-}
-
-.form_section {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
 }
 
 .btn-primary {
@@ -141,5 +133,11 @@ h1 {
 .btn-info:hover {
   background-color: #138496;
   border-color: #117a8b;
+}
+
+.form_section {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
 }
 </style>

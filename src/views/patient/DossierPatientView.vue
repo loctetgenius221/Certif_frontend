@@ -7,27 +7,109 @@
         <h1>Dossier Médical</h1>
         <div class="dossier-content" v-if="dossier">
           <div class="info-medeicale">
-            <div class="mb-4" v-if="dossier.antecedents_medicaux">
-              <h2>Antécédents médicaux</h2>
-              <p>{{ dossier.antecedents_medicaux }}</p>
+              <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h2>Antécédents médicaux</h2>
+                  
+                </div>
+                <div  v-if="dossier.antecedents_medicaux">
+                  <ul>
+                    <li
+                      v-for="(
+                        antecedent, index
+                      ) in dossier.antecedents_medicaux"
+                      :key="index"
+                    >
+                      {{ antecedent }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h2>Traitements médicaux</h2>
+                  
+                </div>
+                <div v-if="dossier.traitements && dossier.traitements.length">
+                  <div
+                    v-for="traitement in dossier.traitements"
+                    :key="traitement.id"
+                    class="traitement-item"
+                  >
+                    <p><strong>Médicament :</strong> {{ traitement.nom }}</p>
+                    <p><strong>Dosage :</strong> {{ traitement.dosage }}</p>
+                    <p>
+                      <strong>Date début :</strong> {{ traitement.date_debut }}
+                    </p>
+                    <p><strong>Date fin :</strong> {{ traitement.date_fin }}</p>
+                    <p>
+                      <strong>Prescripteur :</strong>
+                      {{ traitement.prescripteur }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h2>Note d'observations</h2>
+                  
+                </div>
+                <div
+                  v-if="
+                    dossier.notes_observations &&
+                    dossier.notes_observations.length
+                  "
+                >
+                  <ul>
+                    <li
+                      v-for="(note, index) in dossier.notes_observations"
+                      :key="index"
+                    >
+                      {{ note }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h2>Interventions chirurgicales</h2>
+                  
+                </div>
+                <div
+                  v-if="
+                    dossier.intervention_chirurgicale &&
+                    dossier.intervention_chirurgicale.length
+                  "
+                >
+                  <ul>
+                    <li
+                      v-for="(
+                        intervention, index
+                      ) in dossier.intervention_chirurgicale"
+                      :key="index"
+                    >
+                      {{ intervention }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between">
+                  <h2>Informations supplémentaires</h2>
+                  
+                </div>
+                <div v-if="dossier.info_sup && dossier.info_sup.length">
+                  <ul>
+                    <li v-for="(info, index) in dossier.info_sup" :key="index">
+                      {{ info }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div class="mb-4">
-              <h2>Traitements médicaux</h2>
-              <p>{{ dossier.traitements }}</p>
-            </div>
-            <div class="mb-4">
-              <h2>Note d'observations</h2>
-              <p>{{ dossier.notes_observations }}</p>
-            </div>
-            <div class="mb-4">
-              <h2>Interventions chirurgicales</h2>
-              <p>{{ dossier.intervention_chirurgicale }}</p>
-            </div>
-            <div class="mb-4">
-              <h2>Informations supplémentaires</h2>
-              <p>{{ dossier.info_sup }}</p>
-            </div>
-          </div>
           <div class="info-generale">
             <div class="d-flex flex-column align-items-center gap-3">
               <img
@@ -107,6 +189,20 @@ onMounted(fetchDossierMedical);
 </script>
 
 <style scoped>
+
+.traitement-item {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+ul {
+  padding-left: 20px;
+}
+ul li {
+  list-style-type: disc;
+}
 .section-container h1 {
   font-family: "Montserrat";
   font-size: 18px;
