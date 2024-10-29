@@ -1,27 +1,22 @@
 <template>
-  <div>
-    <h1>Dashboard Administrateur</h1>
-    <div>
-      <button @click="logout">Se déconnecter</button>
+  <div class="d-flex">
+    <SidebarAdmin/>
+    <div class="section-content">
+      <HeaderPatient/>
+      <div class="section-container">
+        <h1>Dashboard Administrateur</h1>
+        <DashboardAdminStat/>
+      </div>
     </div>
+    
   </div>
 </template>
 
 <script setup>
-import { useAuthStore } from '@/store/auth';
-import { useRouter } from 'vue-router'; 
+import '@/assets/css/GlobalView.css'
+import SidebarAdmin from '@/components/SidebarAdmin.vue';
+import HeaderPatient from '@/components/HeaderPatient.vue';
+import DashboardAdminStat from '@/components/DashboardAdminStat.vue';
 
-const authStore = useAuthStore();
-const router = useRouter();
 
-const logout = async () => {
-  try {
-    // Appel à la fonction de déconnexion dans le store Pinia
-    await authStore.logout();
-    // Rediriger vers la page de connexion après la déconnexion
-    router.push({ name: "Connexion" });
-  } catch (error) {
-    console.error("Erreur lors de la déconnexion:", error);
-  }
-};
 </script>

@@ -22,6 +22,10 @@
           </div>
         </div>
       </div>
+      <div class="header--content">
+        <h1>Hello Céline !</h1>
+        <p>Bienvenue sur l’interface d’administration</p>
+      </div>
     </div>
   </div>
 </template>
@@ -31,7 +35,7 @@
 <style scoped>
 .main--content {
   position: sticky;
-  top: 80px;
+  top: 0;
   left: 0;
   background: #fff;
   width: 100%;
@@ -68,8 +72,7 @@
   flex-wrap: wrap;
   background: #fff;
   border-radius: 10px;
-  padding: 10px 0rem;
-  margin-bottom: 1rem;
+  padding: 10px 2.3rem;
 }
 
 .user--info {
@@ -114,5 +117,26 @@
 
 .search--box i:hover {
   transform: scale(1.2);
+}
+
+/* Header Content */
+
+.header--content {
+  width: 100%;
+  height: 150px;
+  background: url('../../public/image/Graphic_Side01.jpg') no-repeat center center/cover;
+  padding: 40px;
+  color: white;
+}
+
+.header--content h1 {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.header--content p {
+  font-weight: 500;
 }
 </style>
