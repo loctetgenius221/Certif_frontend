@@ -31,7 +31,9 @@
                 >
                   <div>
                     <p class="text-secondary mb-1">{{ stat.title }}</p>
-                    <h3 class="stat-value mb-0">{{ stat.value }}</h3>
+                    <h3 class="stat-value mb-0">
+                      {{ formatNumber(stat.value) }}
+                    </h3>
                   </div>
                   <i :class="stat.icon" :style="{ color: stat.color }"></i>
                 </div>
@@ -130,40 +132,70 @@
 import SidebarAdmin from "@/components/SidebarAdmin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import DetailUtilisateur from "@/components/DetailUtilisateur.vue";
+import { getUserStatistics } from "@/services/utilisateurService";
 
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 
 // États
 const searchQuery = ref("");
 const currentTab = ref("all");
 
-// Données statiques
-const stats = [
+// État réactif pour les statistiques
+const stats = ref([
   {
     title: "Total Utilisateurs",
-    value: "1,234",
+    value: 0,
     icon: "fas fa-users fa-2x",
     color: "#3B82F6",
   },
   {
     title: "Médecins",
-    value: "256",
+    value: 0,
     icon: "fas fa-user-md fa-2x",
     color: "#10B981",
   },
   {
     title: "Patients",
-    value: "845",
+    value: 0,
     icon: "fas fa-hospital-user fa-2x",
     color: "#8B5CF6",
   },
   {
     title: "Assistants",
-    value: "133",
+    value: 0,
     icon: "fas fa-user-nurse fa-2x",
     color: "#F59E0B",
   },
-];
+]);
+
+// Fonction pour formater les nombres
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("fr-FR").format(number);
+};
+
+// Fonction pour charger les statistiques
+const loadStatistics = async () => {
+  try {
+    const data = await getUserStatistics();
+
+    // Mise à jour des valeurs
+    stats.value = stats.value.map((stat) => {
+      if (stat.title === "Total Utilisateurs") {
+        stat.value = data.total_users;
+      } else if (stat.title === "Médecins") {
+        stat.value = data.docteurs;
+      } else if (stat.title === "Patients") {
+        stat.value = data.patients;
+      } else if (stat.title === "Assistants") {
+        stat.value = data.assistants;
+      }
+      return stat;
+    });
+  } catch (error) {
+    console.error("Erreur lors du chargement des statistiques:", error);
+    // Gérer l'erreur (afficher une notification, etc.)
+  }
+};
 
 const tabs = [
   { label: "Tous", value: "all" },
@@ -246,6 +278,11 @@ const openUserDetail = (user) => {
   selectedUser.value = user;
   isModalVisible.value = true;
 };
+
+// Chargement initial des données
+onMounted(() => {
+  loadStatistics();
+});
 </script>
 
 <style scoped>
@@ -260,19 +297,19 @@ const openUserDetail = (user) => {
   margin-bottom: 0.5rem;
 }
 
-.stat-card {
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
-}
-
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px);
 }
 
 .stat-value {
-  font-weight: bold;
-  font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+
+.stat-card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
 }
 
 .search-icon {
