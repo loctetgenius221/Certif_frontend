@@ -51,12 +51,29 @@
                 placeholder="Rechercher un utilisateur..."
               />
             </div>
-            <button
-              class="btn btn-outline-secondary d-flex align-items-center gap-2"
-            >
-              <i class="fas fa-filter"></i>
-              Filtres
-            </button>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'all' }"
+                @click="currentStatusFilter = 'all'"
+              >
+                Tous
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'Actif' }"
+                @click="currentStatusFilter = 'Actif'"
+              >
+                Actifs
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'Inactif' }"
+                @click="currentStatusFilter = 'Inactif'"
+              >
+                Inactifs
+              </button>
+            </div>
           </div>
 
           <!-- Onglets -->
@@ -90,16 +107,23 @@
                       />
                     </div>
                     <div>
-                      <p class="user-name mb-0">{{ user.name }}</p>
+                      <p class="user-name mb-0">
+                        {{ user.prenom }} {{ user.nom }}
+                      </p>
                       <p class="user-email mb-0">{{ user.email }}</p>
+                      <p class="user-roles mb-0"></p>
                     </div>
                   </div>
                   <div class="d-flex align-items-center gap-3">
-                    <span :class="getBadgeClass(user.type)">
-                      {{ user.type }}
+                    <span
+                      v-for="role in user.role"
+                      :key="role"
+                      :class="getRoleBadgeClass(role)"
+                    >
+                      {{ role }}
                     </span>
-                    <span :class="getStatusBadgeClass(user.status)">
-                      {{ user.status }}
+                    <span :class="getStatusBadgeClass(getUserStatus(user))">
+                      {{ getUserStatus(user) }}
                     </span>
                     <div>
                       <button
@@ -139,6 +163,8 @@ import { ref, computed, onMounted } from "vue";
 // États
 const searchQuery = ref("");
 const currentTab = ref("all");
+const currentStatusFilter = ref("all");
+const users = ref([]);
 
 // État réactif pour les statistiques
 const stats = ref([
@@ -199,34 +225,17 @@ const loadStatistics = async () => {
 
 const tabs = [
   { label: "Tous", value: "all" },
-  { label: "Médecins", value: "doctors" },
-  { label: "Patients", value: "patients" },
-  { label: "Assistants", value: "assistants" },
+  { label: "Médecins", value: "medecin" },
+  { label: "Patients", value: "patient" },
+  { label: "Assistants", value: "assistant" },
 ];
 
-const users = ref([
-  {
-    id: 1,
-    name: "Dr. Jean Dupont",
-    email: "jean.dupont@example.com",
-    type: "Médecin",
-    status: "Actif",
-  },
-  {
-    id: 2,
-    name: "Marie Martin",
-    email: "marie.martin@example.com",
-    type: "Patient",
-    status: "Actif",
-  },
-  {
-    id: 3,
-    name: "Sophie Dubois",
-    email: "sophie.dubois@example.com",
-    type: "Assistant",
-    status: "Inactif",
-  },
-]);
+const loadUsers = async () => {
+  const allUsers = await getUserStatistics();
+  users.value = allUsers.users;
+  console.log("infos :", users.value);
+  return users;
+};
 
 // Computed
 const filteredUsers = computed(() => {
@@ -235,7 +244,8 @@ const filteredUsers = computed(() => {
   if (searchQuery.value) {
     filtered = filtered.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        user.nom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        user.prenom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
@@ -243,25 +253,49 @@ const filteredUsers = computed(() => {
   if (currentTab.value !== "all") {
     filtered = filtered.filter((user) => {
       const typeMap = {
-        doctors: "Médecin",
-        patients: "Patient",
-        assistants: "Assistant",
+        medecin: "medecin",
+        patient: "patient",
+        assistant: "assistant",
       };
-      return user.type === typeMap[currentTab.value];
+      return user.role == typeMap[currentTab.value];
     });
+  }
+
+  if (currentStatusFilter.value !== "all") {
+    filtered = filtered.filter(
+      (user) => getUserStatus(user) === currentStatusFilter.value
+    );
   }
 
   return filtered;
 });
 
-// Méthodes
-const getBadgeClass = (type) => {
-  const classes = {
-    Médecin: "badge bg-primary",
-    Patient: "badge bg-success",
-    Assistant: "badge bg-purple",
-  };
-  return classes[type] || "badge bg-secondary";
+const getUserStatus = (user) => {
+  // Logique pour déterminer le statut de l'utilisateur
+  if (
+    user.derniereLigneConnexion &&
+    Date.now() - new Date(user.derniereLigneConnexion).getTime() <
+      30 * 24 * 60 * 60 * 1000
+  ) {
+    return "Actif";
+  } else {
+    return "Inactif";
+  }
+};
+
+const getRoleBadgeClass = (role) => {
+  switch (role) {
+    case "administrateur":
+      return "badge bg-primary";
+    case "medecin":
+      return "badge bg-success";
+    case "patient":
+      return "badge bg-info";
+    case "assistant":
+      return "badge bg-warning";
+    default:
+      return "badge bg-secondary";
+  }
 };
 
 const getStatusBadgeClass = (status) => {
@@ -282,6 +316,7 @@ const openUserDetail = (user) => {
 // Chargement initial des données
 onMounted(() => {
   loadStatistics();
+  loadUsers();
 });
 </script>
 
