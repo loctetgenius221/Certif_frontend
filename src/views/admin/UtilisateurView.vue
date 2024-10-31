@@ -111,17 +111,18 @@
                         {{ user.prenom }} {{ user.nom }}
                       </p>
                       <p class="user-email mb-0">{{ user.email }}</p>
-                      <p class="user-roles mb-0"></p>
                     </div>
                   </div>
                   <div class="d-flex align-items-center gap-3">
-                    <span
-                      v-for="role in user.role"
-                      :key="role"
-                      :class="getRoleBadgeClass(role)"
-                    >
-                      {{ role }}
-                    </span>
+                    <div class="user-roles mb-0">
+                      <span
+                        v-for="role in extractRolesAndPermissions(user).roles"
+                        :key="role"
+                        :class="getRoleBadgeClass(role)"
+                      >
+                        {{ role }}
+                      </span>
+                    </div>
                     <span :class="getStatusBadgeClass(getUserStatus(user))">
                       {{ getUserStatus(user) }}
                     </span>
@@ -237,6 +238,19 @@ const loadUsers = async () => {
   return users;
 };
 
+// Fonction pour extraire les rôles et permissions
+function extractRolesAndPermissions(user) {
+  const rolesAndPermissions = user.roles_and_permissions;
+
+  // Extraire les rôles
+  const roles = rolesAndPermissions.map((role) => role.name);
+
+  // Extraire les permissions
+  const permissions = rolesAndPermissions.flatMap((role) => role.permissions);
+
+  return { roles, permissions };
+}
+
 // Computed
 const filteredUsers = computed(() => {
   let filtered = users.value;
@@ -257,7 +271,9 @@ const filteredUsers = computed(() => {
         patient: "patient",
         assistant: "assistant",
       };
-      return user.role == typeMap[currentTab.value];
+      return user.roles_and_permissions.some(
+        (role) => role.name === typeMap[currentTab.value]
+      );
     });
   }
 
@@ -286,13 +302,13 @@ const getUserStatus = (user) => {
 const getRoleBadgeClass = (role) => {
   switch (role) {
     case "administrateur":
-      return "badge bg-primary";
-    case "medecin":
-      return "badge bg-success";
-    case "patient":
-      return "badge bg-info";
-    case "assistant":
       return "badge bg-warning";
+    case "medecin":
+      return "badge bg-primary";
+    case "patient":
+      return "badge bg-success";
+    case "assistant":
+      return "badge bg-purple";
     default:
       return "badge bg-secondary";
   }
@@ -311,6 +327,8 @@ const selectedUser = ref(null);
 const openUserDetail = (user) => {
   selectedUser.value = user;
   isModalVisible.value = true;
+
+  console.log("User :", selectedUser.value);
 };
 
 // Chargement initial des données
@@ -410,6 +428,10 @@ onMounted(() => {
 .bg-purple {
   background-color: #8b5cf6;
   color: white;
+}
+
+.bg-primary {
+  background: #10B981;
 }
 
 .bg-success-light {

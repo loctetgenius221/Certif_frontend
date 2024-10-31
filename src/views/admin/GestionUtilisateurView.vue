@@ -43,14 +43,17 @@
 
           <!-- Contenu des onglets -->
           <div class="tab-content">
-            <!-- Formulaire d'ajout d'utilisateur -->
+            <!--* ----------------------------------------- -->
+            <!--*       Formulaire d'ajout d'utilisateur    -->
+            <!--* ----------------------------------------- -->
+
             <div
               v-show="activeTab === 'add-user'"
               class="tab-pane fade show active"
             >
               <div class="card custom-card">
                 <div class="card-header gradient-header">
-                  <h5 class="card-title text-dark mb-0">
+                  <h5 class="card-title mb-0">
                     <i class="bi bi-person-plus me-2"></i>
                     Nouvel Utilisateur
                   </h5>
@@ -67,41 +70,74 @@
                           <input
                             type="text"
                             class="form-control custom-input"
-                            id="firstName"
-                            v-model="newUser.firstName"
+                            :class="{ 'is-invalid': errors.prenom }"
+                            id="prenom"
+                            v-model="newUser.prenom"
                             required
                           />
-                          <label for="firstName">Prénom</label>
+                          <label for="prenom">Prénom</label>
+                          <div class="invalid-feedback" v-if="errors.prenom">
+                            {{ errors.prenom }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-md-6">
                         <div class="form-floating custom-float">
                           <input
                             type="text"
                             class="form-control custom-input"
-                            id="lastName"
-                            v-model="newUser.lastName"
+                            :class="{ 'is-invalid': errors.nom }"
+                            id="nom"
+                            v-model="newUser.nom"
                             required
                           />
-                          <label for="lastName">Nom</label>
+                          <label for="nom">Nom</label>
+                          <div class="invalid-feedback" v-if="errors.nom">
+                            {{ errors.nom }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-12">
                         <div class="form-floating custom-float">
                           <input
                             type="email"
                             class="form-control custom-input"
+                            :class="{ 'is-invalid': errors.email }"
                             id="email"
                             v-model="newUser.email"
                             required
                           />
                           <label for="email">Email</label>
+                          <div class="invalid-feedback" v-if="errors.email">
+                            {{ errors.email }}
+                          </div>
                         </div>
                       </div>
+
+                      <div class="col-12">
+                        <div class="form-floating custom-float">
+                          <input
+                            type="tel"
+                            class="form-control custom-input"
+                            :class="{ 'is-invalid': errors.telephone }"
+                            id="telephone"
+                            v-model="newUser.telephone"
+                            required
+                          />
+                          <label for="telephone">Téléphone</label>
+                          <div class="invalid-feedback" v-if="errors.telephone">
+                            {{ errors.telephone }}
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="col-12">
                         <div class="form-floating custom-float">
                           <select
                             class="form-select custom-select"
+                            :class="{ 'is-invalid': errors.roleId }"
                             id="role"
                             v-model="newUser.roleId"
                             required
@@ -114,19 +150,33 @@
                               :key="role.id"
                               :value="role.id"
                             >
-                              {{ role.name }}
+                              {{ role.role_name }}
                             </option>
                           </select>
                           <label for="role">Rôle</label>
+                          <div class="invalid-feedback" v-if="errors.roleId">
+                            {{ errors.roleId }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-12">
                         <button
                           type="submit"
-                          class="btn custom-button btn-lg w-100"
+                          class="btn custom-button btn-lg"
+                          :disabled="!isFormValid || isSubmitting"
                         >
-                          <i class="bi bi-plus-circle me-2"></i>
-                          Ajouter l'utilisateur
+                          <span
+                            v-if="isSubmitting"
+                            class="spinner-border spinner-border-sm me-2"
+                            role="status"
+                          ></span>
+                          <i v-else class="bi bi-plus-circle me-2"></i>
+                          {{
+                            isSubmitting
+                              ? "Enregistrement..."
+                              : "Ajouter l'utilisateur"
+                          }}
                         </button>
                       </div>
                     </div>
@@ -134,8 +184,10 @@
                 </div>
               </div>
             </div>
+            <!--* --------------------------- -->
+            <!--*      Gestion des rôles      -->
+            <!--* --------------------------- -->
 
-            <!-- Gestion des rôles -->
             <div
               v-show="activeTab === 'roles'"
               class="tab-pane fade show active"
@@ -162,7 +214,9 @@
                             class="d-flex justify-content-between align-items-center"
                           >
                             <div>
-                              <h6 class="role-name mb-1">{{ role.name }}</h6>
+                              <h6 class="role-name mb-1">
+                                {{ role.role_name }}
+                              </h6>
                               <div class="permission-badges">
                                 <span
                                   v-for="(
@@ -242,7 +296,7 @@
                                   class="form-check-label ms-2"
                                   :for="'permission-' + index"
                                 >
-                                  {{ permission }}
+                                  {{ permission.name }}
                                 </label>
                               </div>
                             </div>
@@ -279,7 +333,7 @@
           </div>
 
           <!-- Toast de notification -->
-          <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div class="toast-container position-fixed bottom-1 end-0 p-3">
             <div
               class="toast custom-toast"
               :class="{
@@ -319,7 +373,12 @@
 <script setup>
 import SidebarAdmin from "@/components/SidebarAdmin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
+import {
+  getRolesAndPermissions,
+  registerUsers,
+} from "@/services/utilisateurService";
+import Swal from "sweetalert2";
 
 // États
 const activeTab = ref("add-user");
@@ -328,37 +387,62 @@ const toastMessage = ref("");
 const toastType = ref("success");
 const editingRole = ref(null);
 
-// Données exemple
-const roles = ref([
-  { id: 1, name: "Admin", permissions: ["all"] },
-  { id: 2, name: "Medecin", permissions: ["read", "write"] },
-  { id: 3, name: "Patient", permissions: ["read"] },
-  { id: 4, name: "Assistant", permissions: ["read"] },
-]);
+const roles = ref([]);
+const permissions = ref([]);
 
-const permissions = [
-  "Gérer les utilisateurs",
-  "Gérer les rôles",
-  "Voir les rapports",
-  "Éditer les contenus",
-  "Gérer les documents",
-  "Accès aux statistiques",
-];
+// Fonction pour récupérer les rôles et permissions
+const fetchRolesAndPermissions = async () => {
+  try {
+    const data = await getRolesAndPermissions();
+    roles.value = data.roles_and_permissions || [];
+    permissions.value = data.All_permissions || [];
+    console.log("Liste des rôles :", roles.value);
+    console.log("Liste des permissions :", permissions.value);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des rôles et permissions :",
+      error.message
+    );
+  }
+};
 
-// États du formulaire
+// États du formulaire pour le nouvel utilisateur
 const newUser = reactive({
-  firstName: "",
-  lastName: "",
+  prenom: "",
+  nom: "",
   email: "",
+  telephone: "",
   roleId: "",
+  password: ""
 });
 
+// Logique de génération automatique de mot de passe
+const generateRandomPassword = (length = 10) => {
+  const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+};
+
+
+// Watcher pour surveiller les changements de roleId
+watch(
+  () => newUser.roleId,
+  (newRoleId) => {
+    console.log("Role ID sélectionné :", newRoleId);
+  }
+);
+
+// États du formulaire pour le nouveau rôle
 const newRole = reactive({
   name: "",
   permissions: [],
 });
 
-// Méthodes
+// Méthode pour afficher les notifications
 const showNotification = (message, type = "success") => {
   toastMessage.value = message;
   toastType.value = type;
@@ -368,24 +452,103 @@ const showNotification = (message, type = "success") => {
   }, 3000);
 };
 
-const handleAddUser = () => {
-  // Validation basique
-  if (
-    !newUser.firstName ||
-    !newUser.lastName ||
-    !newUser.email ||
-    !newUser.roleId
-  ) {
-    showNotification("Veuillez remplir tous les champs", "error");
+// État pour les erreurs de validation
+const errors = ref({});
+
+// Computed property pour la validation du formulaire
+const isFormValid = computed(() => {
+  return (
+    newUser.prenom.trim() !== "" &&
+    newUser.nom.trim() !== "" &&
+    validateEmail(newUser.email) &&
+    validatePhone(newUser.telephone) &&
+    newUser.roleId !== ""
+  );
+});
+
+// Fonctions de validation
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const validatePhone = (telephone) => /^7[0678]\d{7}$/.test(telephone);
+
+// Fonction de validation du formulaire
+const validateForm = () => {
+  const newErrors = {};
+
+  if (!newUser.prenom.trim()) {
+    newErrors.prenom = "Le prénom est requis";
+  }
+
+  if (!newUser.nom.trim()) {
+    newErrors.nom = "Le nom est requis";
+  }
+
+  if (!newUser.email.trim() || !validateEmail(newUser.email)) {
+    newErrors.email = "L'email est invalide";
+  }
+
+  if (!newUser.telephone.trim() || !validatePhone(newUser.telephone)) {
+    newErrors.telephone = "Le numéro de téléphone est invalide";
+  }
+
+  if (!newUser.roleId) {
+    newErrors.roleId = "Le rôle est requis";
+  }
+
+  errors.value = newErrors;
+  return Object.keys(newErrors).length === 0;
+};
+
+// État de chargement
+const isSubmitting = ref(false);
+
+// Gestion de l'ajout d'utilisateur
+const handleAddUser = async () => {
+  if (!validateForm()) {
+    console.log("les données :", newUser);
     return;
   }
 
-  // Simulation d'ajout
-  console.log("Nouvel utilisateur:", newUser);
-  showNotification("Utilisateur ajouté avec succès");
+  try {
+    isSubmitting.value = true;
+    newUser.password = generateRandomPassword();
 
-  // Réinitialisation du formulaire
-  Object.keys(newUser).forEach((key) => (newUser[key] = ""));
+    // Récupérer le rôle correspondant à roleId
+    const role = roles.value.find(
+      (role) => role.id === newUser.roleId
+    )?.role_name;
+
+    console.log("Le role de user:", role)
+    if (!role) {
+      throw new Error("Rôle non valide sélectionné.");
+    }
+    await registerUsers(role, newUser);
+
+    await Swal.fire({
+      title: "Succès!",
+      text: "L'utilisateur a été créé avec succès.",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+
+    // Réinitialisation du formulaire
+    Object.keys(newUser).forEach((key) => {
+      newUser[key] = "";
+    });
+    errors.value = {};
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message ||
+      "Une erreur est survenue lors de l'inscription.";
+
+    await Swal.fire({
+      title: "Erreur!",
+      text: errorMessage,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const editRole = (role) => {
@@ -407,7 +570,6 @@ const handleRoleSubmit = () => {
   }
 
   if (editingRole.value) {
-    // Simulation de modification
     const index = roles.value.findIndex((r) => r.id === editingRole.value);
     if (index !== -1) {
       roles.value[index] = {
@@ -418,7 +580,6 @@ const handleRoleSubmit = () => {
     }
     showNotification("Rôle modifié avec succès");
   } else {
-    // Simulation d'ajout
     roles.value.push({
       id: roles.value.length + 1,
       name: newRole.name,
@@ -429,26 +590,41 @@ const handleRoleSubmit = () => {
 
   cancelEdit();
 };
+
+// Exécution de fetchRolesAndPermissions lors du montage
+onMounted(fetchRolesAndPermissions);
 </script>
 
 <style scoped>
 .user-management {
-  /* --primary-color: #319fe9; */
-  /* --primary-dark: #2980B9; */
+  --primary-color: #319fe9;
+  --primary-dark: #2980b9;
   --primary-light: #818cf8;
   --success-color: #059669;
   --danger-color: #dc2626;
-  /* --bg-gradient: linear-gradient(
+  --bg-gradient: linear-gradient(
     135deg,
     var(--primary-color),
-    var(--primary-dark) 
-  ); */
+    var(--primary-dark)
+  );
 }
 
 .header-section {
-  background: var(--bg-gradient);
+  /* background: var(--bg-gradient); */
+  background: #fff;
+  margin-top: -60px;
+  position: relative;
+  z-index: 10;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   color: #000;
+}
+
+.header-section h2 {
+  font-size: 20px;
+}
+
+.header-section .bi-people-fill {
+  color: #2980b9;
 }
 
 .custom-tabs {
@@ -471,7 +647,8 @@ const handleRoleSubmit = () => {
 
 .custom-tab-link.active {
   background: var(--bg-gradient);
-  color: black;
+  color: #fff;
+  font-weight: bold;
 }
 
 .custom-card {
@@ -481,8 +658,16 @@ const handleRoleSubmit = () => {
   overflow: hidden;
 }
 
+.custom-card h5.card-title {
+  font-size: 18px;
+}
+
+.custom-card h5 .bi-person-plus {
+  color: #2980b9;
+}
+
 .gradient-header {
-  background: var(--bg-gradient);
+  /* background: var(--bg-gradient); */
   padding: 1.5rem;
   border-bottom: none;
 }
@@ -502,16 +687,21 @@ const handleRoleSubmit = () => {
 }
 
 .custom-button {
-  background: var(--bg-gradient);
+  background: #fff;
   border: none;
   color: black;
+  font-size: 18px;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   border: 1px solid black;
 }
 
 .custom-button:hover {
+  font-weight: 500;
+  color: white;
+  border: none;
+  background: var(--bg-gradient);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -532,8 +722,8 @@ const handleRoleSubmit = () => {
 }
 
 .permission-badges .badge {
-  background-color: var(--primary-light);
-  color: black;
+  background-color: var(--success-color);
+  color: white;
   font-weight: 500;
 }
 

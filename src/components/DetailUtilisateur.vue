@@ -1,6 +1,5 @@
 <template>
-  <div class="modal-overlay" :class="{ show: show }" 
-  @click="closeModal">
+  <div class="modal-overlay" :class="{ show: show }" @click="closeModal">
     <div class="side-modal" :class="{ show: show }" @click.stop>
       <!-- En-tête du modal -->
       <div class="modal-header border-bottom">
@@ -24,13 +23,16 @@
         <div class="user-profile mb-4">
           <div class="text-center mb-3">
             <div class="avatar-large mx-auto">
-              <img
-                src="'../../../public/image/avatar.png'"
-                alt="Avatar"
-              />
+              <img src="'../../../public/image/avatar.png'" alt="Avatar" />
             </div>
-            <h4 class="mt-3 mb-1">{{ user.name }}</h4>
-            <span :class="getBadgeClass(user.type)">{{ user.type }}</span>
+            <h4 class="mt-3 mb-1">{{ user.prenom }} {{ user.nom }}</h4>
+            <span
+              v-for="role in extractRolesAndPermissions(user).roles"
+              :key="role"
+              :class="getBadgeClass(role)"
+            >
+              {{ role }}
+            </span>
           </div>
           <div class="text-center">
             <span
@@ -70,20 +72,32 @@
                 <span class="info-label">
                   <i class="fas fa-phone text-secondary"></i> Téléphone
                 </span>
-                <span class="info-value">{{ user.phone }}</span>
+                <span class="info-value">{{ user.telephone }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">
                   <i class="fas fa-map-marker-alt text-secondary"></i> Adresse
                 </span>
-                <span class="info-value">{{ user.address }}</span>
+                <span class="info-value">{{ user.adresse }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt text-secondary"></i> Sexe
+                </span>
+                <span class="info-value">{{ user.sexe }}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">
+                  <i class="fas fa-map-marker-alt text-secondary"></i> Date de Naissance
+                </span>
+                <span class="info-value">{{ formatDate(user.dateNaissance) }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">
                   <i class="fas fa-calendar text-secondary"></i> Date
                   d'inscription
                 </span>
-                <span class="info-value">{{ user.joinDate }}</span>
+                <span class="info-value">{{ formatDate(user.date_inscription) }}</span>
               </div>
             </div>
           </div>
@@ -96,7 +110,7 @@
             <div class="permissions-list">
               <div
                 class="permission-group mb-4"
-                v-for="group in user.permissions"
+                v-for="group in extractRolesAndPermissions(user).permissions"
                 :key="group.name"
               >
                 <h6 class="permission-group-title">{{ group.name }}</h6>
@@ -129,9 +143,8 @@
               </div>
             </div>
           </div>
-
           <!-- Activité -->
-          <div
+          <!-- <div
             v-show="activeTab === 'activity'"
             class="tab-pane fade show active"
           >
@@ -150,7 +163,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -175,36 +188,66 @@ const activeTab = ref("info");
 const detailTabs = [
   { id: "info", label: "Informations", icon: "fas fa-user" },
   { id: "permissions", label: "Permissions", icon: "fas fa-shield-alt" },
-  { id: "activity", label: "Activité", icon: "fas fa-history" },
+  // { id: "activity", label: "Activité", icon: "fas fa-history" },
 ];
 
 const closeModal = () => {
   emit("close");
 };
 
-const getBadgeClass = (type) => {
+// Fonction pour extraire les rôles et permissions
+function extractRolesAndPermissions(user) {
+  const rolesAndPermissions = user.roles_and_permissions;
+
+  // Extraire les rôles
+  const roles = rolesAndPermissions.map((role) => role.name);
+
+  // Extraire les permissions
+  // const permissions = rolesAndPermissions.flatMap((role) => role.permissions);
+  const permissions = rolesAndPermissions.map((role) => ({
+    name: role.name,
+    items: role.permissions.map((perm) => ({
+      id: perm,
+      name: perm,
+      description: perm, // vous devrez probablement récupérer une description réelle
+      granted: true, // ou utiliser la valeur réelle
+    })),
+  }));
+
+  return { roles, permissions };
+}
+
+// Convertion au format fr
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  return date.toLocaleDateString('fr-FR', options);
+}
+
+const getBadgeClass = (role) => {
   const classes = {
-    Médecin: "badge bg-primary",
-    Patient: "badge bg-success",
-    Assistant: "badge bg-purple",
+    administrateur: "badge bg-warning",
+    medecin: "badge bg-primary",
+    patient: "badge bg-success",
+    assistant: "badge bg-purple",
   };
-  return classes[type] || "badge bg-secondary";
+  return classes[role] || "badge bg-secondary";
 };
 
 const getStatusBadgeClass = (status) => {
-  return status === "Actif"
+  return status == "Actif"
     ? "badge bg-success-light text-success"
     : "badge bg-danger-light text-danger";
 };
 
-const getActivityIcon = (type) => {
-  const icons = {
-    login: "fas fa-sign-in-alt text-primary",
-    update: "fas fa-edit text-warning",
-    action: "fas fa-check-circle text-success",
-  };
-  return icons[type] || "fas fa-info-circle text-secondary";
-};
+// const getActivityIcon = (type) => {
+//   const icons = {
+//     login: "fas fa-sign-in-alt text-primary",
+//     update: "fas fa-edit text-warning",
+//     action: "fas fa-check-circle text-success",
+//   };
+//   return icons[type] || "fas fa-info-circle text-secondary";
+// };
 </script>
 
 <style scoped>
@@ -234,7 +277,7 @@ const getActivityIcon = (type) => {
   background: white;
   height: 100vh;
   transform: translateX(100%);
-  transition: transform .6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .side-modal.show {
