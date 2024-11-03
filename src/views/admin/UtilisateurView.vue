@@ -76,7 +76,7 @@
             </div>
           </div>
 
-          <!-- Onglets -->
+          <!-- Onglets existants -->
           <ul class="nav nav-tabs mb-4">
             <li class="nav-item" v-for="tab in tabs" :key="tab.value">
               <button
@@ -92,10 +92,27 @@
           <!-- Liste des utilisateurs -->
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title mb-4">Liste des utilisateurs</h5>
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <div>
+                  <label class="me-2">Éléments par page:</label>
+                  <select
+                    class="form-select form-select-sm d-inline-block w-auto"
+                    v-model="itemsPerPage"
+                    @change="currentPage = 1"
+                  >
+                    <option :value="10">10</option>
+                    <option :value="25">25</option>
+                    <option :value="50">50</option>
+                  </select>
+                </div>
+                <div>Total: {{ filteredUsers.length }} utilisateurs</div>
+              </div>
+
               <div class="user-list">
                 <div
-                  v-for="user in filteredUsers"
+                  v-for="user in paginatedUsers"
                   :key="user.id"
                   class="user-item"
                 >
@@ -137,6 +154,48 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Pagination -->
+              <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                  <li
+                    class="page-item"
+                    :class="{ disabled: currentPage === 1 }"
+                  >
+                    <button
+                      class="page-link"
+                      @click="currentPage--"
+                      :disabled="currentPage === 1"
+                    >
+                      Précédent
+                    </button>
+                  </li>
+
+                  <li
+                    v-for="page in totalPages"
+                    :key="page"
+                    class="page-item"
+                    :class="{ active: currentPage === page }"
+                  >
+                    <button class="page-link" @click="currentPage = page">
+                      {{ page }}
+                    </button>
+                  </li>
+
+                  <li
+                    class="page-item"
+                    :class="{ disabled: currentPage === totalPages }"
+                  >
+                    <button
+                      class="page-link"
+                      @click="currentPage++"
+                      :disabled="currentPage === totalPages"
+                    >
+                      Suivant
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
@@ -159,13 +218,16 @@ import HeaderPatient from "@/components/HeaderPatient.vue";
 import DetailUtilisateur from "@/components/DetailUtilisateur.vue";
 import { getUserStatistics } from "@/services/utilisateurService";
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 
 // États
 const searchQuery = ref("");
 const currentTab = ref("all");
 const currentStatusFilter = ref("all");
 const users = ref([]);
+// Variables de pagination
+const currentPage = ref(1);
+const itemsPerPage = ref(10);
 
 // État réactif pour les statistiques
 const stats = ref([
@@ -251,7 +313,7 @@ function extractRolesAndPermissions(user) {
   return { roles, permissions };
 }
 
-// Computed
+// Filtre des users et pagination des pages
 const filteredUsers = computed(() => {
   let filtered = users.value;
 
@@ -286,6 +348,37 @@ const filteredUsers = computed(() => {
   return filtered;
 });
 
+// Computed pour le nombre total de pages
+const totalPages = computed(() =>
+  Math.ceil(filteredUsers.value.length / itemsPerPage.value)
+);
+
+// Computed pour les utilisateurs paginés
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return filteredUsers.value.slice(start, end);
+});
+
+// Fonctions utilitaires pour la pagination
+// const changeItemsPerPage = (value) => {
+//   itemsPerPage.value = value;
+//   currentPage.value = 1; // Retour à la première page
+// };
+
+// const goToPage = (page) => {
+//   if (page >= 1 && page <= totalPages.value) {
+//     currentPage.value = page;
+//   }
+// };
+
+// Observers pour réinitialiser la pagination lors des changements de filtres
+watch([() => currentTab.value, () => searchQuery.value, () => currentStatusFilter.value], () => {
+  currentPage.value = 1;
+});
+
+
+// Méthode pour obtenir le statut de l'utilisateur
 const getUserStatus = (user) => {
   // Logique pour déterminer le statut de l'utilisateur
   if (
@@ -431,7 +524,7 @@ onMounted(() => {
 }
 
 .bg-primary {
-  background: #10B981;
+  background: #10b981;
 }
 
 .bg-success-light {
