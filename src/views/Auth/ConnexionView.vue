@@ -7,11 +7,9 @@
             <router-link
               class="btn-retour d-flex align-items-center gap-2"
               :to="{ name: 'Portail' }"
-              ><img
-                src="../../../public/image/retour.svg"
-                alt="retour"
-              />Retour</router-link
             >
+              <img src="../../../public/image/retour.svg" alt="retour" />Retour
+            </router-link>
             <h2 class="mt-3">Rejoignez la santé de demain, aujourd'hui !</h2>
             <p>
               Inscrivez-vous dès maintenant pour accéder à des consultations
@@ -26,6 +24,16 @@
           </div>
           <div class="form-panel col-md-7">
             <h3>Se connecter à son compte</h3>
+            
+             <!-- Message d'erreur d'authentification -->
+             <div v-if="authStore.errorMessages.length" class="alert alert-danger" role="alert">
+              <ul>
+                <li v-for="(message, index) in authStore.errorMessages" :key="index">
+                  {{ message }}
+                </li>
+              </ul>
+            </div>
+
             <form @submit.prevent="handleSubmit">
               <!-- Champ email -->
               <div class="mb-3">
@@ -36,8 +44,11 @@
                   id="email"
                   placeholder="exemple@exemple.com"
                   v-model="formData.email"
+                  :class="{ 'is-invalid': errors.email }"
                 />
-                <p v-if="errors.email" class="text-danger">{{ errors.email }}</p>
+                <div v-if="errors.email" class="invalid-feedback">
+                  {{ errors.email }}
+                </div>
               </div>
 
               <!-- Champ mot de passe -->
@@ -49,12 +60,12 @@
                   id="password"
                   placeholder="Mot de passe"
                   v-model="formData.password"
+                  :class="{ 'is-invalid': errors.password }"
                 />
-                <p v-if="errors.password" class="text-danger">{{ errors.password }}</p>
+                <div v-if="errors.password" class="invalid-feedback">
+                  {{ errors.password }}
+                </div>
               </div>
-
-              <!-- Affichage erreur d'authentification -->
-              <p v-if="errors.auth" class="text-danger">{{ errors.auth }}</p>
 
               <!-- Bouton de soumission -->
               <div class="d-grid">
@@ -67,9 +78,7 @@
               <div class="already-account">
                 <p>
                   Pas encore de compte ?
-                  <router-link :to="{ name: 'Inscription' }"
-                    >S'inscrire ici</router-link
-                  >
+                  <router-link :to="{ name: 'Inscription' }">S'inscrire ici</router-link>
                 </p>
               </div>
             </form>
@@ -98,12 +107,17 @@ const formData = reactive({
 const errors = reactive({
   email: "",
   password: "",
-  auth: "" 
+  auth: []
 });
 
 // Fonction de validation des champs
 const validateForm = () => {
   let isValid = true;
+
+  // Réinitialisation des erreurs
+  errors.email = "";
+  errors.password = "";
+  errors.auth = [];
 
   // Validation de l'email
   if (!formData.email) {
@@ -112,8 +126,6 @@ const validateForm = () => {
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
     errors.email = "L'email n'est pas valide.";
     isValid = false;
-  } else {
-    errors.email = "";
   }
 
   // Validation du mot de passe
@@ -123,8 +135,6 @@ const validateForm = () => {
   } else if (formData.password.length < 6) {
     errors.password = "Le mot de passe doit contenir au moins 6 caractères.";
     isValid = false;
-  } else {
-    errors.password = ""; // Efface le message d'erreur s'il est valide
   }
 
   return isValid;
@@ -132,9 +142,6 @@ const validateForm = () => {
 
 // Gestion de la soumission du formulaire
 const handleSubmit = async () => {
-  // Réinitialise les erreurs d'authentification avant de soumettre
-  errors.auth = "";
-
   if (!validateForm()) {
     return;
   }
@@ -144,44 +151,48 @@ const handleSubmit = async () => {
     await authStore.authenticate("login", formData);
 
     // Vérifier le rôle de l'utilisateur et rediriger en fonction
-    const userRole = authStore.user?.role[0]; // Assure-toi que `role` est un tableau
+    const userRole = authStore.user?.role[0];
 
-    if (!userRole) {
-      console.error("Rôle non défini pour l'utilisateur.");
-      return;
-    }
+    // if (!userRole) {
+    //   errors.auth.push("Erreur: rôle non défini pour l'utilisateur.");
+    //   return;
+    // }
 
     // Rediriger selon le rôle
-    switch (userRole) {
-      case "administrateur":
-        router.push({ name: "AdminDashboard" });
-        break;
-      case "medecin":
-        router.push({ name: "MedecinDashboard" });
-        break;
-      case "patient":
-        router.push({ name: "PatientDashboard" });
-        break;
-      case "assistant":
-        router.push({ name: "AssistantDashboard" });
-        break;
-      default:
-        console.error("Rôle non reconnu.");
-    }
-  } catch (error) {
-    // Gestion des erreurs provenant du backend (par exemple : email/mot de passe incorrect)
-    if (error.response && error.response.data && error.response.data.message) {
-      errors.auth = error.response.data.message;
+    const roleRoutes = {
+      administrateur: "AdminDashboard",
+      medecin: "MedecinDashboard",
+      patient: "PatientDashboard",
+      assistant: "AssistantDashboard"
+    };
+
+    const targetRoute = roleRoutes[userRole];
+    if (targetRoute) {
+      router.push({ name: targetRoute });
     } else {
-      errors.auth = "Une erreur s'est produite lors de la connexion."; // Message générique en cas d'erreur
+      errors.auth.push("Erreur: rôle non reconnu.");
     }
-    console.error("Erreur lors de la connexion", error);
+
+  } catch (error) {
+    // Gestion améliorée des erreurs
+    if (error.response?.data?.message) {
+      errors.auth.push(error.response.data.message);
+    } else if (error.message) {
+      errors.auth.push(error.message);
+    } else {
+      errors.auth.push("Une erreur s'est produite lors de la connexion.");
+    }
+    console.error("Erreur lors de la connexion:", error);
   }
 };
 </script>
 
-
 <style scoped>
+
+ul {
+  list-style: none;
+}
+
 .text-danger {
   color: red;
   font-size: 0.875rem;

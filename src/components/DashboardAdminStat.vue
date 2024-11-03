@@ -1,65 +1,137 @@
 <!-- Dashboard.vue -->
 <template>
-  <div class="dashboard p-4">
-    <!-- KPIs Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-5 d-flex justify-content-between">
-      <div v-for="(kpi, index) in kpis" :key="index" 
-           class="bg-white rounded-lg shadow p-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-gray-500 text-sm">{{ kpi.title }}</h3>
-          <span class="text-gray-400">
-            <i :class="kpi.icon"></i>
-          </span>
+  <div class="dashboard bg-light">
+    <div class="container-fluid px-4 py-5">
+      <!-- En-tête du tableau de bord -->
+      <div class="row mb-4 align-items-center">
+        <div class="col">
+          <h1 class="display-6 fw-bold text-primary">Tableau de Bord Médical</h1>
+          <p class="text-muted">Vue d'ensemble de votre plateforme de télémédecine</p>
         </div>
-        <div class="mt-2">
-          <span class="text-2xl font-bold">{{ kpi.value }}</span>
-          <span :class="['text-sm ml-2', kpi.trend > 0 ? 'text-green-500' : 'text-red-500']">
-            {{ kpi.trend }}%
-          </span>
+        <div class="col-auto">
+          <div class="btn-group" role="group">
+            <button class="btn btn-outline-primary" @click="refreshDashboard">
+              <i class="bi bi-arrow-clockwise me-2"></i>Actualiser
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Graphiques principaux -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 d-flex flex-wrap">
-      <!-- Consultations Graph -->
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-lg font-semibold mb-4">Évolution des consultations</h3>
-        <Line :data="consultationsData" :options="consultationsOptions" />
+      <!-- Cartes de KPI -->
+      <div class="row g-4 mb-5">
+        <div class="col-md-3" v-for="(kpi, index) in kpis" :key="index">
+          <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="text-muted small text-uppercase">{{ kpi.title }}</div>
+                <i :class="['text-primary', kpi.icon, 'fs-4']"></i>
+              </div>
+              <div class="d-flex align-items-baseline">
+                <h3 class="h4 mb-0 me-2">{{ kpi.value }}</h3>
+                <span :class="[
+                  'badge', 
+                  kpi.trend > 0 ? 'bg-success-soft' : 'bg-danger-soft',
+                  'text-' + (kpi.trend > 0 ? 'success' : 'danger')
+                ]">
+                  {{ kpi.trend > 0 ? '+' : '' }}{{ kpi.trend }}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Distribution par spécialité -->
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-lg font-semibold mb-4">Distribution par spécialité</h3>
-        <Pie :data="specialitiesData" :options="specialitiesOptions" />
-      </div>
-    </div>
+      <!-- Graphiques principaux -->
+      <div class="row g-4 mb-5">
+        <!-- Consultations en ligne -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+              <h5 class="card-title mb-0">Consultations en Ligne</h5>
+            </div>
+            <div class="card-body">
+              <Line 
+                :data="consultationsData" 
+                :options="consultationsOptions" 
+                class="chart-responsive"
+              />
+            </div>
+          </div>
+        </div>
 
-    <!-- Statistiques détaillées -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 d-flex">
-      <!-- Revenus mensuels -->
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-lg font-semibold mb-4">Revenus mensuels</h3>
-        <Bar :data="revenueData" :options="revenueOptions" />
+        <!-- Distribution des Spécialités -->
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+              <h5 class="card-title mb-0">Distribution des Spécialités</h5>
+            </div>
+            <div class="card-body">
+              <Pie 
+                :data="specialitiesData" 
+                :options="specialitiesOptions" 
+                class="chart-responsive"
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Satisfaction patients -->
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-lg font-semibold mb-4">Satisfaction patients</h3>
-        <Line :data="satisfactionData" :options="satisfactionOptions" />
-      </div>
+      <!-- Statistiques Détaillées -->
+      <div class="row g-4">
+        <!-- Téléconsultations -->
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+              <h5 class="card-title mb-0">Téléconsultations</h5>
+            </div>
+            <div class="card-body">
+              <Bar 
+                :data="teleconsultationData" 
+                :options="teleconsultationOptions" 
+                class="chart-responsive"
+              />
+            </div>
+          </div>
+        </div>
 
-      <!-- Activité DME -->
-      <div class="bg-white rounded-lg shadow p-4">
-        <h3 class="text-lg font-semibold mb-4">Activité DME</h3>
-        <Bar :data="dmeData" :options="dmeOptions" />
+        <!-- Patients par Pathologie -->
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+              <h5 class="card-title mb-0">Patients par Pathologie</h5>
+            </div>
+            <div class="card-body">
+              <Pie 
+                :data="pathologiesData" 
+                :options="pathologiesOptions" 
+                class="chart-responsive"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Satisfaction Patients -->
+        <div class="col-lg-4">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 pt-4 pb-0">
+              <h5 class="card-title mb-0">Satisfaction Patients</h5>
+            </div>
+            <div class="card-body">
+              <Line 
+                :data="satisfactionData" 
+                :options="satisfactionOptions" 
+                class="chart-responsive"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { 
   Chart as ChartJS, 
   CategoryScale, 
@@ -90,64 +162,55 @@ ChartJS.register(
 // Données KPI
 const kpis = ref([
   {
-    title: 'Total Utilisateurs',
-    value: '1,234',
-    trend: 12,
-    icon: 'fas fa-users'
-  },
-  {
-    title: 'Consultations du jour',
-    value: '48',
-    trend: 8,
-    icon: 'fas fa-stethoscope'
-  },
-  {
-    title: 'Revenus du mois',
-    value: '2.4M FCFA',
+    title: 'Patients Actifs',
+    value: '1,578',
     trend: 15,
-    icon: 'fas fa-chart-line'
+    icon: 'bi bi-people'
   },
   {
-    title: 'Nouveaux patients',
-    value: '156',
-    trend: -5,
-    icon: 'fas fa-user-plus'
+    title: 'Consultations',
+    value: '254',
+    trend: 22,
+    icon: 'bi bi-camera-video'
+  },
+  {
+    title: 'Temps Moyen Consultation',
+    value: '22 min',
+    trend: 5,
+    icon: 'bi bi-stopwatch'
+  },
+  {
+    title: 'Taux de Réponse',
+    value: '95%',
+    trend: 3,
+    icon: 'bi bi-check-circle'
   }
 ])
 
-// Données pour les graphiques
+// Données Graphiques
 const consultationsData = {
-  labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+  labels: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Juin'],
   datasets: [{
     label: 'Consultations',
     data: [65, 78, 90, 85, 95, 110],
     borderColor: '#6366f1',
-    tension: 0.1
+    tension: 0.4
   }]
 }
 
 const consultationsOptions = {
   responsive: true,
   plugins: {
-    legend: {
-      position: 'top',
-    },
-    title: {
-      display: true,
-      text: 'Évolution des consultations'
-    }
+    legend: { display: false },
   }
 }
 
 const specialitiesData = {
-  labels: ['Généraliste', 'Cardiologue', 'Pédiatre', 'Autres'],
+  labels: ['Médecine Générale', 'Psychiatrie', 'Cardiologie', 'Pédiatrie'],
   datasets: [{
-    data: [40, 20, 15, 25],
+    data: [40, 20, 25, 15],
     backgroundColor: [
-      '#6366f1',
-      '#8b5cf6',
-      '#d946ef',
-      '#ec4899'
+      '#6366f1', '#8b5cf6', '#d946ef', '#ec4899'
     ]
   }]
 }
@@ -155,43 +218,58 @@ const specialitiesData = {
 const specialitiesOptions = {
   responsive: true,
   plugins: {
-    legend: {
-      position: 'right'
-    }
+    legend: { position: 'right' }
   }
 }
 
-const revenueData = {
-  labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+const teleconsultationData = {
+  labels: ['En Attente', 'En Cours', 'Terminées'],
   datasets: [{
-    label: 'Revenus (M FCFA)',
-    data: [2.1, 1.8, 2.4, 2.2, 2.6, 2.4],
-    backgroundColor: '#6366f1'
+    label: 'Téléconsultations',
+    data: [35, 45, 120],
+    backgroundColor: ['#6366f1', '#8b5cf6', '#d946ef']
   }]
 }
 
-const revenueOptions = {
+const teleconsultationOptions = {
   responsive: true,
   plugins: {
-    legend: {
-      position: 'top'
-    }
+    legend: { display: false }
+  }
+}
+
+const pathologiesData = {
+  labels: ['Chroniques', 'Aigues', 'Suivi', 'Urgences'],
+  datasets: [{
+    data: [45, 25, 20, 10],
+    backgroundColor: [
+      '#6366f1', '#8b5cf6', '#d946ef', '#ec4899'
+    ]
+  }]
+}
+
+const pathologiesOptions = {
+  responsive: true,
+  plugins: {
+    legend: { position: 'right' }
   }
 }
 
 const satisfactionData = {
-  labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+  labels: ['Jan', 'Fev', 'Mar', 'Avr', 'Mai', 'Juin'],
   datasets: [{
     label: 'Satisfaction (%)',
     data: [85, 88, 87, 90, 89, 92],
     borderColor: '#6366f1',
-    fill: true,
-    backgroundColor: 'rgba(99, 102, 241, 0.1)'
+    backgroundColor: 'rgba(99, 102, 241, 0.2)'
   }]
 }
 
 const satisfactionOptions = {
   responsive: true,
+  plugins: {
+    legend: { display: false }
+  },
   scales: {
     y: {
       min: 0,
@@ -200,28 +278,40 @@ const satisfactionOptions = {
   }
 }
 
-const dmeData = {
-  labels: ['Créés', 'Mis à jour', 'Consultés'],
-  datasets: [{
-    label: 'Activité DME',
-    data: [125, 254, 478],
-    backgroundColor: '#6366f1'
-  }]
+// Méthodes
+const refreshDashboard = () => {
+  // Logique de rafraîchissement des données
+  console.log('Tableau de bord actualisé')
 }
 
-const dmeOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top'
-    }
-  }
-}
+// Initialisation
+onMounted(() => {
+  // Chargement initial des données
+})
 </script>
 
 <style scoped>
 .dashboard {
-  background-color: #f3f4f6;
-  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-10px);
+}
+
+.chart-responsive {
+  max-height: 300px;
+}
+
+.bg-success-soft {
+  background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-danger-soft {
+  background-color: rgba(220, 53, 69, 0.1);
 }
 </style>

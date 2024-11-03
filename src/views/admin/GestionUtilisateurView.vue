@@ -16,7 +16,7 @@
               Gérez vos utilisateurs et leurs accès en toute simplicité
             </p>
           </div>
-
+          <BtnRetour/>
           <!-- Navigation par onglets -->
           <ul class="nav custom-tabs mb-4" role="tablist">
             <li class="nav-item" role="presentation">
@@ -373,6 +373,7 @@
 <script setup>
 import SidebarAdmin from "@/components/SidebarAdmin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
+import BtnRetour from "@/components/BtnRetour.vue";
 import { ref, reactive, onMounted, computed, watch } from "vue";
 import {
   getRolesAndPermissions,
@@ -637,7 +638,7 @@ onMounted(fetchRolesAndPermissions);
   border: none;
   border-radius: 0.5rem;
   padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .custom-tab-link:hover {

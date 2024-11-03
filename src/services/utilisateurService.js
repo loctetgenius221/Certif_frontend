@@ -81,3 +81,37 @@ export const registerUsers = async (role, newUser) => {
     throw error;
   }
 };
+
+export const blockedUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/utilisateur/${userId}/block`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log("Réponse de l'api :", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors du blocage :", error.message);
+    throw error;
+  }
+}
+
+export const unblockedUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.post(`/utilisateur/${userId}/unblock`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    
+    console.log("Réponse de l'api :", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors du déblocage :", error.message);
+    throw error;
+  }
+}

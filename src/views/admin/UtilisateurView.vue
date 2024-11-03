@@ -76,11 +76,11 @@
             </div>
           </div>
 
-          <!-- Onglets existants -->
-          <ul class="nav nav-tabs mb-4">
+          <!-- Onglets avec classe modifiée -->
+          <ul class="nav custom-tabs mb-4">
             <li class="nav-item" v-for="tab in tabs" :key="tab.value">
               <button
-                class="nav-link"
+                class="custom-tab-link"
                 :class="{ active: currentTab === tab.value }"
                 @click="currentTab = tab.value"
               >
@@ -102,6 +102,7 @@
                     v-model="itemsPerPage"
                     @change="currentPage = 1"
                   >
+                    <option :value="6">6</option>
                     <option :value="10">10</option>
                     <option :value="25">25</option>
                     <option :value="50">50</option>
@@ -208,6 +209,7 @@
     v-if="selectedUser"
     :show="isModalVisible"
     :user="selectedUser"
+    :userStatus="getUserStatus(selectedUser)"
     @close="isModalVisible = false"
   />
 </template>
@@ -227,7 +229,7 @@ const currentStatusFilter = ref("all");
 const users = ref([]);
 // Variables de pagination
 const currentPage = ref(1);
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(6);
 
 // État réactif pour les statistiques
 const stats = ref([
@@ -291,6 +293,7 @@ const tabs = [
   { label: "Médecins", value: "medecin" },
   { label: "Patients", value: "patient" },
   { label: "Assistants", value: "assistant" },
+  { label: "Bloqués", value: "bloque" },
 ];
 
 const loadUsers = async () => {
@@ -317,6 +320,7 @@ function extractRolesAndPermissions(user) {
 const filteredUsers = computed(() => {
   let filtered = users.value;
 
+  // Filtrer par recherche
   if (searchQuery.value) {
     filtered = filtered.filter(
       (user) =>
@@ -326,19 +330,24 @@ const filteredUsers = computed(() => {
     );
   }
 
-  if (currentTab.value !== "all") {
-    filtered = filtered.filter((user) => {
-      const typeMap = {
-        medecin: "medecin",
-        patient: "patient",
-        assistant: "assistant",
-      };
-      return user.roles_and_permissions.some(
-        (role) => role.name === typeMap[currentTab.value]
-      );
-    });
+  // Filtrer par rôle (médecin, patient, assistant)
+  if (currentTab.value !== "all" && currentTab.value !== "bloque") {
+    const typeMap = {
+      medecin: "medecin",
+      patient: "patient",
+      assistant: "assistant",
+    };
+    filtered = filtered.filter((user) =>
+      user.roles_and_permissions.some((role) => role.name === typeMap[currentTab.value])
+    );
   }
 
+  // Filtrer par statut "Bloqués"
+  if (currentTab.value === "bloque") {
+    filtered = filtered.filter((user) => !user.is_active);
+  }
+
+  // Autre filtre de statut si nécessaire (par exemple, actif/inactif)
   if (currentStatusFilter.value !== "all") {
     filtered = filtered.filter(
       (user) => getUserStatus(user) === currentStatusFilter.value
@@ -347,7 +356,6 @@ const filteredUsers = computed(() => {
 
   return filtered;
 });
-
 // Computed pour le nombre total de pages
 const totalPages = computed(() =>
   Math.ceil(filteredUsers.value.length / itemsPerPage.value)
@@ -360,30 +368,24 @@ const paginatedUsers = computed(() => {
   return filteredUsers.value.slice(start, end);
 });
 
-// Fonctions utilitaires pour la pagination
-// const changeItemsPerPage = (value) => {
-//   itemsPerPage.value = value;
-//   currentPage.value = 1; // Retour à la première page
-// };
-
-// const goToPage = (page) => {
-//   if (page >= 1 && page <= totalPages.value) {
-//     currentPage.value = page;
-//   }
-// };
-
 // Observers pour réinitialiser la pagination lors des changements de filtres
-watch([() => currentTab.value, () => searchQuery.value, () => currentStatusFilter.value], () => {
-  currentPage.value = 1;
-});
-
+watch(
+  [
+    () => currentTab.value,
+    () => searchQuery.value,
+    () => currentStatusFilter.value,
+  ],
+  () => {
+    currentPage.value = 1;
+  }
+);
 
 // Méthode pour obtenir le statut de l'utilisateur
 const getUserStatus = (user) => {
   // Logique pour déterminer le statut de l'utilisateur
   if (
-    user.derniereLigneConnexion &&
-    Date.now() - new Date(user.derniereLigneConnexion).getTime() <
+    user.derniere_ligne_connexion &&
+    Date.now() - new Date(user.derniere_ligne_connexion).getTime() <
       30 * 24 * 60 * 60 * 1000
   ) {
     return "Actif";
@@ -550,5 +552,30 @@ onMounted(() => {
 
 .gap-3 {
   gap: 1rem;
+}
+
+/* custom des tabs */
+.custom-tabs {
+  border-bottom: none;
+  gap: 0.5rem;
+}
+
+.nav.custom-tabs .custom-tab-link {
+  color: #6b7280;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav.custom-tabs .custom-tab-link:hover {
+  background-color: #f3f4f6;
+  color: #319fe9;
+}
+
+.nav.custom-tabs .custom-tab-link.active {
+  background: linear-gradient(135deg, #319fe9, #2980b9) !important;
+  color: #fff !important;
+  font-weight: bold;
 }
 </style>

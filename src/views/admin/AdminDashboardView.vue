@@ -4,7 +4,6 @@
     <div class="section-content">
       <HeaderPatient/>
       <div class="section-container">
-        <h1>Dashboard Administrateur</h1>
         <DashboardAdminStat/>
       </div>
     </div>
