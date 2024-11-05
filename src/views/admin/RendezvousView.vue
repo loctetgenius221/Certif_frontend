@@ -234,9 +234,9 @@
                       <th class="text-muted fw-normal">Heure</th>
                       <th class="text-muted fw-normal">Client</th>
                       <th class="text-muted fw-normal">Statut</th>
-                      <th class="text-muted fw-normal text-center pe-4">
+                      <!-- <th class="text-muted fw-normal text-center pe-4">
                         Actions
-                      </th>
+                      </th> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -275,7 +275,7 @@
                           {{ apt.status }}
                         </span>
                       </td>
-                      <td class="text-center pe-4">
+                      <!-- <td class="text-center pe-4">
                         <div class="btn-group" role="group">
                           <button
                             class="btn btn-sm btn-outline-primary rounded-start"
@@ -292,7 +292,7 @@
                             <i class="bi bi-x-circle"></i>
                           </button>
                         </div>
-                      </td>
+                      </td> -->
                     </tr>
                     <tr v-if="filteredAppointments.length === 0">
                       <td colspan="5" class="text-center text-muted py-4">

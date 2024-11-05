@@ -65,9 +65,6 @@
                       @input="searchDossiers"
                     />
                   </div>
-                  <div class="col-auto">
-                    <button class="btn btn-primary">Nouveau dossier</button>
-                  </div>
                 </div>
               </div>
               <div class="card-body">
@@ -86,107 +83,33 @@
                         <th>ID</th>
                         <th>Patient</th>
                         <th>Date de création</th>
-                        <th>Statut</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr
-                        v-for="dossier in filteredDossiers"
-                        :key="dossier.id"
-                        @click="selectDossier(dossier)"
-                        :class="{
-                          'table-active': selectedDossier?.id === dossier.id,
-                        }"
-                      >
+                      <tr v-for="dossier in filteredDossiers" :key="dossier.id">
                         <td>{{ dossier.id }}</td>
                         <td>{{ dossier.patient }}</td>
                         <td>{{ dossier.dateCreation }}</td>
                         <td>
-                          <span
-                            class="badge"
-                            :class="
-                              dossier.statut === 'actif'
-                                ? 'bg-success'
-                                : 'bg-secondary'
-                            "
-                          >
-                            {{ dossier.statut }}
-                          </span>
-                        </td>
-                        <td>
-                          <div class="btn-group">
-                            <button class="btn btn-sm btn-outline-primary">
-                              Voir
-                            </button>
-                            <button class="btn btn-sm btn-outline-secondary">
-                              Éditer
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger">
-                              Archiver
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
+                          <div class="btn-group gap-2">
+                            <router-link
+                              class="btn-detail btn btn-sm btn-outline-primary"
+                              :to="{
+                                name: 'DétailDmeAdmin',
+                                params: { id: dossier.id },
+                              }"
+                            >
+                              <i class="bi bi-eye me-1"></i> Voir
+                            </router-link>
 
-          <!-- Section Permissions -->
-          <div v-if="currentTab === 'permissions'" class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="card-title mb-0">Gestion des permissions</h5>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Rôle</th>
-                        <th>Lecture</th>
-                        <th>Écriture</th>
-                        <th>Modification</th>
-                        <th>Suppression</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="perm in permissions" :key="perm.role">
-                        <td>{{ perm.role }}</td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            v-model="perm.lecture"
-                            @change="updatePermissions"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            v-model="perm.ecriture"
-                            @change="updatePermissions"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            v-model="perm.modification"
-                            @change="updatePermissions"
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                            v-model="perm.suppression"
-                            @change="updatePermissions"
-                          />
+                            <!-- <button
+                              class="btn btn-sm btn-outline-danger"
+                              @click.stop="confirmArchive(dossier)"
+                            >
+                              <i class="bi bi-archive me-1"></i> Archiver
+                            </button> -->
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -212,36 +135,13 @@ const dossiers = ref([]);
 const selectedDossier = ref(null);
 const searchQuery = ref("");
 const currentTab = ref("liste");
-const permissions = ref([
-  { 
-    role: 'Administrateur', 
-    lecture: true, 
-    ecriture: true, 
-    modification: true, 
-    suppression: true 
-  },
-  { 
-    role: 'Médecin', 
-    lecture: true, 
-    ecriture: true, 
-    modification: true, 
-    suppression: false 
-  },
-  { 
-    role: 'Infirmier', 
-    lecture: true, 
-    ecriture: true, 
-    modification: false, 
-    suppression: false 
-  }
-]);
 const loading = ref(false);
 const error = ref(null);
 
 const tabs = [
   { id: "liste", name: "Liste des dossiers", icon: "bi bi-clipboard-check" },
-  { id: "archive", name: "Archives", icon: "bi bi-archive" },
-  { id: "permissions", name: "Permissions", icon: "bi bi-person-gear" },
+  // { id: "archive", name: "Archives", icon: "bi bi-archive" },
+  // { id: "permissions", name: "Permissions", icon: "bi bi-person-gear" },
 ];
 
 // Fonctions de gestion des dossiers
@@ -249,18 +149,22 @@ const fetchDossiers = async () => {
   loading.value = true;
   try {
     const response = await getDossierMedicalList();
-    dossiers.value = response.data.map(dossier => ({
+    dossiers.value = response.data.map((dossier) => ({
       ...dossier,
       dateCreation: new Date(dossier.created_at).toLocaleDateString(),
-      statut: new Date(dossier.created_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) ? 'actif' : 'archivé',
+      statut:
+        new Date(dossier.created_at) >
+        new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+          ? "actif"
+          : "archivé",
       patient: `${dossier.patient.numero_patient} - ${dossier.patient.user.prenom} ${dossier.patient.user.nom}`,
       details: {
-        antecedents: dossier.antecedents_medicaux || '[]',
-        infoSup: dossier.info_sup || '[]',
+        antecedents: dossier.antecedents_medicaux || "[]",
+        infoSup: dossier.info_sup || "[]",
         interventions: dossier.intervention_chirurgicale,
         traitements: dossier.traitements,
-        notes: dossier.notes_observations
-      }
+        notes: dossier.notes_observations,
+      },
     }));
   } catch (e) {
     error.value = "Erreur lors du chargement des dossiers";
@@ -272,9 +176,10 @@ const fetchDossiers = async () => {
 
 // Recherche et filtrage des dossiers
 const filteredDossiers = computed(() => {
-  return dossiers.value.filter(dossier => 
-    dossier.patient.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    dossier.numero_dme.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return dossiers.value.filter(
+    (dossier) =>
+      dossier.patient.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      dossier.numero_dme.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
@@ -283,17 +188,48 @@ const selectDossier = (dossier) => {
   selectedDossier.value = dossier;
 };
 
-// Mise à jour des permissions
-const updatePermissions = () => {
-  // Logique de mise à jour des permissions côté backend
-  console.log('Permissions mises à jour:', permissions.value);
-};
-
 // Archivage d'un dossier
 const archiverDossier = (dossier) => {
   // Logique d'archivage (à implémenter côté backend)
-  dossier.statut = 'archivé';
+  dossier.statut = "archivé";
 };
+
+/* ************************** */
+/*                            */
+/* ************************** */
+
+// Fonction pour confirmer l'archivage
+// const confirmArchive = async (dossier) => {
+//   const result = await Swal.fire({
+//     title: "Êtes-vous sûr ?",
+//     text: "Voulez-vous vraiment archiver ce dossier ?",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonColor: "#3085d6",
+//     cancelButtonColor: "#d33",
+//     confirmButtonText: "Oui, archiver",
+//     cancelButtonText: "Annuler",
+//   });
+
+//   if (result.isConfirmed) {
+//     try {
+//       await updateDossierMedical(dossier.id, { statut: "archive" });
+//       await fetchDossiers(); // Rafraîchir la liste
+
+//       Swal.fire(
+//         "Archivé !",
+//         "Le dossier a été archivé avec succès.",
+//         "success"
+//       );
+//     } catch (error) {
+//       Swal.fire(
+//         "Erreur",
+//         "Une erreur est survenue lors de l'archivage du dossier",
+//         "error"
+//       );
+//     }
+//   }
+// };
 
 // Initialisation
 onMounted(() => {
@@ -306,7 +242,7 @@ defineExpose({
   selectedDossier,
   filteredDossiers,
   selectDossier,
-  archiverDossier
+  archiverDossier,
 });
 </script>
 

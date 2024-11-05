@@ -115,3 +115,67 @@ export const unblockedUser = async (userId) => {
     throw error;
   }
 }
+
+export const getRole = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get("/roles", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("roles:", response.data);
+    return response.data
+  } catch (error) {
+    console.error("Erreur lors de la récupération des statistiques:", error);
+    throw error;
+  }
+}
+
+export const createRole = async (roleData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.post("/roles", roleData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("roles:", response.data);
+    return response.data
+  } catch (error) {
+    console.error("Erreur lors de la récupération des rôles:", error);
+    throw error;
+  }
+}
+
+export const updateRole = async (roleId, roleData) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.put(`/roles/${roleId}`, roleData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("roles:", response.data);
+    return response.data
+  } catch (error) {
+    console.error("Erreur lors de la modification du rôles:", error);
+    throw error;
+  }
+}
+
+export const deleteRole = async (roleId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.delete(`/roles/${roleId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    console.log(response.data)
+    return response.data;
+  } catch (error) {
+    console.error('Erreur lors de la suppression du rôle:', error);
+    throw error;
+  }
+}
