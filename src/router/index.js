@@ -47,7 +47,7 @@ const routes = [
     component: BlogView,
   },
   {
-    path: '/article',
+    path: '/article/:id',
     name: 'Article',
     component: ArticleView,
     props: true, // Permet de passer l'ID de l'article comme un prop

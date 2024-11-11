@@ -49,6 +49,7 @@ h3 {
   background: #fff;
   width: 100%;
   padding: 0;
+  z-index: 1;
 }
 
 .section-container {

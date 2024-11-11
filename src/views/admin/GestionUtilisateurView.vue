@@ -143,7 +143,7 @@
                             :class="{ 'is-invalid': errors.roleId }"
                             id="role"
                             v-model="newUser.roleId"
-                            @input="validateForm"
+                            
                             required
                           >
                             <option value="" disabled>

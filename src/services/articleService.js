@@ -25,6 +25,22 @@ export const allArticle = async () => {
   }
 };
 
+export const getArticle = async (articleId) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await api.get(`/articles/${articleId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Erreur lors de la recupération des articles:", error);
+    throw error;
+  }
+};
+
 export const deleteArticle = async (articleId) => {
   try {
     const token = localStorage.getItem("token");
@@ -110,19 +126,7 @@ export const storeArticle = async (formData) => {
 
 export const getAllCategories = async () => {
   try {
-    const token = localStorage.getItem("token");
-
-    // Vérifiez que le token est présent
-    if (!token) {
-      throw new Error("Token non trouvé dans le localStorage");
-    }
-
-    const response = await api.get("/categories", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
+    const response = await api.get("/categories");
     console.log("Liste des catégories :", response.data);
     return response.data;
   } catch (error) {
