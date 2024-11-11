@@ -19,17 +19,17 @@
           </button>
 
           <div class="d-flex align-items-center gap-2">
-            <img src="../../public/image/photo-profil.png" alt="photo de profil" />
+            <img :src="userPhoto" alt="" />
             <div>
-              <h4 class="m-0 p-0">Marème Thiaw</h4>
-              <p class="m-0 p-0">Medecin</p>
+              <h4 class="m-0 p-0">{{ userPrenom }} {{ userNom }}</h4>
+              <p class="m-0 p-0">{{ userRole }}</p>
             </div>
           </div>
         </div>
       </div>
       <div class="header--content">
-        <h1>Hello Céline !</h1>
-        <p>Bienvenue sur l'interface d'administration</p>
+        <h1>Hello {{ userPrenom }} !</h1>
+        <p>Bienvenue sur votre interface</p>
       </div>
     </div>
 
@@ -118,7 +118,18 @@ const toggleNotificationSection = () => {
 onMounted(async () => {
   const { data } = await fetchNotifications();
   notifications.value = data;
+  userRole.value = localStorage.getItem("user_role") || "Patient";
+  userPrenom.value = localStorage.getItem("user_prenom") || "Utilisateur";
+  userNom.value = localStorage.getItem("user_nom") || "";
+  userPhoto.value = localStorage.getItem("user_photo") || "";
 });
+
+
+const userPrenom = ref("Utilisateur");
+const userNom = ref(""); // Si vous avez le nom stocké ailleurs, vous pouvez l'ajouter
+const userRole = ref("Patient");
+const userPhoto = ref("../../public/image/photo-profil.png"); 
+
 </script>
 
 <style scoped>

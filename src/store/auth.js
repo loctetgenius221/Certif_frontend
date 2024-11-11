@@ -35,8 +35,12 @@ export const useAuthStore = defineStore("authStore", {
         localStorage.setItem("token", this.token);
 
         // Enregistrer les détails spécifiques de l'utilisateur dans le localStorage
+        localStorage.setItem("user_prenom", this.user.prenom);
+        localStorage.setItem("user_nom", this.user.nom);
+        localStorage.setItem("user_photo", this.user.photo_profil);
         localStorage.setItem("user_role", this.user.role[0]); // Supposons que le rôle soit un tableau
         localStorage.setItem("user_id", this.user.id);
+
 
         // En fonction du rôle, stocker les informations supplémentaires
         if (this.user.role.includes("medecin")) {
