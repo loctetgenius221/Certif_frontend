@@ -3,141 +3,200 @@
 
   <div>
     <section class="hero-banner d-flex align-items-center">
-      <div class="container"></div>
+      <div class="container">
+        <h1 class="text-white fw-bold">Bienvenue sur notre blog de santé</h1>
+        <p class="text-white">Découvrez nos derniers articles sur des sujets de bien-être et de prévention.</p>
+      </div>
     </section>
 
-    <section class="article mb-5">
-      <div class="container d-flex justify-content-center">
-        <img src="../../../public/image/articleimg.jpg" alt="" />
+    <section class="article mb-5" v-if="article">
+      <div class="container d-flex flex-column flex-md-row justify-content-center align-items-start gap-3">
         <div class="article-content">
-          <small>11/09/2024 11:20</small>
-          <h1 class="mt-3">Titre de mon article</h1>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non
-            risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing
-            nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas
-            ligula massa, varius a, semper congue, euismod non, mi. Proin
-            porttitor, orci nec nonummy molestie, Enim est eleifend mi, non
-            fermentum diam nisl sit amet erat. Duis semper. Duis arcu massa,
-            scelerisque vitae, consequat in, pretium a, enim. Pellentesque
-            congue. Ut in risus volutpat libero pharetra tempor. Cras vestibulum
-            bibendum augue. Praesent egestas leo in pede. Praesent blandit odio
-            eu enim. Pellentesque sed dui ut augue blandit sodales. Vestibulum
-            ante ipsum primis in faucibus orci luctus et ultrices posuere
-            cubilia Curae; Aliquam nibh. Mauris ac mauris sed pede pellentesque
-            fermentum. Maecenas adipiscing ante non diam sodales hendrerit. Ut
-            velit mauris, egestas sed, gravida nec, ornare ut, mi. Aenean ut
-            orci vel massa suscipit pulvinar. Nulla sollicitudin. Fusce varius,
-            ligula non tempus aliquam, nunc turpis ullamcorper nibh, in tempus
-            sapien eros vitae ligula. Pellentesque rhoncus nunc et augue.
-            Integer id felis. Curabitur aliquet pellentesque diam. Integer quis
-            metus vitae elit lobortis egestas. Lorem ipsum dolor sit amet,
-            consectetuer adipiscing elit. Morbi vel erat non mauris convallis
-            vehicula. Nulla et sapien. Integer tortor tellus, aliquam faucibus,
-            convallis id, congue eu, quam. Mauris ullamcorper felis vitae erat.
-            Proin feugiat, augue non elementum posuere, metus purus iaculis
-            lectus, et tristique ligula justo vitae magna. Aliquam convallis
-            sollicitudin purus. Praesent aliquam, enim at fermentum mollis,
-            ligula massa adipiscing nisl, ac euismod nibh nisl eu lectus. Fusce
-            vulputate sem at sapien. Vivamus leo. Aliquam euismod libero eu
-            enim. Nulla nec felis sed leo placerat imperdiet. Aenean suscipit
-            nulla in justo. Suspendisse cursus rutrum augue. Nulla tincidunt
-            tincidunt mi. Curabitur iaculis, lorem vel rhoncus faucibus, felis
-            magna fermentum augue, et ultricies lacus lorem varius purus.
-            Curabitur eu amet.
-          </p>
+          <img :src="article.image" alt="Image de l'article" class="article-image" />
+
+          <small class="text-muted">{{ formatDate(article.date_publication) }}</small>
+          <h1 class="mt-3 mb-4">{{ article.titre }}</h1>
+          <div class="content" v-html="article.contenu"></div>
         </div>
       </div>
     </section>
 
-    <section class="autres-articles">
-      <div class="container">
-        <h2 class="text-center mb-3">Autres articles</h2>
+    <section class="autres-articles" v-if="autresArticles.length">
+      <div class="container mb-5">
+        <h2 class="text-center mb-5">Autres articles</h2>
 
-        <div class="blog-content">
-          <div class="row mb-5">
-            <div class="card col border-0">
-              <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Titre de mon article</h5>
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </p>
-                <router-link :to="{ name: 'Article' }" class="btn"
-                  >Lire plus...</router-link
-                >
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <div v-for="autreArticle in autresArticles" :key="autreArticle.id" class="col">
+            <div class="card h-100 shadow-sm article-card">
+                <div class="category-badge">{{ autreArticle.categorie.nom }}</div>
+                <img
+                  :src="autreArticle.image"
+                  class="card-img-top"
+                  :alt="autreArticle.titre"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{{ autreArticle.titre }}</h5>
+                  <p class="card-text text-muted mb-3">
+                    {{ getExtrait(autreArticle.contenu) }}
+                  </p>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <router-link
+                      :to="{ name: 'Article', params: { id: autreArticle.id } }"
+                      class="btn btn-primary" @click="refresh"
+                    >
+                      Lire plus
+                    </router-link>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="card col border-0">
-              <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Titre de mon article</h5>
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </p>
-                <router-link :to="{ name: 'Article' }" class="btn"
-                  >Lire plus...</router-link
-                >
-              </div>
-            </div>
-            <div class="card col border-0">
-              <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-              <div class="card-body">
-                <h5 class="card-title">Titre de mon article</h5>
-                <p class="card-text">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
-                </p>
-                <router-link :to="{ name: 'Article' }" class="btn"
-                  >Lire plus...</router-link
-                >
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </section>
   </div>
-  <PiedDePage />
 
+  <PiedDePage />
 </template>
 
 <script setup>
-// import "@/assets/css/ArticleView.css";
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import EnTete from "../../components/EnTete.vue";
 import PiedDePage from '../../components/PiedDePage.vue';
+import { getArticle, allArticle } from '@/services/articleService';
 
+const article = ref(null);
+const autresArticles = ref([]);
+const route = useRoute();
+
+const refresh = async () => {
+  window.location.reload();
+}
+
+// Fonction pour formater la date
+const formatDate = (dateString) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+  return new Date(dateString).toLocaleDateString('fr-FR', options);
+};
+
+// Fonction pour limiter le contenu HTML tout en conservant les balises de base
+const getExtrait = (contenu) => {
+  const div = document.createElement("div");
+  div.innerHTML = contenu;
+  const texte = div.textContent || div.innerText || "";
+  return texte.length > 100 ? texte.slice(0, 100) + "..." : texte;
+};
+
+const fetchArticle = async () => {
+  try {
+    const articleId = route.params.id;
+    const response = await getArticle(articleId);
+    article.value = response.data;
+
+    const res = await allArticle();
+    autresArticles.value = res.data.slice(-3);
+  } catch (error) {
+    console.log("Erreur lors de la récupération de l'article:", error);
+  }
+};
+
+onMounted(() => {
+  fetchArticle();
+});
 </script>
 
 <style scoped>
+.hero-banner {
+  width: 100%;
+  height: 45vh;
+  background: linear-gradient(to right, #2980b9, rgba(0, 0, 0, 0.5)), url(../../../public/image/hero-banner.jpg) no-repeat top center/cover;
+}
+
 .article .container {
   flex-direction: column;
   align-items: center;
 }
 
-.article img {
-  margin-top: -200px;
+.article-image {
+  width: 100%;
+  max-height: 400px;
   border-radius: 10px;
-  width: 90%;
-  height: 380px;
+  box-shadow: 0px 0px 5px #297fb95b;
   object-fit: cover;
+  margin-top: -150px;
+}
+
+.article-content {
+  width: 65%;
+  margin-top: 2rem;
 }
 
 .article-content h1 {
-  font-family: 'Montserrat';
+  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
 }
 
 .article-content p {
-  font-family: 'Open-sans';
-  line-height: 35px;
-  font-size: 18px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.6;
+  font-size: 1.125rem;
 }
 
-.article .article-content {
-  width: 60%;
-  margin: 0 auto;
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.btn-primary {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+
+.btn-primary:hover {
+  background-color: #2471a3;
+  border-color: #2471a3;
+}
+
+.article-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.article-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.article-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.category-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  /* background: rgba(41, 128, 185, 0.9); */
+  background: #f1948a;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  z-index: 1;
+}
+
+.btn-primary {
+  background-color: #2980b9;
+  border-color: #2980b9;
 }
 </style>

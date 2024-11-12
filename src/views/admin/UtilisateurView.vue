@@ -31,7 +31,9 @@
                 >
                   <div>
                     <p class="text-secondary mb-1">{{ stat.title }}</p>
-                    <h3 class="stat-value mb-0">{{ stat.value }}</h3>
+                    <h3 class="stat-value mb-0">
+                      {{ formatNumber(stat.value) }}
+                    </h3>
                   </div>
                   <i :class="stat.icon" :style="{ color: stat.color }"></i>
                 </div>
@@ -49,19 +51,36 @@
                 placeholder="Rechercher un utilisateur..."
               />
             </div>
-            <button
-              class="btn btn-outline-secondary d-flex align-items-center gap-2"
-            >
-              <i class="fas fa-filter"></i>
-              Filtres
-            </button>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'all' }"
+                @click="currentStatusFilter = 'all'"
+              >
+                Tous
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'Actif' }"
+                @click="currentStatusFilter = 'Actif'"
+              >
+                Actifs
+              </button>
+              <button
+                class="btn btn-outline-secondary"
+                :class="{ active: currentStatusFilter === 'Inactif' }"
+                @click="currentStatusFilter = 'Inactif'"
+              >
+                Inactifs
+              </button>
+            </div>
           </div>
 
-          <!-- Onglets -->
-          <ul class="nav nav-tabs mb-4">
+          <!-- Onglets avec classe modifiée -->
+          <ul class="nav custom-tabs mb-4">
             <li class="nav-item" v-for="tab in tabs" :key="tab.value">
               <button
-                class="nav-link"
+                class="custom-tab-link"
                 :class="{ active: currentTab === tab.value }"
                 @click="currentTab = tab.value"
               >
@@ -73,10 +92,28 @@
           <!-- Liste des utilisateurs -->
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title mb-4">Liste des utilisateurs</h5>
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <div>
+                  <label class="me-2">Éléments par page:</label>
+                  <select
+                    class="form-select form-select-sm d-inline-block w-auto"
+                    v-model="itemsPerPage"
+                    @change="currentPage = 1"
+                  >
+                    <option :value="6">6</option>
+                    <option :value="10">10</option>
+                    <option :value="25">25</option>
+                    <option :value="50">50</option>
+                  </select>
+                </div>
+                <div>Total: {{ filteredUsers.length }} utilisateurs</div>
+              </div>
+
               <div class="user-list">
                 <div
-                  v-for="user in filteredUsers"
+                  v-for="user in paginatedUsers"
                   :key="user.id"
                   class="user-item"
                 >
@@ -88,16 +125,24 @@
                       />
                     </div>
                     <div>
-                      <p class="user-name mb-0">{{ user.name }}</p>
+                      <p class="user-name mb-0">
+                        {{ user.prenom }} {{ user.nom }}
+                      </p>
                       <p class="user-email mb-0">{{ user.email }}</p>
                     </div>
                   </div>
                   <div class="d-flex align-items-center gap-3">
-                    <span :class="getBadgeClass(user.type)">
-                      {{ user.type }}
-                    </span>
-                    <span :class="getStatusBadgeClass(user.status)">
-                      {{ user.status }}
+                    <div class="user-roles mb-0">
+                      <span
+                        v-for="role in extractRolesAndPermissions(user).roles"
+                        :key="role"
+                        :class="getRoleBadgeClass(role)"
+                      >
+                        {{ role }}
+                      </span>
+                    </div>
+                    <span :class="getStatusBadgeClass(getUserStatus(user))">
+                      {{ getUserStatus(user) }}
                     </span>
                     <div>
                       <button
@@ -110,6 +155,48 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Pagination -->
+              <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                  <li
+                    class="page-item"
+                    :class="{ disabled: currentPage === 1 }"
+                  >
+                    <button
+                      class="page-link"
+                      @click="currentPage--"
+                      :disabled="currentPage === 1"
+                    >
+                      Précédent
+                    </button>
+                  </li>
+
+                  <li
+                    v-for="page in totalPages"
+                    :key="page"
+                    class="page-item"
+                    :class="{ active: currentPage === page }"
+                  >
+                    <button class="page-link" @click="currentPage = page">
+                      {{ page }}
+                    </button>
+                  </li>
+
+                  <li
+                    class="page-item"
+                    :class="{ disabled: currentPage === totalPages }"
+                  >
+                    <button
+                      class="page-link"
+                      @click="currentPage++"
+                      :disabled="currentPage === totalPages"
+                    >
+                      Suivant
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
@@ -122,6 +209,7 @@
     v-if="selectedUser"
     :show="isModalVisible"
     :user="selectedUser"
+    :userStatus="getUserStatus(selectedUser)"
     @close="isModalVisible = false"
   />
 </template>
@@ -130,106 +218,195 @@
 import SidebarAdmin from "@/components/SidebarAdmin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
 import DetailUtilisateur from "@/components/DetailUtilisateur.vue";
+import { getUserStatistics } from "@/services/utilisateurService";
 
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 
 // États
 const searchQuery = ref("");
 const currentTab = ref("all");
+const currentStatusFilter = ref("all");
+const users = ref([]);
+// Variables de pagination
+const currentPage = ref(1);
+const itemsPerPage = ref(6);
 
-// Données statiques
-const stats = [
+// État réactif pour les statistiques
+const stats = ref([
   {
     title: "Total Utilisateurs",
-    value: "1,234",
+    value: 0,
     icon: "fas fa-users fa-2x",
     color: "#3B82F6",
   },
   {
     title: "Médecins",
-    value: "256",
+    value: 0,
     icon: "fas fa-user-md fa-2x",
     color: "#10B981",
   },
   {
     title: "Patients",
-    value: "845",
+    value: 0,
     icon: "fas fa-hospital-user fa-2x",
     color: "#8B5CF6",
   },
   {
     title: "Assistants",
-    value: "133",
+    value: 0,
     icon: "fas fa-user-nurse fa-2x",
     color: "#F59E0B",
   },
-];
+]);
+
+// Fonction pour formater les nombres
+const formatNumber = (number) => {
+  return new Intl.NumberFormat("fr-FR").format(number);
+};
+
+// Fonction pour charger les statistiques
+const loadStatistics = async () => {
+  try {
+    const data = await getUserStatistics();
+
+    // Mise à jour des valeurs
+    stats.value = stats.value.map((stat) => {
+      if (stat.title === "Total Utilisateurs") {
+        stat.value = data.total_users;
+      } else if (stat.title === "Médecins") {
+        stat.value = data.docteurs;
+      } else if (stat.title === "Patients") {
+        stat.value = data.patients;
+      } else if (stat.title === "Assistants") {
+        stat.value = data.assistants;
+      }
+      return stat;
+    });
+  } catch (error) {
+    console.error("Erreur lors du chargement des statistiques:", error);
+    // Gérer l'erreur (afficher une notification, etc.)
+  }
+};
 
 const tabs = [
   { label: "Tous", value: "all" },
-  { label: "Médecins", value: "doctors" },
-  { label: "Patients", value: "patients" },
-  { label: "Assistants", value: "assistants" },
+  { label: "Médecins", value: "medecin" },
+  { label: "Patients", value: "patient" },
+  { label: "Assistants", value: "assistant" },
+  { label: "Bloqués", value: "bloque" },
 ];
 
-const users = ref([
-  {
-    id: 1,
-    name: "Dr. Jean Dupont",
-    email: "jean.dupont@example.com",
-    type: "Médecin",
-    status: "Actif",
-  },
-  {
-    id: 2,
-    name: "Marie Martin",
-    email: "marie.martin@example.com",
-    type: "Patient",
-    status: "Actif",
-  },
-  {
-    id: 3,
-    name: "Sophie Dubois",
-    email: "sophie.dubois@example.com",
-    type: "Assistant",
-    status: "Inactif",
-  },
-]);
+const loadUsers = async () => {
+  const allUsers = await getUserStatistics();
+  users.value = allUsers.users;
+  console.log("infos :", users.value);
+  return users;
+};
 
-// Computed
+// Fonction pour extraire les rôles et permissions
+function extractRolesAndPermissions(user) {
+  const rolesAndPermissions = user.roles_and_permissions;
+
+  // Extraire les rôles
+  const roles = rolesAndPermissions.map((role) => role.name);
+
+  // Extraire les permissions
+  const permissions = rolesAndPermissions.flatMap((role) => role.permissions);
+
+  return { roles, permissions };
+}
+
+// Filtre des users et pagination des pages
 const filteredUsers = computed(() => {
   let filtered = users.value;
 
+  // Filtrer par recherche
   if (searchQuery.value) {
     filtered = filtered.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        user.nom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+        user.prenom.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
         user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
 
-  if (currentTab.value !== "all") {
-    filtered = filtered.filter((user) => {
-      const typeMap = {
-        doctors: "Médecin",
-        patients: "Patient",
-        assistants: "Assistant",
-      };
-      return user.type === typeMap[currentTab.value];
-    });
+  // Filtrer par rôle (médecin, patient, assistant)
+  if (currentTab.value !== "all" && currentTab.value !== "bloque") {
+    const typeMap = {
+      medecin: "medecin",
+      patient: "patient",
+      assistant: "assistant",
+    };
+    filtered = filtered.filter((user) =>
+      user.roles_and_permissions.some((role) => role.name === typeMap[currentTab.value])
+    );
+  }
+
+  // Filtrer par statut "Bloqués"
+  if (currentTab.value === "bloque") {
+    filtered = filtered.filter((user) => !user.is_active);
+  }
+
+  // Autre filtre de statut si nécessaire (par exemple, actif/inactif)
+  if (currentStatusFilter.value !== "all") {
+    filtered = filtered.filter(
+      (user) => getUserStatus(user) === currentStatusFilter.value
+    );
   }
 
   return filtered;
 });
+// Computed pour le nombre total de pages
+const totalPages = computed(() =>
+  Math.ceil(filteredUsers.value.length / itemsPerPage.value)
+);
 
-// Méthodes
-const getBadgeClass = (type) => {
-  const classes = {
-    Médecin: "badge bg-primary",
-    Patient: "badge bg-success",
-    Assistant: "badge bg-purple",
-  };
-  return classes[type] || "badge bg-secondary";
+// Computed pour les utilisateurs paginés
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
+  return filteredUsers.value.slice(start, end);
+});
+
+// Observers pour réinitialiser la pagination lors des changements de filtres
+watch(
+  [
+    () => currentTab.value,
+    () => searchQuery.value,
+    () => currentStatusFilter.value,
+  ],
+  () => {
+    currentPage.value = 1;
+  }
+);
+
+// Méthode pour obtenir le statut de l'utilisateur
+const getUserStatus = (user) => {
+  // Logique pour déterminer le statut de l'utilisateur
+  if (
+    user.derniere_ligne_connexion &&
+    Date.now() - new Date(user.derniere_ligne_connexion).getTime() <
+      30 * 24 * 60 * 60 * 1000
+  ) {
+    return "Actif";
+  } else {
+    return "Inactif";
+  }
+};
+
+const getRoleBadgeClass = (role) => {
+  switch (role) {
+    case "administrateur":
+      return "badge bg-warning";
+    case "medecin":
+      return "badge bg-primary";
+    case "patient":
+      return "badge bg-success";
+    case "assistant":
+      return "badge bg-purple";
+    default:
+      return "badge bg-secondary";
+  }
 };
 
 const getStatusBadgeClass = (status) => {
@@ -245,7 +422,15 @@ const selectedUser = ref(null);
 const openUserDetail = (user) => {
   selectedUser.value = user;
   isModalVisible.value = true;
+
+  console.log("User :", selectedUser.value);
 };
+
+// Chargement initial des données
+onMounted(() => {
+  loadStatistics();
+  loadUsers();
+});
 </script>
 
 <style scoped>
@@ -260,19 +445,19 @@ const openUserDetail = (user) => {
   margin-bottom: 0.5rem;
 }
 
-.stat-card {
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s;
-}
-
 .stat-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-5px);
 }
 
 .stat-value {
-  font-weight: bold;
-  font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 1.75rem;
+}
+
+.stat-card {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease-in-out;
 }
 
 .search-icon {
@@ -340,6 +525,10 @@ const openUserDetail = (user) => {
   color: white;
 }
 
+.bg-primary {
+  background: #10b981;
+}
+
 .bg-success-light {
   background-color: #d1fae5;
 }
@@ -363,5 +552,30 @@ const openUserDetail = (user) => {
 
 .gap-3 {
   gap: 1rem;
+}
+
+/* custom des tabs */
+.custom-tabs {
+  border-bottom: none;
+  gap: 0.5rem;
+}
+
+.nav.custom-tabs .custom-tab-link {
+  color: #6b7280;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav.custom-tabs .custom-tab-link:hover {
+  background-color: #f3f4f6;
+  color: #319fe9;
+}
+
+.nav.custom-tabs .custom-tab-link.active {
+  background: linear-gradient(135deg, #319fe9, #2980b9) !important;
+  color: #fff !important;
+  font-weight: bold;
 }
 </style>

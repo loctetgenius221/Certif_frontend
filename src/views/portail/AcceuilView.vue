@@ -193,7 +193,7 @@
     <section class="faq mb-5">
       <div class="container">
         <div class="mb-5">
-          <h2>Les questions fréquenment posées ?</h2>
+          <h2>Questions fréquemment posées</h2>
           <img src="/image/patternwave-removebg-preview 3.svg" alt="" />
         </div>
         <!-- Accordéons -->
@@ -208,7 +208,7 @@
                 aria-expanded="false"
                 aria-controls="flush-collapseOne"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Comment puis-je prendre un rendez-vous de téléconsultation ?
               </button>
             </h2>
             <div
@@ -218,9 +218,11 @@
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body">
-                Placeholder content for this accordion, which is intended to
-                demonstrate the <code>.accordion-flush</code> class. This is the
-                first item's accordion body.
+                Pour prendre un rendez-vous de téléconsultation, vous pouvez
+                vous connecter à votre compte sur notre application et accéder à
+                l'agenda des médecins disponibles. Choisissez la plage horaire
+                qui vous convient et suivez les étapes pour finaliser votre
+                réservation.
               </div>
             </div>
           </div>
@@ -234,8 +236,7 @@
                 aria-expanded="false"
                 aria-controls="flush-collapseTwo"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                adipiscing.
+                Quels sont les avantages de la téléconsultation ?
               </button>
             </h2>
             <div
@@ -245,10 +246,10 @@
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body">
-                Placeholder content for this accordion, which is intended to
-                demonstrate the <code>.accordion-flush</code> class. This is the
-                second item's accordion body. Let's imagine this being filled
-                with some actual content.
+                Les principaux avantages de la téléconsultation sont : un accès
+                facilité aux soins, des délais de rendez-vous réduits, la
+                possibilité de consulter depuis votre domicile, et une prise en
+                charge plus rapide de vos problèmes de santé.
               </div>
             </div>
           </div>
@@ -262,7 +263,7 @@
                 aria-expanded="false"
                 aria-controls="flush-collapseThree"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit elit.
+                Quels types de consultations sont proposés en télémédecine ?
               </button>
             </h2>
             <div
@@ -272,70 +273,67 @@
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body">
-                Placeholder content for this accordion, which is intended to
-                demonstrate the <code>.accordion-flush</code> class. This is the
-                third item's accordion body. Nothing more exciting happening
-                here in terms of content, but just filling up the space to make
-                it look, at least at first glance, a bit more representative of
-                how this would look in a real-world application.
+                Notre application de télémédecine propose des consultations pour
+                de nombreuses spécialités, notamment la médecine générale, la
+                pédiatrie, la dermatologie, la psychiatrie, la nutrition, et
+                bien d'autres. Vous pouvez consulter un médecin spécialisé dans
+                le domaine correspondant à votre besoin de santé.
               </div>
             </div>
           </div>
           <div class="accordion-item">
-            <h2 class="accordion-header" id="flush-headingThree">
+            <h2 class="accordion-header" id="flush-headingFour">
               <button
                 class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#flush-collapseThree"
+                data-bs-target="#flush-collapseFour"
                 aria-expanded="false"
-                aria-controls="flush-collapseThree"
+                aria-controls="flush-collapseFour"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit elit.
+                Comment se déroule une téléconsultation ?
               </button>
             </h2>
             <div
-              id="flush-collapseThree"
+              id="flush-collapseFour"
               class="accordion-collapse collapse"
-              aria-labelledby="flush-headingThree"
+              aria-labelledby="flush-headingFour"
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body">
-                Placeholder content for this accordion, which is intended to
-                demonstrate the <code>.accordion-flush</code> class. This is the
-                third item's accordion body. Nothing more exciting happening
-                here in terms of content, but just filling up the space to make
-                it look, at least at first glance, a bit more representative of
-                how this would look in a real-world application.
+                Lors d'une téléconsultation, vous serez en communication vidéo
+                avec le médecin. Vous pourrez décrire vos symptômes, répondre à
+                ses questions et, au besoin, partager des documents médicaux. Le
+                médecin pourra vous prescrire des examens ou un traitement,
+                comme il le ferait lors d'une consultation traditionnelle.
               </div>
             </div>
           </div>
           <div class="accordion-item">
-            <h2 class="accordion-header" id="flush-headingThree">
+            <h2 class="accordion-header" id="flush-headingFive">
               <button
                 class="accordion-button collapsed"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#flush-collapseThree"
+                data-bs-target="#flush-collapseFive"
                 aria-expanded="false"
-                aria-controls="flush-collapseThree"
+                aria-controls="flush-collapseFive"
               >
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit elit.
+                Mes données de santé sont-elles sécurisées ?
               </button>
             </h2>
             <div
-              id="flush-collapseThree"
+              id="flush-collapseFive"
               class="accordion-collapse collapse"
-              aria-labelledby="flush-headingThree"
+              aria-labelledby="flush-headingFive"
               data-bs-parent="#accordionFlushExample"
             >
               <div class="accordion-body">
-                Placeholder content for this accordion, which is intended to
-                demonstrate the <code>.accordion-flush</code> class. This is the
-                third item's accordion body. Nothing more exciting happening
-                here in terms of content, but just filling up the space to make
-                it look, at least at first glance, a bit more representative of
-                how this would look in a real-world application.
+                Oui, la sécurité et la confidentialité de vos données de santé
+                sont notre priorité. Nos systèmes de télémédecine sont conformes
+                aux réglementations en vigueur en matière de protection des
+                données personnelles. Vos échanges avec le médecin et vos
+                informations médicales sont totalement sécurisés.
               </div>
             </div>
           </div>
@@ -381,39 +379,32 @@
           </div>
         </div>
 
-        <div class="article-content d-flex justify-content-between gap-4 mt-5">
-          <div class="card border-0">
-            <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <h5 class="card-title">Titre de mon article</h5>
-              <p class="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="#" class="btn">Lire plus...</a>
-            </div>
-          </div>
-          <div class="card border-0">
-            <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <h5 class="card-title">Titre de mon article</h5>
-              <p class="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="#" class="btn">Lire plus...</a>
-            </div>
-          </div>
-          <div class="card border-0">
-            <img src="/image/articleimg.jpg" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <h5 class="card-title">Titre de mon article</h5>
-              <p class="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-              </p>
-              <a href="#" class="btn">Lire plus...</a>
-            </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-5">
+          <div class="col" v-for="article in articleRecents" :key="article.id">
+            <div class="card h-100 shadow-sm article-card">
+                <div class="category-badge">{{ article.categorie.nom }}</div>
+                <img
+                  :src="article.image"
+                  class="card-img-top"
+                  :alt="article.titre"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{{ article.titre }}</h5>
+                  <p class="card-text text-muted mb-3">
+                    {{ getExtrait(article.contenu) }}
+                  </p>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <router-link
+                      :to="{ name: 'Article', params: { id: article.id } }"
+                      class="btn btn-primary"
+                    >
+                      Lire plus
+                    </router-link>
+                  </div>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -483,6 +474,37 @@
 // import '@/assets/css/AcceuilView.css';
 import EnTete from "../../components/EnTete.vue";
 import PiedDePage from "../../components/PiedDePage.vue";
+import { allArticle } from "@/services/articleService";
+import { ref, onMounted } from "vue";
+
+const articleRecents = ref("");
+
+/**
+ * La fonction Slice(-3) permet de filtrer
+ * les trois derniers articles
+ **/
+const recupArticleRecent = async () => {
+  try {
+    const { data } = await allArticle();
+    const articlesRecents = data.slice(-3);
+
+    articleRecents.value = articlesRecents;
+  } catch (error) {
+    console.log("Erreur lors de la récupération des articles :", error);
+  }
+};
+
+// Fonction pour extraire un extrait du contenu
+const getExtrait = (contenu) => {
+  const div = document.createElement("div");
+  div.innerHTML = contenu;
+  const texte = div.textContent || div.innerText || "";
+  return texte.length > 150 ? texte.slice(0, 150) + "..." : texte;
+};
+
+onMounted(() => {
+  recupArticleRecent();
+});
 </script>
 
 <style scoped>
@@ -491,8 +513,8 @@ import PiedDePage from "../../components/PiedDePage.vue";
   padding: 0;
   width: 100%;
   height: 80vh;
-  background: linear-gradient(to right, #2980b9, rgba(0, 0, 0, 0)),
-    url(../../../public/image/hero-banner.jpg) no-repeat center center/cover;
+  background: linear-gradient(to right, #297fb9c9, rgba(0, 0, 0, 0)),
+    url(../../../public/image/herobanner02.jpg) no-repeat top center/cover;
 }
 
 .hero-header .card {
@@ -636,7 +658,6 @@ import PiedDePage from "../../components/PiedDePage.vue";
   padding: 65px 0;
   width: 100%;
   height: auto;
-  background: #f1948a30;
 }
 
 .nos-services h3 {
@@ -647,7 +668,7 @@ import PiedDePage from "../../components/PiedDePage.vue";
 .nos-services .card {
   width: 30%;
   border: none;
-  box-shadow: 0 0 6px #f1948a5a;
+  box-shadow: 0 0 9px #297fb925;
 }
 
 .nos-services .card h5 {
@@ -701,6 +722,46 @@ import PiedDePage from "../../components/PiedDePage.vue";
   height: 21px;
 }
 
+.article-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.article-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.article-card .card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.category-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  /* background: rgba(41, 128, 185, 0.9); */
+  background: #f1948a;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  z-index: 1;
+}
+
+.btn-primary {
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
 /* contact */
 
 .contact {

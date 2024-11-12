@@ -1,4 +1,3 @@
-<!-- UserManagement.vue -->
 <template>
   <div class="d-flex">
     <SidebarAdmin />
@@ -16,7 +15,7 @@
               Gérez vos utilisateurs et leurs accès en toute simplicité
             </p>
           </div>
-
+          <BtnRetour />
           <!-- Navigation par onglets -->
           <ul class="nav custom-tabs mb-4" role="tablist">
             <li class="nav-item" role="presentation">
@@ -43,14 +42,17 @@
 
           <!-- Contenu des onglets -->
           <div class="tab-content">
-            <!-- Formulaire d'ajout d'utilisateur -->
+            <!--* ----------------------------------------- -->
+            <!--*       Formulaire d'ajout d'utilisateur    -->
+            <!--* ----------------------------------------- -->
+
             <div
               v-show="activeTab === 'add-user'"
               class="tab-pane fade show active"
             >
               <div class="card custom-card">
                 <div class="card-header gradient-header">
-                  <h5 class="card-title text-dark mb-0">
+                  <h5 class="card-title mb-0">
                     <i class="bi bi-person-plus me-2"></i>
                     Nouvel Utilisateur
                   </h5>
@@ -67,43 +69,81 @@
                           <input
                             type="text"
                             class="form-control custom-input"
-                            id="firstName"
-                            v-model="newUser.firstName"
+                            :class="{ 'is-invalid': errors.prenom }"
+                            id="prenom"
+                            v-model="newUser.prenom"
+                            @input="validateForm"
                             required
                           />
-                          <label for="firstName">Prénom</label>
+                          <label for="prenom">Prénom</label>
+                          <div class="invalid-feedback" v-if="errors.prenom">
+                            {{ errors.prenom }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-md-6">
                         <div class="form-floating custom-float">
                           <input
                             type="text"
                             class="form-control custom-input"
-                            id="lastName"
-                            v-model="newUser.lastName"
+                            :class="{ 'is-invalid': errors.nom }"
+                            id="nom"
+                            v-model="newUser.nom"
+                            @input="validateForm"
                             required
                           />
-                          <label for="lastName">Nom</label>
+                          <label for="nom">Nom</label>
+                          <div class="invalid-feedback" v-if="errors.nom">
+                            {{ errors.nom }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-12">
                         <div class="form-floating custom-float">
                           <input
                             type="email"
                             class="form-control custom-input"
+                            :class="{ 'is-invalid': errors.email }"
                             id="email"
                             v-model="newUser.email"
+                            @input="validateForm"
                             required
                           />
                           <label for="email">Email</label>
+                          <div class="invalid-feedback" v-if="errors.email">
+                            {{ errors.email }}
+                          </div>
                         </div>
                       </div>
+
+                      <div class="col-12">
+                        <div class="form-floating custom-float">
+                          <input
+                            type="tel"
+                            class="form-control custom-input"
+                            :class="{ 'is-invalid': errors.telephone }"
+                            id="telephone"
+                            v-model="newUser.telephone"
+                            @input="validateForm"
+                            required
+                          />
+                          <label for="telephone">Téléphone</label>
+                          <div class="invalid-feedback" v-if="errors.telephone">
+                            {{ errors.telephone }}
+                          </div>
+                        </div>
+                      </div>
+
                       <div class="col-12">
                         <div class="form-floating custom-float">
                           <select
                             class="form-select custom-select"
+                            :class="{ 'is-invalid': errors.roleId }"
                             id="role"
                             v-model="newUser.roleId"
+                            
                             required
                           >
                             <option value="" disabled>
@@ -114,19 +154,33 @@
                               :key="role.id"
                               :value="role.id"
                             >
-                              {{ role.name }}
+                              {{ role.role_name }}
                             </option>
                           </select>
                           <label for="role">Rôle</label>
+                          <div class="invalid-feedback" v-if="errors.roleId">
+                            {{ errors.roleId }}
+                          </div>
                         </div>
                       </div>
+
                       <div class="col-12">
                         <button
                           type="submit"
-                          class="btn custom-button btn-lg w-100"
+                          class="btn custom-button btn-lg"
+                          :disabled="!isFormValid || isSubmitting"
                         >
-                          <i class="bi bi-plus-circle me-2"></i>
-                          Ajouter l'utilisateur
+                          <span
+                            v-if="isSubmitting"
+                            class="spinner-border spinner-border-sm me-2"
+                            role="status"
+                          ></span>
+                          <i v-else class="bi bi-plus-circle me-2"></i>
+                          {{
+                            isSubmitting
+                              ? "Enregistrement..."
+                              : "Ajouter l'utilisateur"
+                          }}
                         </button>
                       </div>
                     </div>
@@ -135,7 +189,9 @@
               </div>
             </div>
 
-            <!-- Gestion des rôles -->
+            <!--* --------------------------- -->
+            <!--*      Gestion des rôles      -->
+            <!--* --------------------------- -->
             <div
               v-show="activeTab === 'roles'"
               class="tab-pane fade show active"
@@ -151,42 +207,49 @@
                   <!-- Liste des rôles existants -->
                   <div class="roles-list mb-4">
                     <h6 class="section-title mb-3">Rôles existants</h6>
-                    <div class="row g-3">
+                    <div class="row d-flex gap-3">
                       <div
+                        class="role-card  p-3 rounded-3"
                         v-for="role in roles"
                         :key="role.id"
-                        class="col-md-6"
                       >
-                        <div class="role-card p-3 rounded-3">
-                          <div
-                            class="d-flex justify-content-between align-items-center"
-                          >
-                            <div>
-                              <h6 class="role-name mb-1">{{ role.name }}</h6>
-                              <div class="permission-badges">
-                                <span
-                                  v-for="(
-                                    permission, idx
-                                  ) in role.permissions.slice(0, 2)"
-                                  :key="idx"
-                                  class="badge rounded-pill me-1"
-                                >
-                                  {{ permission }}
-                                </span>
-                                <span
-                                  v-if="role.permissions.length > 2"
-                                  class="badge rounded-pill bg-light text-dark"
-                                >
-                                  +{{ role.permissions.length - 2 }}
-                                </span>
-                              </div>
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div>
+                            <h6 class="role-name mb-1">{{ role.role_name }}</h6>
+                            <div class="permission-badges">
+                              <span
+                                v-for="(
+                                  permission, idx
+                                ) in role.permissions.slice(0, 2)"
+                                :key="idx"
+                                class="badge rounded-pill me-1"
+                              >
+                                {{ permission }}
+                              </span>
+                              <span
+                                v-if="role.permissions.length > 2"
+                                class="badge rounded-pill bg-light text-dark"
+                              >
+                                +{{ role.permissions.length - 2 }}
+                              </span>
                             </div>
-                            <button
+                          </div>
+                          <div class="btn-group">
+                            <!-- <button
                               class="btn btn-light btn-sm edit-button"
                               @click="editRole(role)"
                             >
                               <i class="bi bi-pencil me-1"></i>
                               Modifier
+                            </button> -->
+                            <button
+                              class="btn btn-danger btn-sm"
+                              @click="handleDeleteRole(role.id)"
+                            >
+                              <i class="bi bi-trash me-1"></i>
+                              Supprimer
                             </button>
                           </div>
                         </div>
@@ -206,22 +269,29 @@
                         ></i>
                         {{ editingRole ? "Modifier le rôle" : "Nouveau rôle" }}
                       </h6>
-                      <form @submit.prevent="handleRoleSubmit">
-                        <div class="mb-4">
+                      <form @submit.prevent="handleRoleSubmit" class="mt-4">
+                        <div class="mb-3">
                           <div class="form-floating custom-float">
                             <input
                               type="text"
                               class="form-control custom-input"
+                              :class="{ 'is-invalid': formErrors.name }"
                               id="roleName"
-                              v-model="newRole.name"
+                              v-model="roleForm.name"
                               required
                             />
                             <label for="roleName">Nom du rôle</label>
+                            <div
+                              class="invalid-feedback"
+                              v-if="formErrors.name"
+                            >
+                              {{ formErrors.name }}
+                            </div>
                           </div>
                         </div>
 
                         <div class="permissions-section">
-                          <label class="form-label d-block section-title"
+                          <label class="form-label d-block section-title mb-3"
                             >Permissions</label
                           >
                           <div class="row g-3">
@@ -235,23 +305,38 @@
                                   class="form-check-input custom-checkbox"
                                   type="checkbox"
                                   :id="'permission-' + index"
-                                  v-model="newRole.permissions"
+                                  v-model="roleForm.permissions"
                                   :value="permission"
                                 />
                                 <label
                                   class="form-check-label ms-2"
                                   :for="'permission-' + index"
                                 >
-                                  {{ permission }}
+                                  {{ permission.name }}
                                 </label>
                               </div>
                             </div>
                           </div>
+                          <div
+                            class="invalid-feedback d-block"
+                            v-if="formErrors.permissions"
+                          >
+                            {{ formErrors.permissions }}
+                          </div>
                         </div>
 
                         <div class="d-flex gap-2 mt-4">
-                          <button type="submit" class="btn custom-button">
+                          <button
+                            type="submit"
+                            class="btn custom-button"
+                            :disabled="isSubmitting"
+                          >
+                            <span
+                              v-if="isSubmitting"
+                              class="spinner-border spinner-border-sm me-2"
+                            ></span>
                             <i
+                              v-else
                               class="bi"
                               :class="
                                 editingRole
@@ -279,7 +364,7 @@
           </div>
 
           <!-- Toast de notification -->
-          <div class="toast-container position-fixed bottom-0 end-0 p-3">
+          <div class="toast-container position-fixed bottom-1 end-0 p-3">
             <div
               class="toast custom-toast"
               :class="{
@@ -319,7 +404,16 @@
 <script setup>
 import SidebarAdmin from "@/components/SidebarAdmin.vue";
 import HeaderPatient from "@/components/HeaderPatient.vue";
-import { ref, reactive } from "vue";
+import BtnRetour from "@/components/BtnRetour.vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
+import {
+  getRolesAndPermissions,
+  registerUsers,
+  createRole,
+  updateRole,
+  deleteRole,
+} from "@/services/utilisateurService";
+import Swal from "sweetalert2";
 
 // États
 const activeTab = ref("add-user");
@@ -328,127 +422,311 @@ const toastMessage = ref("");
 const toastType = ref("success");
 const editingRole = ref(null);
 
-// Données exemple
-const roles = ref([
-  { id: 1, name: "Admin", permissions: ["all"] },
-  { id: 2, name: "Medecin", permissions: ["read", "write"] },
-  { id: 3, name: "Patient", permissions: ["read"] },
-  { id: 4, name: "Assistant", permissions: ["read"] },
-]);
+const roles = ref([]);
+const permissions = ref([]);
 
-const permissions = [
-  "Gérer les utilisateurs",
-  "Gérer les rôles",
-  "Voir les rapports",
-  "Éditer les contenus",
-  "Gérer les documents",
-  "Accès aux statistiques",
-];
+// Fonction pour récupérer les rôles et permissions
+const fetchRolesAndPermissions = async () => {
+  try {
+    const data = await getRolesAndPermissions();
+    roles.value = data.roles_and_permissions || [];
+    permissions.value = data.All_permissions || [];
+    console.log("Liste des rôles :", roles.value);
+    console.log("Liste des permissions :", permissions.value);
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des rôles et permissions :",
+      error.message
+    );
+  }
+};
 
-// États du formulaire
+// États du formulaire pour le nouvel utilisateur
 const newUser = reactive({
-  firstName: "",
-  lastName: "",
+  prenom: "",
+  nom: "",
   email: "",
+  telephone: "",
   roleId: "",
+  password: "",
 });
 
-const newRole = reactive({
+// Logique de génération automatique de mot de passe
+const generateRandomPassword = (length = 10) => {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+  let password = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+  return password;
+};
+
+// Watcher pour surveiller les changements de roleId
+watch(
+  () => newUser.roleId,
+  (newRoleId) => {
+    console.log("Role ID sélectionné :", newRoleId);
+  }
+);
+
+// États du formulaire pour le nouveau rôle
+const roleForm = reactive({
   name: "",
   permissions: [],
 });
 
-// Méthodes
-const showNotification = (message, type = "success") => {
-  toastMessage.value = message;
-  toastType.value = type;
-  showToast.value = true;
-  setTimeout(() => {
-    showToast.value = false;
-  }, 3000);
+// État pour les erreurs de validation
+const errors = ref({});
+
+// Computed property pour la validation du formulaire
+const isFormValid = computed(() => {
+  return (
+    newUser.prenom.trim() !== "" &&
+    newUser.nom.trim() !== "" &&
+    validateEmail(newUser.email) &&
+    validatePhone(newUser.telephone) &&
+    newUser.roleId !== ""
+  );
+});
+
+// Fonctions de validation
+const validateName = (name) => /^[a-zA-ZÀ-ÿ'-]{2,}$/.test(name);
+const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const validatePhone = (telephone) => /^7[06785]\d{7}$/.test(telephone);
+
+// Fonction de validation du formulaire
+const validateForm = () => {
+  const newErrors = {};
+
+  if (!newUser.prenom.trim() || !validateName(newUser.prenom)) {
+    newErrors.prenom =
+      "Le prénom est requis & n'accepte pas de caractères spéciaux";
+  }
+
+  if (!newUser.nom.trim() || !validateName(newUser.nom)) {
+    newErrors.nom = "Le nom est requis & n'accepte pas de caractères spéciaux";
+  }
+
+  if (!newUser.email.trim() || !validateEmail(newUser.email)) {
+    newErrors.email = "L'email est invalide";
+  }
+
+  if (!newUser.telephone.trim() || !validatePhone(newUser.telephone)) {
+    newErrors.telephone = "Le numéro de téléphone est invalide";
+  }
+
+  if (!newUser.roleId) {
+    newErrors.roleId = "Le rôle est requis";
+  }
+
+  errors.value = newErrors;
+  return Object.keys(newErrors).length === 0;
 };
 
-const handleAddUser = () => {
-  // Validation basique
-  if (
-    !newUser.firstName ||
-    !newUser.lastName ||
-    !newUser.email ||
-    !newUser.roleId
-  ) {
-    showNotification("Veuillez remplir tous les champs", "error");
+// État de chargement
+const isSubmitting = ref(false);
+
+// Gestion de l'ajout d'utilisateur
+const handleAddUser = async () => {
+  if (!validateForm()) {
+    console.log("les données :", newUser);
     return;
   }
 
-  // Simulation d'ajout
-  console.log("Nouvel utilisateur:", newUser);
-  showNotification("Utilisateur ajouté avec succès");
+  try {
+    isSubmitting.value = true;
+    newUser.password = generateRandomPassword();
 
-  // Réinitialisation du formulaire
-  Object.keys(newUser).forEach((key) => (newUser[key] = ""));
-};
-
-const editRole = (role) => {
-  editingRole.value = role.id;
-  newRole.name = role.name;
-  newRole.permissions = [...role.permissions];
-};
-
-const cancelEdit = () => {
-  editingRole.value = null;
-  newRole.name = "";
-  newRole.permissions = [];
-};
-
-const handleRoleSubmit = () => {
-  if (!newRole.name) {
-    showNotification("Veuillez spécifier un nom de rôle", "error");
-    return;
-  }
-
-  if (editingRole.value) {
-    // Simulation de modification
-    const index = roles.value.findIndex((r) => r.id === editingRole.value);
-    if (index !== -1) {
-      roles.value[index] = {
-        ...roles.value[index],
-        name: newRole.name,
-        permissions: [...newRole.permissions],
-      };
+    const role = roles.value.find(
+      (role) => role.id === newUser.roleId
+    )?.role_name;
+    if (!role) {
+      throw new Error("Rôle non valide sélectionné.");
     }
-    showNotification("Rôle modifié avec succès");
-  } else {
-    // Simulation d'ajout
-    roles.value.push({
-      id: roles.value.length + 1,
-      name: newRole.name,
-      permissions: [...newRole.permissions],
+    await registerUsers(role, newUser);
+
+    await Swal.fire({
+      title: "Succès!",
+      text: "L'utilisateur a été créé avec succès.",
+      icon: "success",
+      confirmButtonText: "OK",
     });
-    showNotification("Rôle ajouté avec succès");
+
+    // Réinitialisation du formulaire
+    Object.keys(newUser).forEach((key) => {
+      newUser[key] = "";
+    });
+    errors.value = {};
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message ||
+      "Une erreur est survenue lors de l'inscription.";
+
+    await Swal.fire({
+      title: "Erreur!",
+      text: errorMessage,
+      icon: "error",
+      confirmButtonText: "OK",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// État pour les erreurs du formulaire de rôle
+const formErrors = ref({});
+
+// Fonction de validation du formulaire de rôle
+const validateRoleForm = () => {
+  const errors = {};
+
+  if (!roleForm.name.trim()) {
+    errors.name = "Le nom du rôle est requis";
   }
 
-  cancelEdit();
+  if (roleForm.permissions.length === 0) {
+    errors.permissions = "Sélectionnez au moins une permission";
+  }
+
+  formErrors.value = errors;
+  return Object.keys(errors).length === 0;
 };
+
+// Fonction pour ajouter/modifier un rôle
+const handleRoleSubmit = async () => {
+  if (!validateRoleForm()) return;
+
+  try {
+    isSubmitting.value = true;
+    const roleData = {
+      name: roleForm.name,
+      permissions: roleForm.permissions.map((permission) => permission.name),
+    };
+
+    if (editingRole.value) {
+      await updateRole(editingRole.value.id, roleData);
+      const index = roles.value.findIndex((r) => r.id === editingRole.value.id);
+      roles.value[index] = { ...roles.value[index], ...roleData };
+
+      await Swal.fire({
+        icon: "success",
+        title: "Succès",
+        text: "Le rôle a été modifié avec succès",
+      });
+    } else {
+      const response = await createRole(roleData);
+      if (response.data && response.data.id) {
+        roles.value.push(response.data);
+        await Swal.fire({
+          icon: "success",
+          title: "Succès",
+          text: "Le rôle a été créé avec succès",
+        });
+      } else {
+        console.error("Erreur : la réponse de l'API ne contient pas d'id.");
+      }
+    }
+
+    resetForm();
+  } catch (error) {
+    await Swal.fire({
+      icon: "error",
+      title: "Erreur",
+      text:
+        error.response?.data?.message ||
+        "Une erreur est survenue lors de la gestion du rôle",
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// Fonction pour supprimer un rôle
+const handleDeleteRole = async (roleId) => {
+  try {
+    const result = await Swal.fire({
+      title: "Êtes-vous sûr?",
+      text: "Cette action ne peut pas être annulée!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, supprimer!",
+      cancelButtonText: "Annuler",
+    });
+
+    if (result.isConfirmed) {
+      await deleteRole(roleId);
+      roles.value = roles.value.filter((role) => role.id !== roleId);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Supprimé!",
+        text: "Le rôle a été supprimé avec succès.",
+      });
+    }
+  } catch (error) {
+    await Swal.fire({
+      icon: "error",
+      title: "Erreur",
+      text:
+        error.response?.data?.message ||
+        "Une erreur est survenue lors de la suppression",
+    });
+  }
+};
+
+// Fonction pour éditer un rôle
+// const editRole = (role) => {
+//   editingRole.value = role;
+//   roleForm.name = role.name;
+//   roleForm.permissions = [...role.permissions];
+// };
+
+// Fonction pour réinitialiser le formulaire
+const resetForm = () => {
+  editingRole.value = null;
+  roleForm.name = "";
+  roleForm.permissions = [];
+  formErrors.value = {};
+};
+
+// Exécution de fetchRolesAndPermissions lors du montage
+onMounted(fetchRolesAndPermissions);
 </script>
 
 <style scoped>
 .user-management {
-  /* --primary-color: #319fe9; */
-  /* --primary-dark: #2980B9; */
+  --primary-color: #319fe9;
+  --primary-dark: #2980b9;
   --primary-light: #818cf8;
   --success-color: #059669;
   --danger-color: #dc2626;
-  /* --bg-gradient: linear-gradient(
+  --bg-gradient: linear-gradient(
     135deg,
     var(--primary-color),
-    var(--primary-dark) 
-  ); */
+    var(--primary-dark)
+  );
 }
 
 .header-section {
-  background: var(--bg-gradient);
+  /* background: var(--bg-gradient); */
+  background: #fff;
+  margin-top: -60px;
+  position: relative;
+  z-index: 10;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   color: #000;
+}
+
+.header-section h2 {
+  font-size: 20px;
+}
+
+.header-section .bi-people-fill {
+  color: #2980b9;
 }
 
 .custom-tabs {
@@ -461,7 +739,7 @@ const handleRoleSubmit = () => {
   border: none;
   border-radius: 0.5rem;
   padding: 0.75rem 1.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .custom-tab-link:hover {
@@ -471,7 +749,8 @@ const handleRoleSubmit = () => {
 
 .custom-tab-link.active {
   background: var(--bg-gradient);
-  color: black;
+  color: #fff;
+  font-weight: bold;
 }
 
 .custom-card {
@@ -481,8 +760,16 @@ const handleRoleSubmit = () => {
   overflow: hidden;
 }
 
+.custom-card h5.card-title {
+  font-size: 18px;
+}
+
+.custom-card h5 .bi-person-plus {
+  color: #2980b9;
+}
+
 .gradient-header {
-  background: var(--bg-gradient);
+  /* background: var(--bg-gradient); */
   padding: 1.5rem;
   border-bottom: none;
 }
@@ -502,21 +789,27 @@ const handleRoleSubmit = () => {
 }
 
 .custom-button {
-  background: var(--bg-gradient);
+  background: #fff;
   border: none;
   color: black;
+  font-size: 18px;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
   border: 1px solid black;
 }
 
 .custom-button:hover {
+  font-weight: 500;
+  color: white;
+  border: none;
+  background: var(--bg-gradient);
   transform: translateY(-1px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .role-card {
+  width: 48%;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
@@ -532,8 +825,8 @@ const handleRoleSubmit = () => {
 }
 
 .permission-badges .badge {
-  background-color: var(--primary-light);
-  color: black;
+  background-color: var(--success-color);
+  color: white;
   font-weight: 500;
 }
 

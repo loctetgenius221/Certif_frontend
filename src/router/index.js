@@ -29,6 +29,7 @@ import EditeurarticleView from '@/views/admin/EditeurarticleView.vue';
 
 import ConsultationPatientView from '@/views/patient/ConsultationPatientView.vue';
 import DetailConsultationPatientView from '@/views/patient/DetailConsultationPatientView.vue';
+import DetailDmeAdminView from '@/views/admin/DetailDmeAdminView.vue';
 const routes = [
 
   //==========================================//
@@ -46,7 +47,7 @@ const routes = [
     component: BlogView,
   },
   {
-    path: '/article',
+    path: '/article/:id',
     name: 'Article',
     component: ArticleView,
     props: true, // Permet de passer l'ID de l'article comme un prop
@@ -94,6 +95,12 @@ const routes = [
     path: "/dossier-medical",
     name: "DossierMedicalAdmin",
     component: DossierMedicalView,
+    meta: { requiresAuth: true, role: 'administrateur' },
+  },
+  {
+    path: "/detail-dme-admin/:id",
+    name: "DétailDmeAdmin",
+    component: DetailDmeAdminView,
     meta: { requiresAuth: true, role: 'administrateur' },
   },
   {

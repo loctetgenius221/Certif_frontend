@@ -3,11 +3,13 @@ import { api_base_url } from "@/apiConfig";
 import router from "@/router";
 import axios from "axios";
 
+
 export const useAuthStore = defineStore("authStore", {
   state: () => {
     return {
       user: null,
       token: localStorage.getItem("token") || null, // Ajout d'un état pour le token
+      errorMessages: [],
     };
   },
   getters: {
@@ -15,6 +17,9 @@ export const useAuthStore = defineStore("authStore", {
   },
   actions: {
     async authenticate(apiRoute, formData) {
+
+      this.errorMessages = [];
+
       try {
         const res = await axios.post(`${api_base_url}/${apiRoute}`, formData, {
           headers: {
@@ -30,8 +35,12 @@ export const useAuthStore = defineStore("authStore", {
         localStorage.setItem("token", this.token);
 
         // Enregistrer les détails spécifiques de l'utilisateur dans le localStorage
+        localStorage.setItem("user_prenom", this.user.prenom);
+        localStorage.setItem("user_nom", this.user.nom);
+        localStorage.setItem("user_photo", this.user.photo_profil);
         localStorage.setItem("user_role", this.user.role[0]); // Supposons que le rôle soit un tableau
         localStorage.setItem("user_id", this.user.id);
+
 
         // En fonction du rôle, stocker les informations supplémentaires
         if (this.user.role.includes("medecin")) {
@@ -69,6 +78,34 @@ export const useAuthStore = defineStore("authStore", {
         );
         this.user = null;
         this.token = null;
+
+        // Gestion des erreurs
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              // Mot de passe incorrect ou email non reconnu
+              this.errorMessages.push("Adresse email ou mot de passe incorrect.");
+              break;
+            case 403:
+              // Compte bloqué
+              this.errorMessages.push(error.response.data.message || "Compte bloqué.");
+              break;
+            case 422: {
+              // Erreurs de validation
+              const validationErrors = error.response.data.errors;
+              for (const key in validationErrors) {
+                this.errorMessages.push(...validationErrors[key]);
+              }
+              break;
+            }
+            default:
+              // Erreur inconnue
+              this.errorMessages.push("Une erreur est survenue, veuillez réessayer.");
+              break;
+          }
+        } else {
+          this.errorMessages.push("Erreur de connexion, vérifiez votre connexion Internet.");
+        }
       }
     },
     async logout() {
