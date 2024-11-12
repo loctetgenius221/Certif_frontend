@@ -454,6 +454,12 @@ const tabs = [
   { id: "stats", name: "Statistiques", icon: "bi bi-graph-up-arrow" },
 ];
 
+const fetchRendezvous = async () => {
+  const response = await getRendezVousList();
+  appointments.value = response.data;
+  console.log("rendez-vous:", appointments.value);
+};
+
 const filteredAppointments = computed(() => {
   return appointments.value.filter((apt) => {
     const matchesDate = !filters.value.date || apt.date === filters.value.date;
@@ -461,16 +467,13 @@ const filteredAppointments = computed(() => {
       !filters.value.status || apt.status === filters.value.status;
     const matchesSearch =
       !filters.value.search ||
-      apt.patient.user.nom
-        .toLowerCase()
-        .includes(filters.value.search.toLowerCase()) ||
-      apt.patient.user.prenom
-        .toLowerCase()
-        .includes(filters.value.search.toLowerCase());
+      (apt.patient.user.nom && apt.patient.user.nom.toLowerCase().includes(filters.value.search.toLowerCase())) ||
+      (apt.patient.user.prenom && apt.patient.user.prenom.toLowerCase().includes(filters.value.search.toLowerCase()));
 
     return matchesDate && matchesStatus && matchesSearch;
   });
 });
+
 
 // Statistique 1 : Nombre moyen de rendez-vous par médecin
 const avgAppointmentsPerDoctor = computed(() => {
@@ -556,12 +559,6 @@ const getStatusBadgeClass = (status) => {
     annulé: "bg-danger",
   };
   return classes[status] || "bg-secondary";
-};
-
-const fetchRendezvous = async () => {
-  const response = await getRendezVousList();
-  appointments.value = response.data;
-  console.log("rendez-vous:", appointments.value);
 };
 
 onMounted(() => {

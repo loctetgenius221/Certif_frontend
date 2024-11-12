@@ -513,8 +513,8 @@ onMounted(() => {
   padding: 0;
   width: 100%;
   height: 80vh;
-  background: linear-gradient(to right, #2980b9, rgba(0, 0, 0, 0)),
-    url(../../../public/image/hero-banner.jpg) no-repeat center center/cover;
+  background: linear-gradient(to right, #297fb9c9, rgba(0, 0, 0, 0)),
+    url(../../../public/image/herobanner02.jpg) no-repeat top center/cover;
 }
 
 .hero-header .card {
@@ -658,7 +658,6 @@ onMounted(() => {
   padding: 65px 0;
   width: 100%;
   height: auto;
-  background: #f1948a30;
 }
 
 .nos-services h3 {
@@ -669,7 +668,7 @@ onMounted(() => {
 .nos-services .card {
   width: 30%;
   border: none;
-  box-shadow: 0 0 6px #f1948a5a;
+  box-shadow: 0 0 9px #297fb925;
 }
 
 .nos-services .card h5 {
