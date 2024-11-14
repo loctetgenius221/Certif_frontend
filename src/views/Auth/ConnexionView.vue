@@ -24,11 +24,18 @@
           </div>
           <div class="form-panel col-md-7">
             <h3>Se connecter à son compte</h3>
-            
-             <!-- Message d'erreur d'authentification -->
-             <div v-if="authStore.errorMessages.length" class="alert alert-danger" role="alert">
+
+            <!-- Message d'erreur d'authentification -->
+            <div
+              v-if="authStore.errorMessages.length"
+              class="alert alert-danger"
+              role="alert"
+            >
               <ul>
-                <li v-for="(message, index) in authStore.errorMessages" :key="index">
+                <li
+                  v-for="(message, index) in authStore.errorMessages"
+                  :key="index"
+                >
                   {{ message }}
                 </li>
               </ul>
@@ -78,7 +85,9 @@
               <div class="already-account">
                 <p>
                   Pas encore de compte ?
-                  <router-link :to="{ name: 'Inscription' }">S'inscrire ici</router-link>
+                  <router-link :to="{ name: 'Inscription' }"
+                    >S'inscrire ici</router-link
+                  >
                 </p>
               </div>
             </form>
@@ -100,14 +109,14 @@ const authStore = useAuthStore();
 // Les données du formulaire
 const formData = reactive({
   email: "",
-  password: ""
+  password: "",
 });
 
 // Les erreurs de validation
 const errors = reactive({
   email: "",
   password: "",
-  auth: []
+  auth: [],
 });
 
 // Fonction de validation des champs
@@ -163,7 +172,7 @@ const handleSubmit = async () => {
       administrateur: "AdminDashboard",
       medecin: "MedecinDashboard",
       patient: "PatientDashboard",
-      assistant: "AssistantDashboard"
+      assistant: "AssistantDashboard",
     };
 
     const targetRoute = roleRoutes[userRole];
@@ -172,7 +181,6 @@ const handleSubmit = async () => {
     } else {
       errors.auth.push("Erreur: rôle non reconnu.");
     }
-
   } catch (error) {
     // Gestion améliorée des erreurs
     if (error.response?.data?.message) {
@@ -188,7 +196,6 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-
 ul {
   list-style: none;
 }
@@ -237,9 +244,24 @@ ul {
   font-size: 16px;
   margin-top: 10px;
 }
+
 .left-panel .img-fluid {
-  transform: scaleX(-1);
+  filter: drop-shadow(55px 5px 10px rgba(67, 66, 66, 0.219));
+  cursor: pointer;
+  /* transform: scaleX(-1); */
+  animation: float 3s ease-in-out infinite;
 }
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(-1); /* Position de départ et de fin */
+  }
+  50% {
+    transform: translateY(-20px) scaleX(-1); /* Déplacement vers le haut */
+  }
+}
+
 .form-panel {
   margin: auto;
   padding: 40px;
@@ -247,7 +269,7 @@ ul {
   background-color: #fff;
 }
 .connexion-container .form-panel h3 {
-  color: #2980B9;
+  color: #2980b9;
   margin-bottom: 20px;
 }
 .connexion-container .form-panel input {
@@ -255,7 +277,7 @@ ul {
   min-width: 400px;
 }
 .connexion-container .btn-custom {
-  background-color: #2980B9;
+  background-color: #2980b9;
   color: white;
   border-radius: 5px;
 }
@@ -267,7 +289,7 @@ ul {
   margin-top: 15px;
 }
 .connexion-container.already-account a {
-  color: #2980B9;
+  color: #2980b9;
 }
 .already-account a:hover {
   text-decoration: underline;
@@ -276,4 +298,24 @@ ul {
   border-radius: 5px;
 }
 
+@media (max-width: 768px) {
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .connexion-container {
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .connexion-container .form-login-section {
+    height: 100vh;
+    overflow: visible;
+  }
+
+  .left-panel {
+    display: none;
+  }
+}
 </style>

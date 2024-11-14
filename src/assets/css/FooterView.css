@@ -1,5 +1,5 @@
 footer {
-  background: #2980B9;
+  background: #2980b9;
   padding: 50px 0;
   color: white;
 }
@@ -16,4 +16,29 @@ footer .footer-content button {
   border: 1px solid white;
   border-radius: 10px;
   color: white;
+}
+
+@media (max-width: 767px) {
+  .footer {
+    padding: 40px 0;
+  }
+
+  .footer-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-content .col {
+    flex: 0 0 50%;
+    max-width: 50%;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 575px) {
+  .footer-content .col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
 }

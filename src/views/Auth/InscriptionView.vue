@@ -253,9 +253,24 @@ const handleSubmit = async () => {
   font-size: 16px;
   margin-top: 10px;
 }
+
 .left-panel .img-fluid {
-  transform: scaleX(-1);
+  filter: drop-shadow(55px 5px 10px rgba(67, 66, 66, 0.219));
+  cursor: pointer;
+  /* transform: scaleX(-1); */
+  animation: float 3s ease-in-out infinite;
 }
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scaleX(-1); /* Position de départ et de fin */
+  }
+  50% {
+    transform: translateY(-20px) scaleX(-1); /* Déplacement vers le haut */
+  }
+}
+
 .form-panel {
   margin: auto;
   padding: 40px;

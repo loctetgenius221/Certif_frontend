@@ -47,7 +47,7 @@
                 <tbody>
                   <tr v-for="(consultation, index) in consultations" :key="consultation.id">
                     <th scope="row">{{ index + 1 }}</th>
-                    <td>{{ (consultation.date) }}</td>
+                    <td>{{ consultation.date }}</td>
                     <td>{{ consultation.type_consultation }}</td>
                     <td>
                       <router-link 
@@ -63,7 +63,7 @@
             </div>
           </div>
         </div>
-
+        <VideoConsultation :consultation="consultations" />
       </div>
     </div>
   </div>
@@ -74,29 +74,50 @@ import SidebaPatient from '@/components/SidebaPatient.vue';
 import HeaderPatient from '@/components/HeaderPatient.vue';
 import { onMounted, ref } from 'vue';
 import { getConsultationByPatient } from '@/services/consultationService';
+import VideoConsultation from '@/components/VideoConsultation.vue';
 
 const consultations = ref([]);
+const allConsultations = ref([]); // Stocker toutes les consultations pour réinitialiser le filtre
+const filtreDate = ref('');
+const loading = ref(true); // Gestion de l'état de chargement
+const error = ref('');
 
+// Récupération de l'ID du patient dans le localStorage
 const patient_id = localStorage.getItem("patient_id");
-console.log("Id su patient :",patient_id);
 
 const fetchConsultationsByPatient = async () => {
-  if (patient_id) {  // Vérification si patient_id est défini
+  if (patient_id) {
+    loading.value = true;
     try {
-      const data = await getConsultationByPatient(patient_id);
-      consultations.value = data.data;
-    } catch (error) {
-      console.error("Erreur lors de la récupération des consultations :", error);
+      const response = await getConsultationByPatient(patient_id);
+      allConsultations.value = response.data;
+      consultations.value = allConsultations.value;
+    } catch (err) {
+      error.value = "Erreur lors de la récupération des consultations.";
+      console.error("Erreur lors de la récupération des consultations :", err);
+    } finally {
+      loading.value = false;
     }
   } else {
-    console.error("patient_id non défini dans le localStorage.");
+    error.value = "Patient ID non défini dans le localStorage.";
+  }
+};
+
+const filtrerConsultations = () => {
+  if (filtreDate.value) {
+    consultations.value = allConsultations.value.filter(
+      consultation => consultation.date === filtreDate.value
+    );
+  } else {
+    consultations.value = allConsultations.value; // Réinitialise le filtre si aucune date n'est spécifiée
   }
 };
 
 onMounted(() => {
   fetchConsultationsByPatient();
-})
+});
 </script>
+
 
 <style scoped>
 h1 {

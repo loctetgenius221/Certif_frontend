@@ -13,7 +13,9 @@
               consultations en ligne, de conseils médicaux personnalisés, et
               d'un suivi continu, où que vous soyez et à tout moment.
             </p>
-            <a href="#" class="btn btn-bleue mt-3">Prendre endez-vous</a>
+            <a href="#" class="btn btn-hero btn-bleue mt-3"
+              >Prendre endez-vous</a
+            >
           </div>
         </div>
       </div>
@@ -382,29 +384,27 @@
         <div class="row row-cols-1 row-cols-md-3 g-4 mt-5">
           <div class="col" v-for="article in articleRecents" :key="article.id">
             <div class="card h-100 shadow-sm article-card">
-                <div class="category-badge">{{ article.categorie.nom }}</div>
-                <img
-                  :src="article.image"
-                  class="card-img-top"
-                  :alt="article.titre"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">{{ article.titre }}</h5>
-                  <p class="card-text text-muted mb-3">
-                    {{ getExtrait(article.contenu) }}
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
+              <div class="category-badge">{{ article.categorie.nom }}</div>
+              <img
+                :src="article.image"
+                class="card-img-top"
+                :alt="article.titre"
+              />
+              <div class="card-body">
+                <h5 class="card-title">{{ article.titre }}</h5>
+                <p class="card-text text-muted mb-3">
+                  {{ getExtrait(article.contenu) }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <router-link
+                    :to="{ name: 'Article', params: { id: article.id } }"
+                    class="btn btn-primary"
                   >
-                    <router-link
-                      :to="{ name: 'Article', params: { id: article.id } }"
-                      class="btn btn-primary"
-                    >
-                      Lire plus
-                    </router-link>
-                  </div>
+                    Lire plus
+                  </router-link>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -543,27 +543,52 @@ onMounted(() => {
 
 /* Media query pour les petits écrans (smartphones) */
 @media (max-width: 575px) {
-  .card {
-    width: 100%; /* Les cartes prennent toute la largeur sur mobile */
-  }
-
   .hero-header {
-    height: 70vh; /* Hauteur ajustée pour les petits écrans */
+    height: 85vh; /* Hauteur ajustée pour les petits écrans */
   }
 
   .banner-content {
     flex-direction: column;
     text-align: center;
   }
+
+  .hero-header .card {
+    width: 90%; /* Les cartes prennent toute la largeur sur mobile */
+    padding: 15px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .hero-header .card h5 {
+    font-size: 18px;
+  }
+
+  .hero-header .card hr {
+    width: 96px;
+    border: 6px solid #f1948a;
+  }
+
+  .hero-header .card p {
+    line-height: 30px;
+  }
+
+  .hero-header .btn-hero {
+    width: 100%;
+  }
 }
 
-/*  */
+/** *********************** */
+/**        CSS Offres       */
+/** *********************** */
+.offres {
+  width: 100%;
+}
 
 .offres .card {
   padding: 30px;
   flex: 1;
   border: none;
-  box-shadow: 0 4px 12px #bdbdbd5c;
+  box-shadow: 0 4px 12px rgba(189, 189, 189, 0.36);
 }
 
 .offres .card h5 {
@@ -581,41 +606,62 @@ onMounted(() => {
 
 .offres .card-content {
   margin-top: -60px;
+  display: flex;
+  gap: 1rem;
 }
 
 .offres .card-content .btn {
   border: none;
 }
 
-@media (max-width: 575px) {
-  .offres .card {
-    padding: 30px;
-    flex: 1;
-    border: none;
-    box-shadow: 0 4px 12px #bdbdbd5c;
+/* Écrans de téléphone - max-width 767px */
+@media (max-width: 767px) {
+  .offres {
+    padding: 0;
   }
 
-  .offres .card h5 {
+  .offres .card {
+    padding: 20px;
     margin-bottom: 15px;
   }
 
-  .offres .card p {
-    text-align: justify;
-  }
-
   .offres .card img {
-    width: 62px;
-    height: 62px;
+    width: 42px;
+    height: 42px;
   }
 
   .offres .card-content {
-    margin-top: -60px;
-  }
-
-  .offres .card-content .btn {
-    border: none;
+    flex-direction: column;
+    margin-top: 30px;
+    padding: 0 15px;
   }
 }
+
+/* Tablettes - min-width 768px et max-width 991px */
+@media (min-width: 768px) and (max-width: 991px) {
+  .offres .card-content {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .offres .card {
+    flex: 0 0 48%;
+    margin-bottom: 15px;
+  }
+}
+
+/* Écrans larges - min-width 992px */
+@media (min-width: 992px) {
+  .offres .card-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .offres .card {
+    flex: 0 0 30%;
+  }
+}
+
 
 /* a propos */
 
@@ -652,6 +698,19 @@ onMounted(() => {
   height: 18px;
 }
 
+@media (max-width: 767px) {
+  .apropos {
+    width: 100%;
+    margin: 30px 0;
+  }
+
+  .apropos .apropos-content {
+    width: 100%;
+    padding: 0 20px;
+    flex-direction: column;
+  }
+}
+
 /* Nos Services */
 
 .nos-services {
@@ -675,13 +734,35 @@ onMounted(() => {
   color: #f1948a;
 }
 
+@media (max-width: 767px) {
+  .nos-services {
+    padding: 15px 0;
+  }
+
+  .nos-services .service-content {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .nos-services .card {
+    width: 90%;
+  }
+
+  .nos-services .service-content .card img {
+    width: 42px;
+    height: 42px;
+  }
+}
+
 /* FAQ */
 .faq {
   padding: 30px 0;
 }
 
-/* banner */
+@media (max-width: 575px) {
+}
 
+/* banner */
 .banner {
   height: 350px;
   background: #f1948a;
@@ -694,10 +775,62 @@ onMounted(() => {
   position: relative;
 }
 
-.banner-img img {
+.banner .banner-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.banner .banner-txt {
+  flex: 0 0 58.333333%;
+  max-width: 58.333333%;
+}
+
+.banner .banner-img {
   position: absolute;
   bottom: 0;
   right: 0;
+  width: 40%;
+}
+
+.banner .banner-img img {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .banner {
+    height: auto;
+    padding: 30px 0;
+  }
+
+  .banner .banner-content {
+    /* width: 30%; */
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner .banner-txt {
+    flex: 0 0 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .banner .banner-img {
+    position: relative;
+    width: 80%;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 575px) {
+  .banner .banner-img {
+    width: 100%;
+  }
+
+  .banner .banner-img img {
+    width: 250px;
+    height: 250px;
+  }
 }
 
 /* statistique */
@@ -706,6 +839,16 @@ onMounted(() => {
   padding: 80px 0;
   color: #fff;
   background: #2980b9;
+}
+
+@media (max-width: 767px) {
+  .statistique {
+    padding: 40px 0;
+  }
+
+  .statistique .stat-content {
+    flex-direction: column
+  }
 }
 
 /* Blog */
@@ -762,6 +905,11 @@ onMounted(() => {
   background-color: #2980b9;
   border-color: #2980b9;
 }
+
+@media (max-width: 767px) {
+
+}
+
 /* contact */
 
 .contact {
@@ -851,5 +999,18 @@ onMounted(() => {
   width: 100%;
   font-weight: bold;
   padding: 13px 0;
+}
+
+@media (max-width: 767px) {
+  .contact-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact-txt {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-bottom: 25px
+  }
 }
 </style>
