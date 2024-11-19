@@ -220,18 +220,21 @@ const handleSubmit = async () => {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
+
 .form-section {
   background-color: #2980B9;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
+
 .form-section .container {
   display: flex;
   flex-direction: row;
 }
+
 .left-panel {
   color: white;
   padding: 20px 50px;
@@ -239,16 +242,19 @@ const handleSubmit = async () => {
   flex-direction: column;
   justify-content: center;
 }
+
 .left-panel .btn-retour {
   color: white;
   text-decoration: none;
   font-size: 18px;
   font-weight: bold;
 }
+
 .left-panel h2 {
   font-size: 24px;
   font-weight: bold;
 }
+
 .left-panel p {
   font-size: 16px;
   margin-top: 10px;
@@ -257,17 +263,15 @@ const handleSubmit = async () => {
 .left-panel .img-fluid {
   filter: drop-shadow(55px 5px 10px rgba(67, 66, 66, 0.219));
   cursor: pointer;
-  /* transform: scaleX(-1); */
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) scaleX(-1); /* Position de départ et de fin */
+  0%, 100% {
+    transform: translateY(0) scaleX(-1);
   }
   50% {
-    transform: translateY(-20px) scaleX(-1); /* Déplacement vers le haut */
+    transform: translateY(-20px) scaleX(-1);
   }
 }
 
@@ -277,31 +281,41 @@ const handleSubmit = async () => {
   width: auto;
   background-color: #fff;
 }
+
 .form-panel h3 {
   color: #2980B9;
   margin-bottom: 20px;
 }
+
 .form-panel input {
   padding: 10px 15px;
 }
+
 .btn-custom {
   background-color: #2980B9;
   color: white;
   border-radius: 5px;
+  width: 100%;
+  padding: 10px;
 }
+
 .btn-custom:hover {
   background-color: #135a85;
 }
+
 .already-account {
   text-align: center;
   margin-top: 15px;
 }
+
 .already-account a {
   color: #2980B9;
 }
+
 .already-account a:hover {
   text-decoration: underline;
 }
+
 .form-control {
   border-radius: 5px;
 }
@@ -309,5 +323,121 @@ const handleSubmit = async () => {
 .text-danger {
   color: red;
   font-size: 0.875rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .registration-container {
+    padding: 0;
+    height: 100vh;
+    align-items: flex-start;
+  }
+
+  .form-section {
+    border-radius: 0;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .form-section .container {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 100%;
+  }
+
+  .left-panel {
+    padding: 1rem;
+    text-align: center;
+    display: none;
+  }
+
+  .left-panel .btn-retour {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .left-panel h2 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .left-panel p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .left-panel .img-fluid {
+    display: none;
+  }
+
+  .form-panel {
+    padding: 1.5rem 1rem;
+    margin: 0;
+    width: 100%;
+  }
+
+  .form-panel form {
+    width: 100%;
+  }
+
+  .form-panel .row {
+    margin: 0;
+  }
+
+  .form-panel .col {
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+
+  .form-panel .row .col:first-child {
+    margin-bottom: 1rem;
+  }
+
+  .form-panel input {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-panel h3 {
+    font-size: 1.25rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .col {
+    width: 100%;
+    padding: 0;
+  }
+
+  .btn-custom {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .already-account {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 375px) {
+  .form-section .container {
+    padding: 10px;
+  }
+
+  .form-panel {
+    padding: 1rem;
+  }
+
+  .left-panel {
+    display: none;
+  }
 }
 </style>

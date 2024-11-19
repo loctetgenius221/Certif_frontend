@@ -381,7 +381,7 @@
           </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4 mt-5">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-5">
           <div class="col" v-for="article in articleRecents" :key="article.id">
             <div class="card h-100 shadow-sm article-card">
               <div class="category-badge">{{ article.categorie.nom }}</div>
@@ -712,12 +712,18 @@ onMounted(() => {
     /* flex-direction: column; */
   }
 
+  .apropos .apropos-content {
+    width: 100%;
+    padding: 0 20px;
+    flex-direction: column;
+  }
+
   .apropos .apropos-img img {
     width: 100%;
   }
 }
 
-@media (max-width: 767px) {
+@media (min-width: 577px) and (max-width: 992px) {
   .apropos {
     width: 100%;
     margin: 30px 0;
@@ -753,8 +759,24 @@ onMounted(() => {
   color: #f1948a;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 576px) {
   .nos-services {
+    overflow-x: hidden;
+    padding: 15px 20px;
+  }
+
+  .nos-services .service-content {
+    flex-direction: column;
+  }
+
+  .nos-services .card {
+    width: 100%;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .nos-services {
+    overflow-x: hidden;
     padding: 15px 20px;
   }
 
@@ -833,7 +855,31 @@ onMounted(() => {
   width: 100%;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 576px) {
+  .banner {
+    height: auto;
+    padding: 30px 0;
+  }
+
+  .banner .banner-content {
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .banner .banner-txt {
+    all: unset; /* Réinitialise tous les styles */
+    display: block; /* Revenir à un comportement standard */
+    width: 90%;
+    margin-bottom: 20px;
+  }
+
+  .banner .banner-img {
+    display: none;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
   .banner {
     height: auto;
     padding: 30px 0;
@@ -941,9 +987,29 @@ onMounted(() => {
   border-color: #2980b9;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 576px) {
   .blog {
     padding: 0 20px;
+  }
+  .blog .container .row {
+    flex-wrap: wrap;
+  }
+
+  .article-card {
+    width: 100%;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .blog {
+    padding: 0 20px;
+  }
+  .blog .container .row {
+    flex-wrap: wrap;
+  }
+
+  .article-card {
+    width: 100%;
   }
 }
 
@@ -1036,6 +1102,56 @@ onMounted(() => {
   width: 100%;
   font-weight: bold;
   padding: 13px 0;
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .contact {
+    overflow-x: hidden;
+    padding: 40px 0;
+  }
+  .contact-content {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .contact-txt {
+    flex: 0 0 100%;
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  .contact .contact-form form {
+    width: 70vw;
+    padding: 30px 20px;
+  }
+
+  .contact .titres h3 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .contact .titres h2 {
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  .contact .contact-txt p {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .contact .infos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .contact .contact-txt .btn {
+    width: 50%;
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 767px) {

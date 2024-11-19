@@ -298,20 +298,93 @@ ul {
   border-radius: 5px;
 }
 
+/* Mobile */
+/* Mobile */
 @media (max-width: 768px) {
-  .container {
-    display: flex;
-    flex-direction: column;
-  }
-
   .connexion-container {
-    min-height: 100vh;
-    overflow: hidden;
+    padding: 0;
+    height: 100vh;
+    align-items: flex-start;
   }
 
   .connexion-container .form-login-section {
-    height: 100vh;
-    overflow: visible;
+    border-radius: 0;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .connexion-container .container {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 100%;
+  }
+
+  .left-panel {
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .left-panel .btn-retour {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .left-panel h2 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .left-panel p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .left-panel .img-fluid {
+    display: none;
+  }
+
+  .form-panel {
+    padding: 1.5rem 1rem;
+    margin: 0;
+    width: 100%;
+  }
+
+  .form-panel form {
+    width: 100%;
+  }
+
+  .connexion-container .form-panel input {
+    min-width: unset;
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .form-panel h3 {
+    font-size: 1.25rem;
+    text-align: center;
+  }
+
+  .btn-custom {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .already-account {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 375px) {
+  .connexion-container .container {
+    padding: 10px;
+  }
+
+  .form-panel {
+    padding: 1rem;
   }
 
   .left-panel {

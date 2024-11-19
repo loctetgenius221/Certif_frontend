@@ -36,7 +36,7 @@
       <div class="container mb-5">
         <h2 class="text-center mb-5">Autres articles</h2>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1  row-cols-md-2 row-cols-lg-3 g-4">
           <div
             v-for="autreArticle in autresArticles"
             :key="autreArticle.id"
@@ -221,7 +221,21 @@ onMounted(() => {
   border-color: #2980b9;
 }
 
-@media (max-width = 768px) {
+@media (min-width: 577px) and (max-width: 992px) {
+  .hero-banner {
+    padding: 0 20px;
+    height: 45vh;
+  }
+
+  .article-content {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0 20px;
+  }
+
+  .autres-articles {
+    padding: 0px 20px;
+  }
 }
 
 @media (max-width: 767px) {
