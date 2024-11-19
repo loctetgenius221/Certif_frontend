@@ -1,6 +1,18 @@
 <template>
   <div>
-    <div class="sidebar">
+    <!-- Bouton burger qui apparaît uniquement sur mobile -->
+    <button
+      @click="toggleSidebar"
+      class="burger-btn"
+      :class="{ active: isSidebarOpen }"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <!-- Sidebar avec classe conditionnelle pour l'état ouvert/fermé -->
+    <div class="sidebar" :class="{ open: isSidebarOpen }">
       <div class="logo"></div>
       <ul class="menu">
         <li :class="{ active: $route.name === 'Patient' }">
@@ -35,15 +47,27 @@
         </li>
       </ul>
     </div>
+    <!-- Overlay pour fermer le menu en cliquant à l'extérieur sur mobile -->
+    <div
+      v-if="isSidebarOpen"
+      class="sidebar-overlay"
+      @click="toggleSidebar"
+    ></div>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { useAuthStore } from "@/store/auth";
 import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
+const isSidebarOpen = ref(false);
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value;
+};
 
 const logout = async () => {
   try {
@@ -103,7 +127,7 @@ const logout = async () => {
 .menu li.active,
 .menu li:hover {
   color: #fff;
-  background: #2980B9;
+  background: #2980b9;
 }
 .menu .link {
   color: inherit;
@@ -128,5 +152,87 @@ const logout = async () => {
   bottom: 0;
   left: 0;
   width: 100%;
+}
+
+/* Styles pour le responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 260px;
+    transform: translateX(-100%);
+    position: fixed;
+  }
+
+  /* .sidebar:hover {
+    transition: 0.5s;
+  } */
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Ne pas afficher l'effet hover sur mobile */
+  .sidebar:hover {
+    width: 260px;
+  }
+}
+
+/* Styles pour le bouton burger */
+.burger-btn {
+  display: none;
+  position: fixed;
+  top: 0rem;
+  left: 1rem;
+  z-index: 60;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 15px;
+  background: #2980b9;
+  margin-left: -16px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.192);
+}
+
+.burger-btn span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px 0;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+/* Animation du burger quand active */
+.burger-btn.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-btn.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Overlay pour fermer le menu */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 40;
+}
+
+@media (max-width: 768px) {
+  .burger-btn {
+    display: block;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
 }
 </style>
