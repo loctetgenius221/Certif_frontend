@@ -369,4 +369,80 @@ const planifierRendezVous = async () => {
 .error-message {
   color: red;
 }
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .section-container {
+    padding: 1rem;
+  }
+
+  .info-medecin {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .info-medecin img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .form_section {
+    flex-direction: column-reverse;
+  }
+
+  .form_section form,
+  .form_section .calendrier {
+    width: 100%;
+  }
+
+  .form_section form .plage {
+    flex: 1 0 calc(50% - 0.75rem);
+    padding: 0.75rem;
+  }
+
+  .form_section form .plage h3 {
+    font-size: 14px;
+  }
+
+  .form_section form .info-sup {
+    margin-bottom: 1rem;
+  }
+
+  .form_section form .info-sup label {
+    font-size: 14px;
+  }
+
+  .form_section form .info-sup select {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .calendrier {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .info-medecin {
+    padding: 1.5rem;
+  }
+
+  .info-medecin img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .form_section form .plage {
+    flex: 1 0 calc(33.33% - 0.75rem);
+  }
+}
+
+/* Accessibilité */
+.form_section form .plage:focus-visible,
+.form_section form .btn:focus-visible,
+.form_section form .info-sup select:focus-visible {
+  outline: 2px solid #2980b9;
+  outline-offset: 2px;
+}
 </style>

@@ -131,4 +131,63 @@ form .btn-retour {
   text-decoration: none;
   color: black;
 }
+
+/* Styles responsifs */
+@media (max-width: 768px) {
+  .d-flex {
+    flex-direction: column;
+  }
+
+  .form-content form .d-flex {
+    flex-direction: column;
+  }
+
+  .form-content form .col-3 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .profil-heading {
+    flex-direction: column;
+  }
+
+  .mt-4.d-flex {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .profil-section .profil-heading h3,
+  .profil-section .profil-heading p {
+    margin: 5px 0;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .form-content form .col-3 {
+    width: 48%;
+  }
+  
+  .profil-section .form-content {
+    padding: 25px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .form-content form .col-3 {
+    width: 30%;
+  }
+  
+  .profil-section .form-content {
+    padding: 30px;
+  }
+  
+  .profil-section .profil-heading {
+    padding: 36px 50px;
+  }
+  
+  form .btn-primary,
+  form .btn-retour {
+    width: auto;
+  }
+}
 </style>

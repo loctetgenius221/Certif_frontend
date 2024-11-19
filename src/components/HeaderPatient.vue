@@ -285,4 +285,120 @@ const userPhoto = ref("../../public/image/photo-profil.png");
 .header--content p {
   font-weight: 500;
 }
+
+/* Modifications et ajouts pour le responsive */
+@media (max-width: 768px) {
+  .header--wrapper {
+    padding: 10px 1rem;
+    position: relative;
+  }
+
+  .search-toggle-btn {
+    display: block;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #2980b9;
+  }
+
+  .search--box {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+  }
+
+  .search--box.show-search {
+    display: flex;
+    width: 100%;
+  }
+
+  .search-close-btn {
+    display: block;
+    background: none;
+    border: none;
+    color: #adb5bd;
+  }
+
+  .user--info {
+    gap: 0.5rem;
+  }
+
+  .user-details {
+    display: none;
+  }
+
+  .notification-section {
+    width: 100%;
+    right: -100%;
+  }
+
+  .header--content {
+    height: 120px;
+    padding: 20px;
+  }
+
+  .header--content h1 {
+    font-size: 20px;
+  }
+
+  .notification-body {
+    padding: 0.5rem;
+  }
+}
+
+/* Pour les très petits écrans */
+@media (max-width: 480px) {
+  .header--wrapper {
+    justify-content: space-around;
+  }
+
+  .user--info img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header--content {
+    height: 100px;
+    padding: 15px;
+  }
+}
+
+/* Ajouts pour améliorer l'expérience tactile */
+@media (hover: none) {
+  .search--box i:hover {
+    transform: none;
+  }
+
+  .notification-body {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .bouton-notif, 
+  .search-toggle-btn,
+  .search-close-btn {
+    padding: 8px;
+  }
+}
+
+/* Animation pour la barre de recherche */
+.search--box {
+  transition: all 0.3s ease;
+}
+
+/* Animation pour les notifications */
+.notification-section {
+  transition: right 0.3s ease-in-out;
+}
+
+/* Ajustement du badge pour mobile */
+.badge {
+  font-size: 0.7rem;
+  padding: 1px 5px;
+}
 </style>

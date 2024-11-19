@@ -99,7 +99,7 @@ const logout = async () => {
   transition: all 0.5s linear;
   background: #fff;
   box-shadow: 0px 10px 25px #297fb918;
-  z-index: 5;
+  z-index: 3005;
 }
 
 .sidebar:hover {

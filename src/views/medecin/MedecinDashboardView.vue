@@ -1,6 +1,6 @@
 <template>
   <div class="medecin-dashboard d-flex">
-    <SidebarMedecin/>
+    <SidebarMedecin />
     <div class="section-container">
       <HeaderPatient />
 
@@ -270,7 +270,6 @@ const rendezVous = ref([]);
 const selectedRdv = ref(null);
 const selectedFilter = ref("à venir");
 
-
 const fetchRendezVous = async () => {
   const medecinId = localStorage.getItem("medecin_id");
   if (!medecinId) {
@@ -325,6 +324,84 @@ onMounted(() => {
   background: #fff;
   width: 100%;
   padding: 0.5rem 1rem;
+} /* Media Queries */
+@media (min-width: 768px) {
+  .rendezvous-section {
+    width: 100%;
+  }
+
+  .calendar-section {
+    width: 100%;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 8px 40px;
+  }
+
+  .rdv-section .rdv-item {
+    padding: 18px 20px;
+  }
+
+  .modal.right .modal-dialog {
+    width: 50%;
+    max-width: 50%;
+  }
+}
+
+/* @media (min-width: 1024px) {
+  .section-container {
+    padding: 1.5rem;
+  }
+
+  .rendezvous-section {
+    width: 40%;
+  }
+
+  .calendar-section {
+    width: 60%;
+  }
+
+  .rdv-section .rdv-item h3 {
+    font-size: 16px;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 8px 55px;
+  }
+
+  .modal.right .modal-dialog {
+    width: 35%;
+    max-width: 35vw;
+  }
+} */
+
+/* Ajustements pour très petits écrans */
+@media (max-width: 480px) {
+  .header--wrapper {
+    padding: 10px;
+  }
+
+  .rdv-section .rdv-item {
+    padding: 10px;
+  }
+
+  .rdv-section .rdv-item .d-flex {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 6px 15px;
+    font-size: 14px;
+  }
+
+  .modal-body {
+    padding: 10px;
+  }
+
+  .modal-body .head-input {
+    margin-bottom: 10px;
+  }
 }
 
 /* .sidebar {
@@ -609,5 +686,71 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rendezvous-section {
+    width: 100%;
+  }
+
+  .calendar-section {
+    width: 100%;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 8px 40px;
+  }
+
+  .rdv-section .rdv-item {
+    padding: 18px 20px;
+  }
+
+  .modal.right .modal-dialog {
+    width: 50%;
+    max-width: 50%;
+  }
+}
+
+
+
+/* Ajustements pour très petits écrans */
+@media (max-width: 480px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .rendezvous-section {
+    width: 100%;
+  }
+  .header--wrapper {
+    padding: 10px;
+  }
+
+  .rdv-section .rdv-item {
+    padding: 10px;
+  }
+
+  .rdv-section .rdv-item .d-flex {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 6px 15px;
+    font-size: 14px;
+  }
+
+  .modal-body {
+    padding: 10px;
+  }
+
+  .modal-body .head-input {
+    margin-bottom: 10px;
+  }
 }
 </style>

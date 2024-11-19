@@ -665,4 +665,92 @@ onMounted(() => {
   background-color: #2980b9;
   color: white;
 }
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .modal.right {
+    min-height: 100vh;
+  }
+  .modal.right .modal-dialog {
+    width: 100%;
+    max-width: 80vw;
+    overflow: scroll;
+  }
+  .section-container .heading {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .section-container .heading .btn-rdv {
+    text-align: center;
+  }
+
+  .filter-bar .nav-tabs .nav-link {
+    padding: 8px 40px;
+  }
+
+  .rdv-section .rendezvous .rdv-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rdv-item .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  .modal-body .head-input {
+    margin-bottom: 1rem;
+  }
+
+  .modal-body .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .modal-body label {
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-body input {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .modal.right .modal-dialog {
+    width: 100%;
+    max-width: 60vw;
+  }
+
+  .rdv-item .d-flex {
+    gap: 1rem !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .modal.right .modal-dialog {
+    width: 35%;
+    max-width: 35vw;
+  }
+}
+
+/* Styles pour améliorer l'accessibilité */
+.nav-link:focus,
+.btn-rdv:focus,
+.btn-detail:focus {
+  outline: 2px solid #2980b9;
+  outline-offset: 2px;
+}
+
+/* Animations pour le modal */
+.modal.right.fade .modal-dialog {
+  transform: translateX(100%);
+}
+
+.modal.right.fade.show .modal-dialog {
+  transform: translateX(0);
+}
 </style>

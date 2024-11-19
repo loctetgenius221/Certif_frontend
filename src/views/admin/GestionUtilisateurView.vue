@@ -907,4 +907,92 @@ onMounted(fetchRolesAndPermissions);
     transform: translateX(0);
   }
 }
+
+/* Responsive Breakpoints */
+@media (min-width: 640px) {
+  .user-management {
+    padding: 1.5rem;
+  }
+
+  .custom-tab-link {
+    width: auto;
+  }
+
+  .custom-button {
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .role-card {
+    width: calc(50% - 1rem);
+    margin-bottom: 1rem;
+  }
+
+  .roles-list .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .permission-checkbox {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .user-management {
+    padding: 2rem;
+  }
+
+  .header-section {
+    padding: 2rem;
+  }
+
+  .custom-card {
+    margin-bottom: 2rem;
+  }
+
+  .role-card {
+    width: calc(33.333% - 1rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .role-card {
+    width: calc(25% - 1rem);
+  }
+}
+
+/* Animations */
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.role-card,
+.permission-checkbox {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 </style>

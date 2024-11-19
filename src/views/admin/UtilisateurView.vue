@@ -578,4 +578,200 @@ onMounted(() => {
   color: #fff !important;
   font-weight: bold;
 }
+
+/* Ajouts et modifications pour le responsive */
+@media (max-width: 1024px) {
+  .dashboard-title {
+    font-size: 1.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem !important;
+  }
+
+  /* En-tête responsive */
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
+  /* Ajustement des cartes de statistiques */
+  .row.g-4 {
+    margin: 0;
+  }
+
+  .col-md-3 {
+    width: 50%;
+    padding: 0.5rem;
+  }
+
+  /* Barre de recherche et filtres */
+  .d-flex.gap-3.mb-4 {
+    flex-direction: column;
+    gap: 1rem !important;
+  }
+
+  .d-flex.align-items-center.gap-2 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn.btn-outline-secondary {
+    flex: 1;
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+
+  /* Ajustement des onglets */
+  .nav.custom-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .custom-tab-link {
+    white-space: nowrap;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.9rem;
+  }
+
+  /* Liste des utilisateurs */
+  .user-item {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .user-item > div {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .user-roles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Pagination */
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .page-item {
+    margin: 0 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .col-md-3 {
+    width: 100%;
+  }
+
+  .stat-card {
+    margin-bottom: 0.2rem;
+  }
+
+  /* Ajustement des éléments par page */
+  .d-flex.justify-content-between.align-items-center.mb-3 {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  /* Ajustement du bouton d'ajout d'utilisateur */
+  .btn.btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Ajustement de l'affichage utilisateur */
+  .avatar {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+  }
+
+  .user-name {
+    font-size: 1.1rem;
+  }
+
+  .user-email {
+    font-size: 0.85rem;
+  }
+
+  .btn-link {
+    padding: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  /* Ajustement des badges */
+  .badge {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Optimisations pour le tactile */
+@media (hover: none) {
+  .stat-card:hover {
+    transform: none;
+  }
+
+  .user-item:hover {
+    background-color: inherit;
+  }
+
+  .btn-link:active {
+    background-color: #f8f9fa;
+  }
+
+  /* Amélioration du défilement */
+  .nav.custom-tabs,
+  .user-list {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .nav.custom-tabs::-webkit-scrollbar,
+  .user-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+}
+
+/* Animations optimisées */
+.stat-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.user-item {
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Améliorations de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .user-item {
+    transition: none;
+  }
+}
+
+/* Support du mode sombre */
+
 </style>

@@ -734,4 +734,85 @@ watch(() => nouvellePlage.value.date, chargerPlagesHoraires);
   width: 50vw;
   padding: 50px;
 } */ 
+
+
+/* Mobile Breakpoint */
+@media screen and (max-width: 768px) {
+  .section-container {
+    padding: 10px;
+  }
+
+  .info-medecin {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .info-medecin .info-txt h2 {
+    font-size: 18px;
+  }
+
+  .info-medecin .info-txt h4 {
+    font-size: 16px;
+  }
+
+  .form_section {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form_section form,
+  .form_section .calendrier {
+    width: 100%;
+  }
+
+  .form_section form .plage-horaire,
+  .form_section .calendrier {
+    padding: 15px;
+  }
+
+  .form_section form input,
+  .form_section form select {
+    padding: 12px 16px;
+    width: 100%;
+  }
+
+  .plages-list {
+    height: 400px;
+  }
+
+  .plage-item {
+    padding: 12px;
+  }
+
+  .plage-item .btn-danger,
+  .plage-item .btn-modifier {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+
+/* Small Mobile Breakpoint */
+@media screen and (max-width: 480px) {
+  .section-container h1 {
+    font-size: 16px;
+  }
+
+  .info-medecin img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .form_section form label {
+    font-size: 16px;
+  }
+
+  .calendrier h2,
+  .form_section form .plage-horaire h2 {
+    font-size: 16px;
+  }
+}
+
+
 </style>

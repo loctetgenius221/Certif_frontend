@@ -75,7 +75,7 @@
             <span v-else> Terminer la consultation </span>
           </button>
 
-          <div class="quick-actions mt-4 d-flex gap-2">
+          <!-- <div class="quick-actions mt-4 d-flex gap-2">
             <button class="btn btn-light flex-grow-1" @click="testAudio">
               <i class="bi bi-mic me-2"></i>
               Tester l'audio
@@ -84,7 +84,7 @@
               <i class="bi bi-camera me-2"></i>
               Tester la vidéo
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -349,13 +349,13 @@ const handleParticipantLeft = () => {
   toast.warning("Participant déconnecté");
 };
 
-const testAudio = () => {
-  toast.info("Test audio en cours...");
-};
+// const testAudio = () => {
+//   toast.info("Test audio en cours...");
+// };
 
-const testVideo = () => {
-  toast.info("Test vidéo en cours...");
-};
+// const testVideo = () => {
+//   toast.info("Test vidéo en cours...");
+// };
 
 onMounted(() => {
   checkConsultationTime();

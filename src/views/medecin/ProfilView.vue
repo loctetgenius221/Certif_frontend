@@ -285,4 +285,156 @@ input, select {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Tablette Styles (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+  .profil-section {
+    padding: 1.5rem;
+  }
+
+  .profil-content {
+    padding: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Styles (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  .profil-section {
+    padding: 1rem;
+  }
+
+  .profil-content {
+    padding: 1rem;
+  }
+
+  .profil-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .photo-profil {
+    margin-right: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .photo-profil img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .info-principale {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 0.75rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Small Mobile Styles (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .profil-section {
+    padding: 0.75rem;
+  }
+
+  .profil-content {
+    padding: 0.75rem;
+  }
+
+  .photo-profil img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .btn-change-photo {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .info-principale p {
+    font-size: 0.9rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  input, select {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Loading and Error States */
+.loading-spinner, .error-message {
+  text-align: center;
+  padding: 1rem;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility Classes for Better Mobile Support */
+.medecin-dashboard.d-flex {
+  display: flex;
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .medecin-dashboard.d-flex {
+    flex-direction: column;
+  }
+
+  .section-content {
+    width: 100%;
+  }
+}
 </style>

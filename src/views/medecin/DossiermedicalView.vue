@@ -198,4 +198,139 @@ onMounted(fetchDossiers);
     overflow-x: auto;
   }
 }
+
+/* Responsive Breakpoints */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 0.5rem;
+  }
+
+  .dme-section {
+    padding: 0.5rem;
+    border-radius: 0;
+  }
+
+  .dme-heading h1 {
+    font-size: 18px;
+  }
+
+  .search-box {
+    padding: 0.4rem 0.8rem;
+  }
+
+  .search-box input {
+    font-size: 13px;
+  }
+
+  .table td, .table th {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .patient-photo {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+
+  .dme-section {
+    padding: 1rem;
+  }
+
+  .dme-heading h1 {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dme-section {
+    padding: 1.5rem;
+  }
+
+  .dme-heading {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .search-box {
+    width: auto;
+    min-width: 300px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .main-content {
+    padding: 2rem;
+  }
+
+  .dme-section {
+    padding: 2rem;
+  }
+
+  .dme-heading {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dme-heading h1 {
+    font-size: 24px;
+  }
+
+  .search-box {
+    width: auto;
+    min-width: 350px;
+  }
+
+  .table td, .table th {
+    padding: 12px 16px;
+  }
+}
+
+/* Card view for extremely small devices */
+@media (max-width: 360px) {
+  .table-responsive {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .table {
+    min-width: unset;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+
+  .table tr {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .table td {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border: none;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    width: 120px;
+    min-width: 120px;
+  }
+}
 </style>

@@ -7,13 +7,13 @@
       
       <div class="container-fluid py-6 px-4">
         <div class="max-w-7xl mx-auto">
-          <nav aria-label="breadcrumb" class="mb-4">
+          <!-- <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#" class="text-primary">Accueil</a></li>
               <li class="breadcrumb-item"><a href="#" class="text-primary">Consultations</a></li>
               <li class="breadcrumb-item active" aria-current="page">Détail</li>
             </ol>
-          </nav>
+          </nav> -->
 
           <div v-if="consultation" class="consultation-content">
             <div class="row g-4">
