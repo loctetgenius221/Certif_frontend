@@ -194,8 +194,8 @@
 
     <section class="faq mb-5">
       <div class="container">
-        <div class="mb-5">
-          <h2>Questions fréquemment posées</h2>
+        <div class="mb-4 faq-header">
+          <h2 class="faq-title">Questions fréquemment posées</h2>
           <img src="/image/patternwave-removebg-preview 3.svg" alt="" />
         </div>
         <!-- Accordéons -->
@@ -431,7 +431,7 @@
               </div>
               <div class="mail d-flex align-items-center gap-3">
                 <img src="/image/iconmail.png" alt="" />
-                <h3 class="p-0 m-0">contact@votreplateforme.com</h3>
+                <h3 class="p-0 m-0">contact@fannconsult.com</h3>
               </div>
             </div>
             <a href="#" class="btn btn-rose mt-5">Prendre endez-vous</a>
@@ -582,86 +582,93 @@ onMounted(() => {
 /** *********************** */
 .offres {
   width: 100%;
+  padding: 20px;
+}
+
+.offres .card-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
 }
 
 .offres .card {
-  padding: 30px;
   flex: 1;
+  /* min-width: 250px;
+  max-width: 350px; */
+  padding: 25px;
+  margin-bottom: 20px;
   border: none;
   box-shadow: 0 4px 12px rgba(189, 189, 189, 0.36);
+  transition: transform 0.3s ease;
 }
 
-.offres .card h5 {
-  margin-bottom: 15px;
-}
-
-.offres .card p {
-  text-align: justify;
+.offres .card:hover {
+  transform: scale(1.05);
 }
 
 .offres .card img {
   width: 62px;
   height: 62px;
+  margin-bottom: 15px;
 }
 
-.offres .card-content {
-  margin-top: -60px;
-  display: flex;
-  gap: 1rem;
+.offres .card-body {
+  padding: 0;
 }
 
-.offres .card-content .btn {
-  border: none;
+.offres .card-title {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
 }
 
-/* Écrans de téléphone - max-width 767px */
-@media (max-width: 767px) {
-  .offres {
-    padding: 0;
+.offres .card-text {
+  text-align: justify;
+  font-size: 0.9rem;
+}
+
+/* Mobile - jusqu'à 576px */
+@media (max-width: 576px) {
+  .offres .card-content {
+    max-width: 100vw;
+    flex-direction: column;
+    /* align-items: center; */
   }
 
   .offres .card {
-    padding: 20px;
+    width: 100%;
+    max-width: 100%;
     margin-bottom: 15px;
+    padding: 20px;
   }
 
   .offres .card img {
-    width: 42px;
-    height: 42px;
-  }
-
-  .offres .card-content {
-    flex-direction: column;
-    margin-top: 30px;
-    padding: 0 15px;
+    width: 48px;
+    height: 48px;
   }
 }
 
-/* Tablettes - min-width 768px et max-width 991px */
-@media (min-width: 768px) and (max-width: 991px) {
+/* Tablettes - de 577px à 992px */
+@media (min-width: 577px) and (max-width: 992px) {
   .offres .card-content {
-    flex-wrap: wrap;
     justify-content: center;
   }
 
   .offres .card {
-    flex: 0 0 48%;
-    margin-bottom: 15px;
+    flex: 0 0 calc(50% - 1rem);
   }
 }
 
-/* Écrans larges - min-width 992px */
-@media (min-width: 992px) {
+/* Écrans larges - à partir de 993px */
+@media (min-width: 993px) {
   .offres .card-content {
-    flex-direction: row;
     justify-content: space-between;
   }
 
   .offres .card {
-    flex: 0 0 30%;
+    flex: 0 0 calc(33.333% - 1rem);
   }
 }
-
 
 /* a propos */
 
@@ -696,6 +703,18 @@ onMounted(() => {
 .apropos .apropos-txt .chech {
   width: 20px;
   height: 18px;
+}
+
+@media (max-width: 576px) {
+  .apropos .apropos-img {
+    width: 100vw;
+    padding: 0 20px;
+    /* flex-direction: column; */
+  }
+
+  .apropos .apropos-img img {
+    width: 100%;
+  }
 }
 
 @media (max-width: 767px) {
@@ -736,16 +755,15 @@ onMounted(() => {
 
 @media (max-width: 767px) {
   .nos-services {
-    padding: 15px 0;
+    padding: 15px 20px;
   }
 
   .nos-services .service-content {
     flex-direction: column;
-    padding: 15px;
   }
 
   .nos-services .card {
-    width: 90%;
+    width: 100%;
   }
 
   .nos-services .service-content .card img {
@@ -759,7 +777,25 @@ onMounted(() => {
   padding: 30px 0;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 767px) {
+  .faq {
+    padding: 30px 20px;
+  }
+
+  .faq .faq-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .faq .faq-title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .faq img {
+    width: 85px;
+  }
 }
 
 /* banner */
@@ -804,21 +840,20 @@ onMounted(() => {
   }
 
   .banner .banner-content {
-    /* width: 30%; */
+    width: 100%;
     flex-direction: column;
     text-align: center;
   }
 
   .banner .banner-txt {
-    flex: 0 0 100%;
-    max-width: 100%;
+    all: unset; /* Réinitialise tous les styles */
+    display: block; /* Revenir à un comportement standard */
+    width: 90%;
     margin-bottom: 20px;
   }
 
   .banner .banner-img {
-    position: relative;
-    width: 80%;
-    margin-top: 20px;
+    display: none;
   }
 }
 
@@ -847,7 +882,7 @@ onMounted(() => {
   }
 
   .statistique .stat-content {
-    flex-direction: column
+    flex-direction: column;
   }
 }
 
@@ -907,7 +942,9 @@ onMounted(() => {
 }
 
 @media (max-width: 767px) {
-
+  .blog {
+    padding: 0 20px;
+  }
 }
 
 /* contact */
@@ -1002,15 +1039,50 @@ onMounted(() => {
 }
 
 @media (max-width: 767px) {
+  .contact {
+    padding: 40px 0;
+  }
   .contact-content {
     flex-direction: column;
     align-items: center;
+    padding: 20px;
   }
 
   .contact-txt {
     flex: 0 0 100%;
     width: 100%;
-    margin-bottom: 25px
+    margin-bottom: 25px;
+  }
+
+  .contact .contact-form form {
+    width: 90vw;
+    padding: 30px 20px;
+  }
+
+  .contact .titres h3 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  .contact .titres h2 {
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  .contact .contact-txt p {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .contact .infos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .contact .contact-txt .btn {
+    width: 100%;
   }
 }
 </style>

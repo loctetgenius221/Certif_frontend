@@ -5,16 +5,27 @@
     <section class="hero-banner d-flex align-items-center">
       <div class="container">
         <h1 class="text-white fw-bold">Bienvenue sur notre blog de santé</h1>
-        <p class="text-white">Découvrez nos derniers articles sur des sujets de bien-être et de prévention.</p>
+        <p class="text-white">
+          Découvrez nos derniers articles sur des sujets de bien-être et de
+          prévention.
+        </p>
       </div>
     </section>
 
     <section class="article mb-5" v-if="article">
-      <div class="container d-flex flex-column flex-md-row justify-content-center align-items-start gap-3">
+      <div
+        class="container d-flex flex-column flex-md-row justify-content-center align-items-start gap-3"
+      >
         <div class="article-content">
-          <img :src="article.image" alt="Image de l'article" class="article-image" />
+          <img
+            :src="article.image"
+            alt="Image de l'article"
+            class="article-image"
+          />
 
-          <small class="text-muted">{{ formatDate(article.date_publication) }}</small>
+          <small class="text-muted">{{
+            formatDate(article.date_publication)
+          }}</small>
           <h1 class="mt-3 mb-4">{{ article.titre }}</h1>
           <div class="content" v-html="article.contenu"></div>
         </div>
@@ -26,31 +37,34 @@
         <h2 class="text-center mb-5">Autres articles</h2>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
-          <div v-for="autreArticle in autresArticles" :key="autreArticle.id" class="col">
+          <div
+            v-for="autreArticle in autresArticles"
+            :key="autreArticle.id"
+            class="col"
+          >
             <div class="card h-100 shadow-sm article-card">
-                <div class="category-badge">{{ autreArticle.categorie.nom }}</div>
-                <img
-                  :src="autreArticle.image"
-                  class="card-img-top"
-                  :alt="autreArticle.titre"
-                />
-                <div class="card-body">
-                  <h5 class="card-title">{{ autreArticle.titre }}</h5>
-                  <p class="card-text text-muted mb-3">
-                    {{ getExtrait(autreArticle.contenu) }}
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
+              <div class="category-badge">{{ autreArticle.categorie.nom }}</div>
+              <img
+                :src="autreArticle.image"
+                class="card-img-top"
+                :alt="autreArticle.titre"
+              />
+              <div class="card-body">
+                <h5 class="card-title">{{ autreArticle.titre }}</h5>
+                <p class="card-text text-muted mb-3">
+                  {{ getExtrait(autreArticle.contenu) }}
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <router-link
+                    :to="{ name: 'Article', params: { id: autreArticle.id } }"
+                    class="btn btn-primary"
+                    @click="refresh"
                   >
-                    <router-link
-                      :to="{ name: 'Article', params: { id: autreArticle.id } }"
-                      class="btn btn-primary" @click="refresh"
-                    >
-                      Lire plus
-                    </router-link>
-                  </div>
+                    Lire plus
+                  </router-link>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,11 +75,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
 import EnTete from "../../components/EnTete.vue";
-import PiedDePage from '../../components/PiedDePage.vue';
-import { getArticle, allArticle } from '@/services/articleService';
+import PiedDePage from "../../components/PiedDePage.vue";
+import { getArticle, allArticle } from "@/services/articleService";
 
 const article = ref(null);
 const autresArticles = ref([]);
@@ -73,12 +87,18 @@ const route = useRoute();
 
 const refresh = async () => {
   window.location.reload();
-}
+};
 
 // Fonction pour formater la date
 const formatDate = (dateString) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-  return new Date(dateString).toLocaleDateString('fr-FR', options);
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return new Date(dateString).toLocaleDateString("fr-FR", options);
 };
 
 // Fonction pour limiter le contenu HTML tout en conservant les balises de base
@@ -111,7 +131,8 @@ onMounted(() => {
 .hero-banner {
   width: 100%;
   height: 45vh;
-  background: linear-gradient(to right, #2980b9, rgba(0, 0, 0, 0.5)), url(../../../public/image/hero-banner.jpg) no-repeat top center/cover;
+  background: linear-gradient(to right, #2980b9, rgba(0, 0, 0, 0.5)),
+    url(../../../public/image/herobanner02.jpg) no-repeat top center/cover;
 }
 
 .article .container {
@@ -134,12 +155,12 @@ onMounted(() => {
 }
 
 .article-content h1 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: bold;
 }
 
 .article-content p {
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   line-height: 1.6;
   font-size: 1.125rem;
 }
@@ -198,5 +219,28 @@ onMounted(() => {
 .btn-primary {
   background-color: #2980b9;
   border-color: #2980b9;
+}
+
+@media (max-width = 768px) {
+}
+
+@media (max-width: 767px) {
+  .hero-banner {
+    padding: 0 20px;
+  }
+
+  .article-content {
+    width: 100%;
+    margin-top: 6rem;
+    padding: 0 20px;
+  }
+
+  .hero-banner {
+    height: 55vh;
+  }
+
+  .autres-articles {
+    padding: 0px 20px;
+  }
 }
 </style>

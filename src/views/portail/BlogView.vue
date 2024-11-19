@@ -166,7 +166,7 @@ onMounted(() => {
   width: 100%;
   height: 40vh;
   background: linear-gradient(to right, #2980b9, rgba(41, 127, 185, 0.8)),
-    url(../../../public/image/hero-banner.jpg) no-repeat center center/cover;
+    url(../../../public/image/herobanner02.jpg) no-repeat center center/cover;
   position: relative;
   margin-bottom: 2rem;
 }
@@ -255,11 +255,17 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .hero-banner {
-    height: 50vh;
+    height: 70vh;
+    padding: 0 20px;
   }
 
   .hero-banner .container h1 {
-    font-size: 2rem;
+    font-size: 1.6rem;
+  }
+
+  .hero-banner .container p {
+    font-size: 1.2rem;
+    line-height: 1.6;
   }
 
   .categories-filter {
@@ -271,6 +277,10 @@ onMounted(() => {
   .filters .row {
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .blog {
+    padding: 0 20px;
   }
 }
 </style>
